@@ -1,0 +1,52 @@
+:root {
+    --bg-dark: #1a1a2e; /* Giriþ ekraný dýþ arka plan */
+    --glass-bg: rgba(36, 36, 67, 0.5); /* Giriþ kutusu rengin ama þeffaf */
+    --accent-purple: #6c5ce7; /* O meþhur buton morun */
+    --border-light: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Sol Menü - Sidebar */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(15px);
+    border-right: 1px solid var(--border-light);
+    position: fixed;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Ana Ýçerik */
+.main-content {
+    margin-left: 260px;
+    padding: 60px;
+}
+
+/* Örneðindeki o Büyük Cam Kartlar */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--border-light);
+    border-radius: 40px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.text-purple {
+    color: var(--accent-purple) !important;
+}
+
+.bg-purple {
+    background-color: var(--accent-purple) !important;
+}

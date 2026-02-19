@@ -1,0 +1,161 @@
+﻿@model List<Orenda.Web.Models.ToDo>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>Orenda Management | Control Center</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <h2 class="fw-bold mb-5" style="letter-spacing: -1px;">ORENDA</h2>
+            <nav class="nav flex-column gap-3">
+                <a href="#" class="nav-link text-white p-0"><i class="bi bi-grid-1x2-fill me-2"></i> Dashboard</a>
+                <a href="#" class="nav-link text-white opacity-50 p-0"><i class="bi bi-people me-2"></i> Team</a>
+                <a href="#" class="nav-link text-white opacity-50 p-0"><i class="bi bi-folder-fill me-2"></i> Projects</a>
+                <a href="#" class="nav-link text-white opacity-50 p-0"><i class="bi bi-gear-fill me-2"></i> Settings</a>
+            </nav>
+        </div>
+
+        <div class="device-status glass-card p-3 mb-4 border-0" style="background: rgba(108, 92, 231, 0.1);">
+            <h6 class="small fw-bold text-purple mb-2">ESP32 STATUS</h6>
+            <div class="d-flex align-items-center">
+                <div class="spinner-grow text-success spinner-grow-sm me-2" style="width: 10px; height: 10px;"></div>
+                <small class="opacity-75">Online / 32ms</small>
+            </div>
+        </div>
+
+        <div class="user-profile border-top border-secondary pt-4">
+            <p class="mb-0 fw-bold text-truncate">Gaye Karataş</p>
+            <small class="text-secondary">System Administrator</small>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-end mb-5">
+                <h1 class="display-3 fw-bold m-0">Management</h1>
+                <div class="text-end">
+                    <p class="text-secondary mb-0">Hava Durumu / Sistem Saati</p>
+                    <h5 class="fw-bold">@DateTime.Now.ToString("HH:mm")</h5>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="glass-card mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="text-secondary fw-normal mb-3">Overall Progress</h5>
+                                <h1 class="display-1 fw-bold" style="font-size: 5rem;">68.5%</h1>
+                                <div class="mt-4">
+                                    <span class="badge bg-purple rounded-pill px-4 py-2">Orenda Life Project</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <canvas id="taskChart" style="max-height: 200px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-md-12">
+                            <div class="glass-card">
+                                <h5 class="fw-bold mb-4">Upcoming Deadlines</h5>
+                                <div class="d-flex gap-3">
+                                    <div class="p-3 rounded-4 flex-fill" style="background: rgba(255,255,255,0.03); border-top: 3px solid #ff4757;">
+                                        <small class="text-danger fw-bold">Kalan: 2 Saat</small>
+                                        <h6 class="mt-1 mb-0">Veritabanı II Ödevi</h6>
+                                    </div>
+                                    <div class="p-3 rounded-4 flex-fill" style="background: rgba(255,255,255,0.03); border-top: 3px solid #ffa502;">
+                                        <small class="text-warning fw-bold">Kalan: 1 Gün</small>
+                                        <h6 class="mt-1 mb-0">MQTT Veri Testi</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="glass-card mb-4 p-4">
+                        <h5 class="fw-bold mb-3">Active Team</h5>
+                        <div class="d-flex gap-2">
+                            <div class="rounded-circle border border-2 border-success p-1" title="Gaye (Online)">
+                                <img src="https://i.pravatar.cc/40?u=gaye" class="rounded-circle" width="35">
+                            </div>
+                            <div class="rounded-circle border border-2 border-secondary p-1" title="Sistem (Offline)">
+                                <img src="https://i.pravatar.cc/40?u=dev" class="rounded-circle opacity-50" width="35">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <h5 class="fw-bold mb-4">Task Stream</h5>
+                        <div class="task-stream">
+                            @foreach (var task in Model.Take(4))
+                            {
+                                <div class="mb-3 p-3 rounded-4" style="background: rgba(255,255,255,0.03);">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-0 fw-bold">@task.Baslik</h6>
+                                        <i class="bi bi-chevron-right text-secondary"></i>
+                                    </div>
+                                    <small class="text-purple small">#@task.GorevNo • @task.Durum</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('taskChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Done', 'In Progress', 'Pending'],
+                datasets: [{
+                    data: [45, 23, 32],
+                    backgroundColor: ['#6c5ce7', '#a29bfe', 'rgba(255,255,255,0.1)'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                cutout: '80%'
+            }
+        });
+    </script>
+    <script>
+        const ctx = document.getElementById('taskChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Tamamlanan', 'Devam Eden', 'Bekleyen'],
+                datasets: [{
+                    // Buradaki veriler direkt SQL Server'dan geliyor
+                    data: [@ViewBag.Tamamlanan, @ViewBag.DevamEden, @ViewBag.Bekleyen],
+                    backgroundColor: ['#6c5ce7', '#a29bfe', 'rgba(255,255,255,0.1)'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                cutout: '80%'
+            }
+        });
+    </script>
+</body>
+</html>
