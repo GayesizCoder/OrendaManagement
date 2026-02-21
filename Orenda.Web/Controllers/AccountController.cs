@@ -19,11 +19,20 @@ namespace Orenda.Web.Controllers
         [HttpPost]
         public IActionResult Login(string kullaniciAdi, string sifre)
         {
-            var user = _context.Kisiler.FirstOrDefault(u => u.KullaniciAdi == kullaniciAdi && u.Sifre == sifre);
+            // Yeni model ismine (Kullanicilar) göre sorgu güncellendi
+            var user = _context.Kullanicilar.FirstOrDefault(u => u.KullaniciAdi == kullaniciAdi && u.Sifre == sifre);
 
             if (user != null)
             {
-                // Giriş başarılıysa Dashboard'a yönlendir
+                // Giriş yapan cihazın IP adresini yakala
+                string remoteIpAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+                // Veritabanındaki IP bilgisini güncelle
+                user.SonGirisIP = remoteIpAddress;
+                user.CihazTipi = "Web"; // Bu endpoint web login için
+
+                _context.SaveChanges();
+
                 return RedirectToAction("Index", "Home");
             }
 
