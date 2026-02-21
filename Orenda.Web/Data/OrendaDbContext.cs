@@ -8,6 +8,7 @@ namespace Orenda.Web.Data
         public OrendaDbContext(DbContextOptions<OrendaDbContext> options) : base(options) { }
 
         public DbSet<ToDo> ToDos { get; set; }
-        public DbSet<Kullanici> Kisiler { get; set; }
+        // Tek bir set üzerinden tüm personel iþlemlerini yönetiyoruz
+        public DbSet<Kullanici> Kullanicilar { get; set; }
     }
 }
