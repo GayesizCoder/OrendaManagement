@@ -3,28 +3,31 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Orenda.Web.Models
 {
-    // Veritabanındaki 'Kisiler' tablosuna ve doğru şemaya bağladık
     [Table("Kisiler", Schema = "gayemkaratas_OrendaAdmin")]
     public class Kullanici
     {
         [Key]
-        public int CalisanID { get; set; } // SQL betiğinizdeki Primary Key ile eşleşti
+        public int CalisanID { get; set; } // SQL'deki Primary Key
 
-        [Required]
+        public int RolID { get; set; } // Veritabanında zorunlu alan
+
+        [Required(ErrorMessage = "Ad zorunludur")]
+        public string Ad { get; set; }
+
+        [Required(ErrorMessage = "Soyad zorunludur")]
+        public string Soyad { get; set; }
+
+        public string? Eposta { get; set; } // SQL'de NULL olabilir
+
+        [Required(ErrorMessage = "Kullanıcı adı zorunludur")]
         public string KullaniciAdi { get; set; }
 
-        [Required]
+        [Column("SifreHash")] // SQL'deki gerçek kolon ismi
+        [Required(ErrorMessage = "Şifre zorunludur")]
         public string Sifre { get; set; }
 
-        public string? Ad { get; set; }
-        public string? Soyad { get; set; }
-
-        // Akıllı saat/Kart girişi için (WinForms ile koordinasyon)
         public string? RfidID { get; set; }
-
-        // --- Cihaz ve IP Takibi İçin Yeni Alanlar ---
-        public string? SonGirisIP { get; set; } // Hangi IP'den bağlanıldı?
-        public string? CihazTipi { get; set; } // Web mi, Akıllı Saat mi?
-        public string? BagliOlduguPC { get; set; } // Saatin bağlı olduğu terminal IP'si
+        public string? SonGirisIP { get; set; }
+        public string? CihazTipi { get; set; }
     }
 }

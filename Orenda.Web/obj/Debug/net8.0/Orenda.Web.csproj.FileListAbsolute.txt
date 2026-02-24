@@ -137,3 +137,4 @@ C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0\run
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\obj\Debug\net8.0\Orenda.Web.csproj.AssemblyReference.cache
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\obj\Debug\net8.0\Orenda.Web.csproj.Up2Date
+C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\obj\Debug\net8.0\Orenda.Web.sourcelink.json
