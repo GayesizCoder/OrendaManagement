@@ -3,52 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\data\\orendadbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\data\\orendadbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\models\\kullanici.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\models\\kullanici.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\models\\todo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\models\\todo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\models\\kisi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\models\\kisi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|c:\\users\\gaye\\desktop\\orenda\\egzersiz\\orenda.web\\orenda.web\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56C6FC5D-A5EA-4FEC-9ED0-5400C4B5AC11}|Orenda.Web\\Orenda.Web.csproj|solutionrelative:orenda.web\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -58,156 +26,58 @@
       "DocumentGroups": [
         {
           "DockedWidth": 256,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Kullanici.cs",
-              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Models\\Kullanici.cs",
-              "RelativeDocumentMoniker": "Orenda.Web\\Models\\Kullanici.cs",
-              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Models\\Kullanici.cs",
-              "RelativeToolTip": "Orenda.Web\\Models\\Kullanici.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-19T05:03:20.29Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Program.cs",
               "RelativeDocumentMoniker": "Orenda.Web\\Program.cs",
               "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Program.cs",
               "RelativeToolTip": "Orenda.Web\\Program.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAwwB4AAAAGAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T22:58:52.839Z",
+              "WhenOpened": "2026-02-25T07:27:34.175Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ToDo.cs",
-              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Models\\ToDo.cs",
-              "RelativeDocumentMoniker": "Orenda.Web\\Models\\ToDo.cs",
-              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Models\\ToDo.cs",
-              "RelativeToolTip": "Orenda.Web\\Models\\ToDo.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T22:57:15.716Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "Orenda.Web\\Controllers\\AccountController.cs",
-              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "Orenda.Web\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAUwA8AAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-19T05:05:48.93Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Login.cshtml",
-              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Views\\Account\\Login.cshtml",
-              "RelativeDocumentMoniker": "Orenda.Web\\Views\\Account\\Login.cshtml",
-              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Views\\Account\\Login.cshtml",
-              "RelativeToolTip": "Orenda.Web\\Views\\Account\\Login.cshtml",
-              "ViewState": "AgIAADwAAAAAAAAAAAAAACYAAAAEAQAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-19T05:05:14.553Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "Orenda.Web\\Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "Orenda.Web\\Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAGYAAAAAAAAAAAAwwJ4AAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-18T22:44:27.306Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "OrendaDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Data\\OrendaDbContext.cs",
-              "RelativeDocumentMoniker": "Orenda.Web\\Data\\OrendaDbContext.cs",
-              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Data\\OrendaDbContext.cs",
-              "RelativeToolTip": "Orenda.Web\\Data\\OrendaDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-19T05:07:28.606Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "site.css",
-              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\wwwroot\\css\\site.css",
-              "RelativeDocumentMoniker": "Orenda.Web\\wwwroot\\css\\site.css",
-              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\wwwroot\\css\\site.css",
-              "RelativeToolTip": "Orenda.Web\\wwwroot\\css\\site.css",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAuwDQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-02-18T22:43:42.26Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\appsettings.json",
               "RelativeDocumentMoniker": "Orenda.Web\\appsettings.json",
               "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\appsettings.json",
               "RelativeToolTip": "Orenda.Web\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-02-18T22:55:59.671Z"
+              "WhenOpened": "2026-02-24T07:36:37.554Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "Orenda.Web\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "Orenda.Web\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T23:32:26.416Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Kisi.cs",
-              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Models\\Kisi.cs",
-              "RelativeDocumentMoniker": "Orenda.Web\\Models\\Kisi.cs",
-              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Models\\Kisi.cs",
-              "RelativeToolTip": "Orenda.Web\\Models\\Kisi.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T22:56:45.135Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "Orenda.Web\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "Orenda.Web\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAABUAAAAAAAAAAAAgwDYAAAAHAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Views\\Account\\Register.cshtml",
+              "RelativeDocumentMoniker": "Orenda.Web\\Views\\Account\\Register.cshtml",
+              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Views\\Account\\Register.cshtml",
+              "RelativeToolTip": "Orenda.Web\\Views\\Account\\Register.cshtml",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAAAJ8AAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-18T22:44:15.845Z"
+              "WhenOpened": "2026-02-23T20:33:26.228Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "Orenda.Web\\Controllers\\AccountController.cs",
+              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "Orenda.Web\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T20:25:03.233Z"
             }
           ]
         }
