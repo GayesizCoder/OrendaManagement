@@ -12,13 +12,19 @@ namespace Orenda.Web.Models
         public int AtananCalisanID { get; set; } // Foreign Key
 
         [Required(ErrorMessage = "Başlık boş bırakılamaz")]
+        [MaxLength(150)]
         public string Baslik { get; set; }
 
         public string? Aciklama { get; set; }
 
+        [MaxLength(50)]
         public string Durum { get; set; } = "Yapilacak"; // Varsayılan durum
 
         public DateTime? BitisTarihi { get; set; }
+        
+        public int? AtayanCalisanID { get; set; }
+        
+        public DateTime? BaslangicTarihi { get; set; }
 
         // Navigation Property: Görevin kime ait olduğunu kod içinde kolayca görmek için
         [ForeignKey("AtananCalisanID")]

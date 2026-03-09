@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Orenda.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7e072e52b5072a2f725c12f347bb015dbdb99cb9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4968987886d737d672782695ab77d870f3fdd42b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Orenda.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Orenda.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

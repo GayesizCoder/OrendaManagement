@@ -1,52 +1,92 @@
-:root {
-    --bg-dark: #1a1a2e; /* Giriþ ekraný dýþ arka plan */
-    --glass-bg: rgba(36, 36, 67, 0.5); /* Giriþ kutusu rengin ama þeffaf */
-    --accent-purple: #6c5ce7; /* O meþhur buton morun */
-    --border-light: rgba(255, 255, 255, 0.1);
+ï»¿:root {
+    --primary-dark: #0f0f1b;
+    --accent-purple: #6c5ce7;
+    --accent-purple-hover: #5849cf;
+    --glass-bg: rgba(25, 25, 35, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --text-primary: #ffffff;
+    --text-muted: #a2a2d0;
 }
 
 body {
-    background-color: var(--bg-dark);
-    color: white;
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    overflow-x: hidden;
+    background: var(--primary-dark);
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(108, 92, 231, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(45, 52, 54, 0.4) 0%, transparent 50%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
 }
 
-/* Sol Menü - Sidebar */
-.sidebar {
-    width: 260px;
-    height: 100vh;
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(15px);
-    border-right: 1px solid var(--border-light);
-    position: fixed;
-    padding: 40px 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-/* Ana Ýçerik */
-.main-content {
-    margin-left: 260px;
-    padding: 60px;
-}
-
-/* Örneðindeki o Büyük Cam Kartlar */
-.glass-card {
+.glass-panel {
     background: var(--glass-bg);
-    backdrop-filter: blur(25px);
-    border: 1px solid var(--border-light);
-    border-radius: 40px;
-    padding: 40px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 16px;
 }
 
-.text-purple {
-    color: var(--accent-purple) !important;
+.glass-input {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-primary) !important;
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
 }
 
-.bg-purple {
-    background-color: var(--accent-purple) !important;
+.glass-input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.glass-input:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--accent-purple) !important;
+    box-shadow: 0 0 15px rgba(108, 92, 231, 0.3) !important;
+    outline: none;
+}
+
+.btn-glass-primary {
+    background: var(--accent-purple);
+    color: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2);
+}
+
+.btn-glass-primary:hover {
+    background: var(--accent-purple-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+    color: white;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1); 
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3); 
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+}
+.text-muted {
+    color: var(--text-muted) !important;
 }

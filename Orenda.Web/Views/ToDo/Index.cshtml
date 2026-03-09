@@ -4,62 +4,111 @@
     ViewData["Title"] = "Görev Yönetimi";
 }
 
-<div class="container mt-4">
+<style>
+    /* Sayfaya özel tablo stilleri */
+    .custom-table {
+        width: 100%;
+        min-width: 800px;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+    
+    .custom-table th {
+        border-bottom: 1px solid var(--glass-border);
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        padding-bottom: 15px;
+    }
+    
+    .custom-table td {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 15px;
+        color: var(--text-primary);
+        vertical-align: middle;
+    }
+    
+    .custom-table tr td:first-child {
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+    }
+    
+    .custom-table tr td:last-child {
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    .custom-table tbody tr {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .custom-table tbody tr:hover td {
+        background: rgba(255, 255, 255, 0.06);
+    }
+</style>
+
+<div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Orenda Görev Takip Sistemi</h2>
-        <a asp-action="Create" class="btn btn-success">
-            <i class="bi bi-plus-lg"></i> Yeni Görev Tanımla
+        <div>
+            <h2 class="fw-bold mb-0 text-white">Orenda Görev Takibi</h2>
+            <small class="text-white-50">Proje süreçlerinizi buradan yönetebilirsiniz.</small>
+        </div>
+        <a asp-action="Create" class="btn btn-glass-primary px-4 shadow-sm">
+            <i class="bi bi-plus-lg me-2"></i> Yeni Görev
         </a>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <table class="table table-hover">
-                <thead class="table-light">
+    <div class="glass-panel p-4" style="overflow-x: auto;">
+        <table class="table table-borderless custom-table mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Görev Detayı</th>
+                    <th>Sorumlu</th>
+                    <th>Durum</th>
+                    <th>Bitiş Tarihi</th>
+                    <th class="text-center">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
                     <tr>
-                        <th>#</th>
-                        <th>Görev Başlığı</th>
-                        <th>Sorumlu Personel</th>
-                        <th>Durum</th>
-                        <th>Bitiş Tarihi</th>
-                        <th>İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.GorevNo</td>
-                            <td>
-                                <strong>@item.Baslik</strong><br />
-                                <small class="text-muted">@item.Aciklama</small>
-                            </td>
-                            <td>
+                        <td class="fw-bold" style="color: var(--accent-purple);">@item.GorevNo</td>
+                        <td>
+                            <div class="fw-bold text-white">@item.Baslik</div>
+                            <div class="small text-white-50">@item.Aciklama</div>
+                        </td>
+                        <td>
+                            <span class="badge rounded-pill bg-light text-dark border">
                                 @(item.AtananKisi != null ? $"{item.AtananKisi.Ad} {item.AtananKisi.Soyad}" : "Atanmamış")
-                            </td>
-                            <td>
-                                @if (item.Durum == "Tamamlandi")
-                                {
-                                    <span class="badge bg-success">Tamamlandı</span>
-                                }
-                                else if (item.Durum == "Yapiliyor")
-                                {
-                                    <span class="badge bg-primary">Yapılıyor</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-warning text-dark">Beklemede</span>
-                                }
-                            </td>
-                            <td>@item.BitisTarihi?.ToString("dd.MM.yyyy")</td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.GorevNo" class="btn btn-sm btn-outline-primary">Düzenle</a>
-                                <a asp-action="Details" asp-route-id="@item.GorevNo" class="btn btn-sm btn-outline-info">Detay</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                            </span>
+                        </td>
+                        <td>
+                            @if (item.Durum == "Tamamlandi")
+                            {
+                                <span class="badge bg-success-subtle text-success px-3">Tamamlandı</span>
+                            }
+                            else if (item.Durum == "Yapiliyor")
+                            {
+
+                                <span class="badge bg-primary-subtle text-primary px-3">Yapılıyor</span>
+                            }
+                            else
+                            {
+
+                                <span class="badge bg-warning-subtle text-warning px-3 text-dark">Beklemede</span>
+                            }
+                        </td>
+                        <td class="text-muted">@item.BitisTarihi?.ToString("dd MMM yyyy")</td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.GorevNo" class="btn btn-sm btn-outline-secondary border-0"><i class="bi bi-pencil-square"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>

@@ -7,51 +7,73 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        /* Aktif menü öğesi için senin mor tonun */
+        .bg-purple.active {
+            background: var(--accent-purple) !important;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+            border-radius: 10px;
+        }
+
+        .nav-link {
+            border-radius: 10px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+    </style>
 </head>
 <body>
     <div class="d-flex">
-        <nav class="sidebar shadow-sm d-flex flex-column p-4">
-            <h3 class="fw-bold mb-5">Orenda</h3>
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item mb-3">
-                    <a href="#" class="nav-link active rounded-pill bg-dark">
-                        <i class="bi bi-grid-fill me-2"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item mb-3">
-                    <a href="#" class="nav-link text-dark">
-                        <i class="bi bi-kanban me-2"></i> Tasks
-                    </a>
-                </li>
-                <li class="nav-item mb-3">
-                    <a href="#" class="nav-link text-dark">
-                        <i class="bi bi-people me-2"></i> Team
-                    </a>
-                </li>
-                <li class="nav-item mb-3">
-                    <a href="#" class="nav-link text-dark">
-                        <i class="bi bi-broadcast me-2"></i> RFID Logs
-                    </a>
-                </li>
-            </ul>
-            <div class="user-profile mt-auto d-flex align-items-center">
-                <img src="https://via.placeholder.com/40" class="rounded-circle me-2">
-                <div>
-                    <strong class="d-block">Kullanıcı</strong>
-                    <small class="text-muted">Admin</small>
+        <!-- Sidebar with Glassmorphism -->
+        <nav class="sidebar glass-panel m-3" style="min-width: 260px; height: calc(100vh - 2rem); position: fixed; z-index: 1000;">
+            <div class="p-4 d-flex flex-column h-100">
+                <h3 class="fw-bold mb-5 text-white">Orenda</h3>
+
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="Index"
+                           class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "bg-purple active" : "")">
+                            <i class="bi bi-grid-fill me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="ToDo" asp-action="Index"
+                           class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ToDo" ? "bg-purple active" : "")">
+                            <i class="bi bi-kanban me-2"></i> Görevler
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-white-50">
+                            <i class="bi bi-people me-2"></i> Ekip
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="user-profile mt-auto pt-3 border-top border-secondary d-flex align-items-center">
+                    <img src="https://via.placeholder.com/40" class="rounded-circle me-3 border border-2" style="border-color: var(--accent-purple) !important;">
+                    <div>
+                        <strong class="d-block text-white">@User.Identity?.Name</strong>
+                        <small class="text-white-50">Admin</small>
+                    </div>
                 </div>
             </div>
         </nav>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="ToDo" asp-action="Index">Görevler</a>
-        </li>
-        <main role="main" class="flex-grow-1 p-5">
-            @RenderBody()
+
+        <main role="main" class="flex-grow-1" style="margin-left: 280px; min-height: 100vh;">
+            <div class="container-fluid p-4">
+                @RenderBody()
+            </div>
         </main>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

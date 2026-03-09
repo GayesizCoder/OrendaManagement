@@ -25,7 +25,6 @@ C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\obj\Debug\net8.0\sta
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\obj\Debug\net8.0\Orenda.Web.dll
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\obj\Debug\net8.0\refint\Orenda.Web.dll
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\obj\Debug\net8.0\Orenda.Web.pdb

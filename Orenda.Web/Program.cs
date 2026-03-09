@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Orenda.Web.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-// Veritabaný baðlantýsýný projeye tanýtýr
+// Veritabanï¿½ baï¿½lantï¿½sï¿½nï¿½ projeye tanï¿½tï¿½r
 builder.Services.AddDbContext<OrendaDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -28,8 +28,8 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    //pattern: "{controller=Home}/{action=Index}/{id?}");
-    pattern: "{controller=Account}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+    //pattern: "{controller=Account}/{action=Login}/{id?}");
     //pattern: "{controller=Account}/{action=Register}/{id?}");
     //pattern: "{controller=ToDo}/{action=Index}/{id?}");
 
