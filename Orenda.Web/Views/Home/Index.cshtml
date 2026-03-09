@@ -1,12 +1,258 @@
-﻿<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between mb-4 align-items-center">
-        <h2 class="fw-bold m-0 text-white">Görev Yönetimi</h2>
-        <button class="btn btn-glass-primary px-4"><i class="bi bi-plus-lg me-2"></i>Yeni Görev</button>
+﻿@model Orenda.Web.Models.ViewModels.DashboardViewModel
+<style>
+    /* Dashboard-Specific Styles */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2.5fr 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 20px;
+    }
+
+    /* Top Bar Search */
+    .top-search-bar {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--glass-border);
+        border-radius: 30px;
+        padding: 5px 20px;
+        display: flex;
+        align-items: center;
+        width: 300px;
+    }
+    .top-search-bar input {
+        background: transparent;
+        border: none;
+        color: white;
+        width: 100%;
+        margin-left: 10px;
+        outline: none;
+    }
+
+    /* Layout Cards */
+    .projects-card { grid-column: 1 / 2; grid-row: 1 / 3; }
+    .ongoing-card { grid-column: 2 / 3; grid-row: 1 / 2; }
+    .media-card { grid-column: 3 / 4; grid-row: 1 / 3; }
+    .files-card { grid-column: 1 / 2; grid-row: 3 / 4; }
+    .team-card { grid-column: 2 / 4; grid-row: 2 / 4; }
+
+    /* Timeline Items */
+    .timeline-row { display: flex; align-items: center; margin-bottom: 20px; }
+    .timeline-label { width: 120px; font-size: 0.9rem; color: var(--text-muted); }
+    .timeline-track { flex: 1; position: relative; height: 30px; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 15px; }
+    
+    .timeline-bar {
+        position: absolute;
+        height: 24px;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #1e1e38, #2a2a4a);
+        top: 3px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        font-size: 0.8rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+    .timeline-bar.purple { background: linear-gradient(90deg, var(--accent-purple), #8e7dfa); }
+
+    /* Media/Preview Card */
+    .media-preview-inner {
+        background: url('https://images.unsplash.com/photo-1620121692029-d088224ddc74?q=80&w=2832&auto=format&fit=crop') center;
+        background-size: cover;
+        height: 180px;
+        border-radius: 12px;
+        position: relative;
+        margin-bottom: 15px;
+    }
+    
+    /* Pill List Items */
+    .pill-item {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 12px 20px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        transition: 0.2s;
+    }
+    .pill-item:hover { background: rgba(255, 255, 255, 0.08); }
+
+    /* Custom Avatars */
+    .avatar-sm { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--primary-dark); }
+    .avatar-group { display: flex; }
+    .avatar-group img { margin-left: -10px; }
+    .avatar-group img:first-child { margin-left: 0; }
+</style>
+
+<div class="container-fluid pe-4">
+    <!-- Top Header Navigation (Inside Main Content) -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
+        <div class="d-flex align-items-center">
+            <h2 class="fw-bold mb-0 me-4">Yönetim Paneli</h2>
+            <div class="text-white-50 small rounded-pill bg-dark bg-opacity-50 px-3 py-1 border border-secondary border-opacity-25">
+                <i class="bi bi-calendar3 me-2"></i> @DateTime.Now.ToString("dd MMMM yyyy")
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <div class="top-search-bar">
+                <i class="bi bi-search text-white-50"></i>
+                <input type="text" placeholder="Ara...">
+            </div>
+            <button class="btn btn-dark rounded-circle" style="width: 45px; height: 45px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);">
+                <i class="bi bi-bell"></i>
+            </button>
+            <button class="btn btn-dark rounded-circle" style="width: 45px; height: 45px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);">
+                <i class="bi bi-envelope"></i>
+            </button>
+        </div>
     </div>
 
-    <div class="glass-panel p-4">
-        <table class="table table-borderless text-white mb-0" style="background: transparent;">
-            <!-- Placeholder for Table Content -->
-        </table>
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-grid">
+        
+        <!-- 1. Projects Gantt/Timeline Chart -->
+        <div class="glass-panel p-4 projects-card">
+            <div class="d-flex justify-content-between mb-4">
+                <h5 class="fw-bold m-0">Projeler (Haftalık)</h5>
+                <div class="d-flex gap-2">
+                    <span class="badge bg-white bg-opacity-10 text-white rounded-pill px-3 py-2">Gün</span>
+                    <span class="badge bg-purple rounded-pill px-3 py-2" style="background: var(--accent-purple);">Hafta</span>
+                    <span class="badge bg-white bg-opacity-10 text-white rounded-pill px-3 py-2">Ay</span>
+                </div>
+            </div>
+
+            <div class="mt-4 border-top border-secondary border-opacity-25 pt-4">
+                @if (Model != null && Model.HaftalikProjeler.Any())
+                {
+                    int i = 0;
+                    foreach (var gorev in Model.HaftalikProjeler)
+                    {
+                        var leftPos = (i * 15) + "%"; // Basit bir fake offset
+                        var widthVal = (30 + (i * 5)) + "%"; // Fake uzunluk
+                        var isPurple = (i % 2 == 0) ? "purple" : "";
+                        var kategori = gorev.Baslik.Length > 12 ? gorev.Baslik.Substring(0, 12) + "..." : gorev.Baslik;
+                        
+                        <div class="timeline-row">
+                            <div class="timeline-label">@kategori</div>
+                            <div class="timeline-track">
+                                <div class="timeline-bar @isPurple" style="left: @leftPos; width: @widthVal;">
+                                    <span>@gorev.Baslik</span>
+                                    @if(gorev.AtananKisi != null) {
+                                        <div class="avatar-group ms-auto">
+                                            <div class="rounded-circle border border-secondary bg-dark text-white-50 d-flex justify-content-center align-items-center" style="width:28px; height:28px; font-size:10px;">
+                                                @(gorev.AtananKisi.Ad.Substring(0,1))
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        i++;
+                    }
+                }
+                else
+                {
+                    <p class="text-white-50 small text-center my-4">Henüz atanan proje verisi bulunmuyor.</p>
+                }
+            </div>
+        </div>
+
+        <!-- 2. Ongoing Projects Stats -->
+        <div class="glass-panel p-4 ongoing-card d-flex flex-column justify-content-between">
+            <div>
+                <h5 class="fw-bold mb-1">Aktif Görevler</h5>
+                <h2 class="display-6 fw-bold text-success mb-0">@Model.AktifGorevYuzdesi%</h2>
+                <small class="text-white-50">Tüm görevlere oranı</small>
+            </div>
+            
+            <div class="mt-4">
+                <div class="d-flex justify-content-between text-white-50 small mb-2">
+                    <span><i class="bi bi-circle-fill text-purple me-2" style="color: var(--accent-purple); font-size: 8px;"></i>Geliştirme</span>
+                    <span>%@Model.GelistirmeYuzdesi</span>
+                </div>
+                <div class="d-flex justify-content-between text-white-50 small mb-2">
+                    <span><i class="bi bi-circle-fill text-info me-2" style="font-size: 8px;"></i>Tasarım</span>
+                    <span>%@Model.TasarimYuzdesi</span>
+                </div>
+                <div class="d-flex justify-content-between text-white-50 small">
+                    <span><i class="bi bi-circle-fill text-secondary me-2" style="font-size: 8px;"></i>Diğer</span>
+                    <span>%@Model.DigerYuzdesi</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Media / Preview Card -->
+        <div class="glass-panel p-4 media-card" style="background: rgba(10, 10, 15, 0.6);">
+            <div class="d-flex justify-content-between mb-3">
+                <h6 class="fw-bold"><i class="bi bi-file-earmark-play"></i> Dosya Önizleme</h6>
+            </div>
+            <div class="d-flex justify-content-center align-items-center h-50 my-4 text-white-50 small border border-secondary border-opacity-25 rounded" style="background: rgba(0,0,0,0.2);">
+                Seçili dosya yok
+            </div>
+            <div class="d-flex align-items-center mt-auto">
+                <div class="rounded-circle border border-secondary me-3 bg-dark d-flex justify-content-center align-items-center text-white-50" style="width:40px; height:40px;">
+                   <i class="bi bi-person"></i>
+                </div>
+                <div>
+                    <strong class="d-block text-white">-</strong>
+                    <small class="text-white-50">Yükleyen</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Files / Assets List -->
+        <div class="glass-panel p-4 files-card">
+            <h5 class="fw-bold mb-4">Son Eklenenler</h5>
+            <p class="text-white-50 small text-center my-3">Sistemde yeni dosya bulunmuyor.</p>
+            
+            <!-- Example Template
+            <div class="pill-item">
+                <div class="bg-danger bg-opacity-25 text-danger rounded p-2 me-3">
+                    <i class="bi bi-file-pdf-fill"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <strong class="d-block small">Dosya_Adi.pdf</strong>
+                </div>
+            </div>
+            -->
+        </div>
+
+        <!-- 5. Large Team & Stats Panel -->
+        <div class="glass-panel p-4 team-card d-flex flex-column" style="background: linear-gradient(135deg, rgba(20,20,30,0.8), rgba(10,10,15,0.95));">
+            <div class="d-flex justify-content-between align-items-center border-bottom border-light border-opacity-10 pb-3 mb-4">
+                <h5 class="fw-bold m-0 d-flex align-items-center">
+                    Ekip <span class="badge bg-white bg-opacity-10 ms-2 rounded-pill">@Model.ToplamKullanici</span>
+                </h5>
+                
+                <div class="d-flex gap-4">
+                    <div class="text-end">
+                        <small class="text-white-50 d-block">Toplam Kullanıcı</small>
+                        <strong class="fs-5">@Model.ToplamKullanici</strong>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-white-50 d-block">Aktif Çevrimiçi</small>
+                        <strong class="fs-5" style="color: var(--accent-purple);">@Model.AktifCevrimici</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row flex-grow-1">
+                <div class="col-md-6 border-end border-light border-opacity-10 pe-4">
+                    <h6 class="fw-bold text-white-50 mb-3">Departman Dağılılımı</h6>
+                    <p class="small text-white-50">Henüz ekip üyesi eklenmedi.</p>
+                    
+                    <small class="text-white-50 d-block mb-1 mt-4">Genel İlerleme Durumu</small>
+                    <div class="progress" style="height: 6px; background: rgba(255,255,255,0.1);">
+                        <div class="progress-bar" style="width: 0%; background: var(--accent-purple);"></div>
+                    </div>
+                </div>
+                <div class="col-md-6 ps-4 d-flex flex-column justify-content-center align-items-center text-center">
+                    <h6 class="fw-bold text-white-50 mb-4">Geliştirme Grafiği (Aylık)</h6>
+                    <p class="small text-white-50">Yeterli veri yok.</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>

@@ -1,6 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using Orenda.Web.Data;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Orenda.Web.Data;
+using Orenda.Web.Models;
+using Orenda.Web.Models.ViewModels;
 
 namespace Orenda.Web.Controllers
 {
@@ -13,19 +18,39 @@ namespace Orenda.Web.Controllers
             _context = context;
         }
 
-        
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            // Buluttaki ToDo tablosundan gerçek verileri çekiyoruz
-            var gorevler = _context.ToDos.ToList();
+            var model = new DashboardViewModel();
 
-            // Grafik için gerçek durum sayýlarýný hesaplýyoruz
-            ViewBag.Tamamlanan = gorevler.Count(x => x.Durum == "Tamamlandi");
-            ViewBag.DevamEden = gorevler.Count(x => x.Durum == "Devam Ediyor");
-            ViewBag.Bekleyen = gorevler.Count(x => x.Durum == "Yapilacak");
+            // Ekip Ä°statistikleri
+            model.ToplamKullanici = await _context.Kullanicilar.CountAsync();
+            model.AktifCevrimici = await _context.Kullanicilar.CountAsync(k => k.AktiflikDurumu == "Ã‡evrimiÃ§i" || k.AktiflikDurumu == "Online");
 
-            return View(gorevler);
+            // GÃ¶rev Ä°statistikleri
+            var gorevler = await _context.ToDos.ToListAsync();
+            model.ToplamGorev = gorevler.Count;
+            model.TamamlananGorev = gorevler.Count(g => g.Durum != null && (g.Durum.Contains("Tamamland") || g.Durum == "Bitti"));
+            
+            if (model.ToplamGorev > 0)
+            {
+                int devamEdenler = gorevler.Count(g => g.Durum != null && g.Durum.Contains("Devam"));
+                int yapilacaklar = gorevler.Count(g => g.Durum != null && g.Durum.Contains("Yapilacak"));
+                
+                model.AktifGorevYuzdesi = Math.Round(((double)(devamEdenler + yapilacaklar) / model.ToplamGorev) * 100, 1);
+                
+                model.GelistirmeYuzdesi = 48; // Ã–rnek Sabit
+                model.TasarimYuzdesi = 32;    // Ã–rnek Sabit
+                model.DigerYuzdesi = 20;      // Ã–rnek Sabit
+            }
+
+            // HaftalÄ±k Projeler Timeline'a AktarÄ±lmak Ä°Ã§in
+            model.HaftalikProjeler = await _context.ToDos
+                .Include(t => t.AtananKisi)
+                .OrderByDescending(t => t.BaslangicTarihi ?? DateTime.Now)
+                .Take(5)
+                .ToListAsync();
+
+            return View(model);
         }
     }
-
 }
