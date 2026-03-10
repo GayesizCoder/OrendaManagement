@@ -1,114 +1,135 @@
 ﻿@model IEnumerable<Orenda.Web.Models.ToDo>
-
 @{
-    ViewData["Title"] = "Görev Yönetimi";
+    ViewData["Title"] = "Görev ve Proje Yönetimi";
+    bool isAdmin = User.IsInRole("Admin");
 }
 
-<style>
-    /* Sayfaya özel tablo stilleri */
-    .custom-table {
-        width: 100%;
-        min-width: 800px;
-        border-collapse: separate;
-        border-spacing: 0 10px;
-    }
+<div class="container-fluid pe-4 pb-5">
     
-    .custom-table th {
-        border-bottom: 1px solid var(--glass-border);
-        color: var(--text-muted);
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
-        padding-bottom: 15px;
-    }
-    
-    .custom-table td {
-        background: rgba(255, 255, 255, 0.03);
-        padding: 15px;
-        color: var(--text-primary);
-        vertical-align: middle;
-    }
-    
-    .custom-table tr td:first-child {
-        border-top-left-radius: 12px;
-        border-bottom-left-radius: 12px;
-    }
-    
-    .custom-table tr td:last-child {
-        border-top-right-radius: 12px;
-        border-bottom-right-radius: 12px;
-    }
-
-    .custom-table tbody tr {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .custom-table tbody tr:hover td {
-        background: rgba(255, 255, 255, 0.06);
-    }
-</style>
-
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold mb-0 text-white">Orenda Görev Takibi</h2>
-            <small class="text-white-50">Proje süreçlerinizi buradan yönetebilirsiniz.</small>
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
+        <div class="d-flex align-items-center">
+            <div class="rounded-circle border border-warning me-3 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center text-white fw-bold" style="width:50px; height:50px; font-size: 1.2rem; border-color: var(--bs-warning) !important;">
+                <i class="bi bi-kanban"></i>
+            </div>
+            <div>
+                <h2 class="fw-bold mb-0">Görev Panosu</h2>
+                <small class="text-white-50">Tüm projeleri ve iş kalemlerini takip edin</small>
+            </div>
         </div>
-        <a asp-action="Create" class="btn btn-glass-primary px-4 shadow-sm">
-            <i class="bi bi-plus-lg me-2"></i> Yeni Görev
-        </a>
+        
+        @if (isAdmin)
+        {
+            <button class="btn btn-purple rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#yeniGorevModal">
+                <i class="bi bi-plus-lg me-2"></i> Yeni Görev
+            </button>
+        }
     </div>
 
-    <div class="glass-panel p-4" style="overflow-x: auto;">
-        <table class="table table-borderless custom-table mb-0">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Görev Detayı</th>
-                    <th>Sorumlu</th>
-                    <th>Durum</th>
-                    <th>Bitiş Tarihi</th>
-                    <th class="text-center">İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td class="fw-bold" style="color: var(--accent-purple);">@item.GorevNo</td>
-                        <td>
-                            <div class="fw-bold text-white">@item.Baslik</div>
-                            <div class="small text-white-50">@item.Aciklama</div>
-                        </td>
-                        <td>
-                            <span class="badge rounded-pill bg-light text-dark border">
-                                @(item.AtananKisi != null ? $"{item.AtananKisi.Ad} {item.AtananKisi.Soyad}" : "Atanmamış")
-                            </span>
-                        </td>
-                        <td>
-                            @if (item.Durum == "Tamamlandi")
-                            {
-                                <span class="badge bg-success-subtle text-success px-3">Tamamlandı</span>
-                            }
-                            else if (item.Durum == "Yapiliyor")
-                            {
+    <!-- Kanban Grid -->
+    <div class="row g-4">
+        
+        <!-- Yapılacaklar -->
+        <div class="col-md-4">
+            <div class="glass-panel p-3 h-100" style="background: rgba(255,193,7, 0.05); border-top: 3px solid var(--bs-warning);">
+                <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+                    <h5 class="fw-bold mb-0 text-warning">Yapılacaklar</h5>
+                    <span class="badge bg-warning text-dark rounded-pill">@Model.Count(m => m.Durum == "Yapılacak" || m.Durum == "Yapilacak" || m.Durum == "Todo")</span>
+                </div>
+                
+                <div class="task-list">
+                    @foreach (var gorev in Model.Where(m => m.Durum == "Yapılacak" || m.Durum == "Yapilacak" || m.Durum == "Todo"))
+                    {
+                        <partial name="_TaskCardPartial" model="gorev" />
+                    }
+                </div>
+            </div>
+        </div>
 
-                                <span class="badge bg-primary-subtle text-primary px-3">Yapılıyor</span>
-                            }
-                            else
-                            {
+        <!-- Devam Edenler -->
+        <div class="col-md-4">
+            <div class="glass-panel p-3 h-100" style="background: rgba(142, 68, 173, 0.05); border-top: 3px solid var(--accent-purple);">
+                <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+                    <h5 class="fw-bold mb-0" style="color: var(--accent-purple);">Devam Edenler</h5>
+                    <span class="badge rounded-pill" style="background-color: var(--accent-purple); color: white;">@Model.Count(m => m.Durum.Contains("Devam"))</span>
+                </div>
+                
+                <div class="task-list">
+                    @foreach (var gorev in Model.Where(m => m.Durum.Contains("Devam")))
+                    {
+                        <partial name="_TaskCardPartial" model="gorev" />
+                    }
+                </div>
+            </div>
+        </div>
 
-                                <span class="badge bg-warning-subtle text-warning px-3 text-dark">Beklemede</span>
-                            }
-                        </td>
-                        <td class="text-muted">@item.BitisTarihi?.ToString("dd MMM yyyy")</td>
-                        <td class="text-center">
-                            <a asp-action="Edit" asp-route-id="@item.GorevNo" class="btn btn-sm btn-outline-secondary border-0"><i class="bi bi-pencil-square"></i></a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <!-- Tamamlananlar -->
+        <div class="col-md-4">
+            <div class="glass-panel p-3 h-100" style="background: rgba(25, 135, 84, 0.05); border-top: 3px solid var(--bs-success);">
+                <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+                    <h5 class="fw-bold mb-0 text-success">Tamamlananlar</h5>
+                    <span class="badge bg-success rounded-pill">@Model.Count(m => m.Durum.Contains("Tamamland") || m.Durum == "Bitti" || m.Durum == "Done")</span>
+                </div>
+                
+                <div class="task-list">
+                    @foreach (var gorev in Model.Where(m => m.Durum.Contains("Tamamland") || m.Durum == "Bitti" || m.Durum == "Done"))
+                    {
+                        <partial name="_TaskCardPartial" model="gorev" />
+                    }
+                </div>
+            </div>
+        </div>
+        
     </div>
+
 </div>
+
+<!-- Yeni Görev Modal (Sadece Admin) -->
+@if (isAdmin)
+{
+    <div class="modal fade" id="yeniGorevModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-panel" style="background: rgba(20, 20, 35, 0.95); border: 1px solid rgba(255,255,255,0.1);">
+                <div class="modal-header border-secondary border-opacity-25">
+                    <h5 class="modal-title text-white fw-bold"><i class="bi bi-file-earmark-plus me-2 text-purple"></i> Yeni Görev Ata</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form asp-action="Create" method="post">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label text-white-50 small mb-1">Görev Başlığı <span class="text-danger">*</span></label>
+                            <input type="text" name="Baslik" class="form-control bg-dark text-white border-secondary" required placeholder="Projeyi özetleyen kısa bir başlık...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-white-50 small mb-1">Açıklama / Detaylar</label>
+                            <textarea name="Aciklama" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="Görev ile ilgili teknik notlar veya detaylar..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-white-50 small mb-1">Atanacak Personel <span class="text-danger">*</span></label>
+                            <select name="AtananCalisanID" class="form-select bg-dark text-white border-secondary" asp-items="ViewBag.Calisanlar" required>
+                                <option value="">Bir çalışan seçin...</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label text-white-50 small mb-1">Durumu</label>
+                                <select name="Durum" class="form-select bg-dark text-white border-secondary">
+                                    <option value="Yapılacak">Yapılacak</option>
+                                    <option value="Devam Ediyor">Devam Ediyor</option>
+                                    <option value="Tamamlandı">Tamamlandı</option>
+                                </select>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label text-white-50 small mb-1">Bitiş Tarihi / Deadline</label>
+                                <input type="date" name="BitisTarihi" class="form-control bg-dark text-white border-secondary">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary border-opacity-25">
+                        <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-purple rounded-pill px-4">Görevi Oluştur</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

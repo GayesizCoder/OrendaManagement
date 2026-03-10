@@ -1,0 +1,85 @@
+@model IEnumerable<Orenda.Web.Models.Departman>
+@{
+    ViewData["Title"] = "Departmanlar";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-white mb-0">Departmanlar</h2>
+        <p class="text-white-50">Şirket içi departmanların listesi ve yönetimi.</p>
+    </div>
+    <button type="button" class="btn btn-glass-primary" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+        <i class="bi bi-plus-lg"></i> Yeni Departman
+    </button>
+</div>
+
+<div class="glass-panel p-4">
+    <div class="table-responsive">
+        <table class="table table-dark table-hover mb-0" style="background: transparent;">
+            <thead>
+                <tr style="border-bottom-color: rgba(255,255,255,0.1);">
+                    <th class="text-white-50 fw-normal">ID</th>
+                    <th class="text-white-50 fw-normal">Departman Adı</th>
+                    <th class="text-white-50 fw-normal">Bağlı Takım Sayısı</th>
+                    <th class="text-white-50 fw-normal">Oluşturulma Tarihi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var dept in Model)
+                {
+                    <tr style="border-bottom-color: rgba(255,255,255,0.05);">
+                        <td class="align-middle">@dept.DepartmanID</td>
+                        <td class="align-middle fw-bold">
+                            @dept.Ad
+                            @if(!string.IsNullOrEmpty(dept.Aciklama)){
+                                <br/><small class="text-white-50 fw-normal">@dept.Aciklama</small>
+                            }
+                        </td>
+                        <td class="align-middle">
+                            <span class="badge bg-purple rounded-pill px-3">@(dept.Takimlar?.Count ?? 0)</span>
+                        </td>
+                        <td class="align-middle">@dept.OlusturmaTarihi.ToString("dd MMM yyyy")</td>
+                    </tr>
+                }
+                @if(!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-white-50">Henüz hiç departman eklenmemiş.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Department Modal -->
+<div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDeptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-panel" style="border: 1px solid rgba(255,255,255,0.1);">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title text-white fw-bold" id="addDeptModalLabel">Yeni Departman Ekle</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <form asp-controller="Team" asp-action="AddDepartment" method="post">
+                <div class="modal-body pt-4">
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Departman Adı</label>
+                        <input type="text" name="Ad" class="form-control glass-input" required placeholder="Örn: İnsan Kaynakları">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Açıklama (İsteğe Bağlı)</label>
+                        <textarea name="Aciklama" class="form-control glass-input" rows="3" placeholder="Departman görev tanımı..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-glass-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-purple { background-color: var(--accent-purple) !important; }
+</style>

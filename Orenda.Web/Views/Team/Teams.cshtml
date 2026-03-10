@@ -1,0 +1,97 @@
+@model IEnumerable<Orenda.Web.Models.Takim>
+@{
+    ViewData["Title"] = "Takımlar";
+    var departmanlar = ViewBag.Departmanlar as IEnumerable<Orenda.Web.Models.Departman>;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-white mb-0">Takımlar</h2>
+        <p class="text-white-50">Departmanlara bağlı alt ekipler.</p>
+    </div>
+    <button type="button" class="btn btn-glass-primary" data-bs-toggle="modal" data-bs-target="#addTeamModal">
+        <i class="bi bi-plus-lg"></i> Yeni Takım
+    </button>
+</div>
+
+<div class="glass-panel p-4">
+    <div class="table-responsive">
+        <table class="table table-dark table-hover mb-0" style="background: transparent;">
+            <thead>
+                <tr style="border-bottom-color: rgba(255,255,255,0.1);">
+                    <th class="text-white-50 fw-normal">Takım Adı</th>
+                    <th class="text-white-50 fw-normal">Bağlı Olduğu Departman</th>
+                    <th class="text-white-50 fw-normal">Tarih</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var team in Model)
+                {
+                    <tr style="border-bottom-color: rgba(255,255,255,0.05);">
+                        <td class="align-middle fw-bold">
+                            @team.Ad
+                            @if(!string.IsNullOrEmpty(team.Aciklama)){
+                                <br/><small class="text-white-50 fw-normal">@team.Aciklama</small>
+                            }
+                        </td>
+                        <td class="align-middle">
+                            @if(team.Departman != null){
+                                <span class="badge bg-secondary rounded-pill px-3">@team.Departman.Ad</span>
+                            } else {
+                                <span class="text-warning small"><i class="bi bi-exclamation-triangle"></i> Atanmamış</span>
+                            }
+                        </td>
+                        <td class="align-middle">@team.OlusturmaTarihi.ToString("dd MMM yyyy")</td>
+                    </tr>
+                }
+                @if(!Model.Any())
+                {
+                    <tr>
+                        <td colspan="3" class="text-center py-4 text-white-50">Henüz takım eklenmemiş.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Team Modal -->
+<div class="modal fade" id="addTeamModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-panel" style="border: 1px solid rgba(255,255,255,0.1);">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title text-white fw-bold">Yeni Takım Ekle</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-controller="Team" asp-action="AddTeam" method="post">
+                <div class="modal-body pt-4">
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Takım Adı</label>
+                        <input type="text" name="Ad" class="form-control glass-input" required placeholder="Örn: Ar-Ge">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Bağlı Çalışacağı Departman</label>
+                        <select name="DepartmanID" class="form-control glass-input" required>
+                            <option value="">Seçiniz...</option>
+                            @if(departmanlar != null)
+                            {
+                                foreach (var dept in departmanlar)
+                                {
+                                    <option value="@dept.DepartmanID" class="text-dark">@dept.Ad</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Açıklama (İsteğe Bağlı)</label>
+                        <textarea name="Aciklama" class="form-control glass-input" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-glass-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

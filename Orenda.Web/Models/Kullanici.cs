@@ -31,6 +31,7 @@ namespace Orenda.Web.Models
 
         [Column("SifreHash")] // SQL'deki gerçek kolon ismi
         [Required(ErrorMessage = "Şifre zorunludur")]
+        [MaxLength(255)]
         public string Sifre { get; set; }
 
         [MaxLength(50)]

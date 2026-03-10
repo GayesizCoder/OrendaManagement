@@ -1,0 +1,80 @@
+@model IEnumerable<Orenda.Web.Models.SistemLog>
+@{
+    ViewData["Title"] = "Sistem Logları";
+}
+
+<div class="container-fluid pe-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
+        <div class="d-flex align-items-center">
+            <div class="rounded-circle border border-purple me-3 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center text-white fw-bold" style="width:50px; height:50px; font-size: 1.2rem; border-color: var(--accent-purple) !important;">
+                <i class="bi bi-journal-text text-white"></i>
+            </div>
+            <div>
+                <h2 class="fw-bold mb-0">Sistem Logları</h2>
+                <small class="text-white-50">Sistemdeki tüm eylemlerin kayıtları (Son 200 işlem)</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Table -->
+    <div class="glass-panel p-4">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle mb-0" style="background: transparent;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
+                            <th scope="col" class="text-white-50 fw-normal pb-3">Tarih</th>
+                            <th scope="col" class="text-white-50 fw-normal pb-3">Kullanıcı</th>
+                            <th scope="col" class="text-white-50 fw-normal pb-3">İşlem Tipi</th>
+                            <th scope="col" class="text-white-50 fw-normal pb-3">Detay</th>
+                            <th scope="col" class="text-white-50 fw-normal pb-3 text-end">IP Adresi</th>
+                        </tr>
+                    </thead>
+                    <tbody style="border-top: none;">
+                        @foreach (var log in Model)
+                        {
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td class="py-3">
+                                    <span class="text-white small">@log.IslemTarihi.ToString("dd MMM yyyy")</span>
+                                    <br>
+                                    <small class="text-white-50" style="font-size:0.75rem;">@log.IslemTarihi.ToString("HH:mm:ss")</small>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle border border-secondary me-2 bg-dark d-flex justify-content-center align-items-center text-white-50" style="width:30px; height:30px; font-size: 0.7rem;">
+                                            @(log.Kullanici?.Ad?.Substring(0,1))
+                                        </div>
+                                        <div>
+                                            <strong class="d-block text-white small">@log.Kullanici?.Ad @log.Kullanici?.Soyad</strong>
+                                            <small class="text-white-50" style="font-size: 0.7rem;">ID: @log.KullaniciID</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark border border-secondary border-opacity-25 rounded-pill fw-normal px-2 py-1">@log.IslemTipi</span>
+                                </td>
+                                <td>
+                                    <span class="text-white-50 small d-block text-truncate" style="max-width: 400px;" title="@log.IslemDetayi">
+                                        @log.IslemDetayi
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <span class="text-white-50 font-monospace small">@log.IPAdresi</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center p-5">
+                <i class="bi bi-clipboard-x fs-1 text-white-50 mb-3 d-block"></i>
+                <h5 class="text-white">Kayıt Bulunamadı</h5>
+                <p class="text-white-50 mb-0">Sistemde henüz bir log kaydı oluşturulmamış.</p>
+            </div>
+        }
+    </div>
+</div>

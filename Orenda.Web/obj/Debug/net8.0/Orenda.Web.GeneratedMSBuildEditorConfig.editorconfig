@@ -28,12 +28,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/Home/EmployeeDashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxFbXBsb3llZURhc2hib2FyZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/Log/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9nXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/Shared/Error.cshtml]
@@ -44,8 +52,28 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/Team/Departments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVxEZXBhcnRtZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/Team/Employees.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVxFbXBsb3llZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/Team/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/Team/Teams.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhbVxUZWFtcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/ToDo/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVG9Eb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/ToDo/_TaskCardPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVG9Eb1xfVGFza0NhcmRQYXJ0aWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Gaye/Desktop/Orenda/Egzersiz/Orenda.Web/Orenda.Web/Views/_ViewImports.cshtml]

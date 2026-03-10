@@ -52,18 +52,44 @@
                             <i class="bi bi-kanban me-2"></i> Görevler
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link text-white-50">
-                            <i class="bi bi-people me-2"></i> Ekip
-                        </a>
-                    </li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a asp-controller="Team" asp-action="Index" class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Team" ? "active-custom" : "")">
+                                <i class="bi bi-people me-2"></i> Ekip Yönetimi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Log" asp-action="Index" class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Log" ? "active-custom" : "")">
+                                <i class="bi bi-journal-text me-2"></i> Sistem Logları
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a href="#" class="nav-link text-white-50">
+                                <i class="bi bi-people me-2"></i> Takımım
+                            </a>
+                        </li>
+                    }
                 </ul>
 
                 <div class="user-profile mt-auto pt-3 border-top border-secondary d-flex align-items-center">
                     <img src="https://via.placeholder.com/40" class="rounded-circle me-3 border border-2" style="border-color: var(--accent-purple) !important;">
-                    <div>
-                        <strong class="d-block text-white">@User.Identity?.Name</strong>
-                        <small class="text-white-50">Admin</small>
+                    <div class="flex-grow-1">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <strong class="d-block text-white">@User.Identity.Name</strong>
+                            <small class="text-white-50">@(User.IsInRole("Admin") ? "Yönetici" : "Çalışan")</small>
+                            <a asp-controller="Account" asp-action="Logout" class="d-block text-danger small mt-1 text-decoration-none">
+                                <i class="bi bi-box-arrow-right"></i> Çıkış Yap
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-sm w-100">Giriş Yap</a>
+                        }
                     </div>
                 </div>
             </div>

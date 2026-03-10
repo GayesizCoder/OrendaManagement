@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orenda.Web.Data;
 
@@ -11,9 +12,11 @@ using Orenda.Web.Data;
 namespace Orenda.Web.Migrations
 {
     [DbContext(typeof(OrendaDbContext))]
-    partial class OrendaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260310065144_IncreaseSifreLength")]
+    partial class IncreaseSifreLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,42 +123,6 @@ namespace Orenda.Web.Migrations
                     b.ToTable("Kisiler", "gayemkaratas_OrendaAdmin");
                 });
 
-            modelBuilder.Entity("Orenda.Web.Models.SistemLog", b =>
-                {
-                    b.Property<int>("LogID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LogID"));
-
-                    b.Property<string>("IPAdresi")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("IslemDetayi")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("IslemTarihi")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("IslemTipi")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("KullaniciID")
-                        .HasColumnType("int");
-
-                    b.HasKey("LogID");
-
-                    b.HasIndex("KullaniciID");
-
-                    b.ToTable("SistemLoglari", "gayemkaratas_OrendaAdmin");
-                });
-
             modelBuilder.Entity("Orenda.Web.Models.Takim", b =>
                 {
                     b.Property<int>("TakimID")
@@ -237,17 +204,6 @@ namespace Orenda.Web.Migrations
                     b.Navigation("Departman");
 
                     b.Navigation("Takim");
-                });
-
-            modelBuilder.Entity("Orenda.Web.Models.SistemLog", b =>
-                {
-                    b.HasOne("Orenda.Web.Models.Kullanici", "Kullanici")
-                        .WithMany()
-                        .HasForeignKey("KullaniciID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Kullanici");
                 });
 
             modelBuilder.Entity("Orenda.Web.Models.Takim", b =>

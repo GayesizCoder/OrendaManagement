@@ -1,0 +1,124 @@
+@model IEnumerable<Orenda.Web.Models.Kullanici>
+@{
+    ViewData["Title"] = "Çalışanlar";
+    var departmanlar = ViewBag.Departmanlar as SelectList;
+    var takimlar = ViewBag.Takimlar as SelectList;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-white mb-0">Çalışan Listesi</h2>
+        <p class="text-white-50">Sisteme kayıtlı kullanıcılar ve görev atamaları.</p>
+    </div>
+</div>
+
+<div class="glass-panel p-4">
+    <div class="table-responsive">
+        <table class="table table-dark table-hover mb-0" style="background: transparent;">
+            <thead>
+                <tr style="border-bottom-color: rgba(255,255,255,0.1);">
+                    <th class="text-white-50 fw-normal">Ad Soyad</th>
+                    <th class="text-white-50 fw-normal">Rol</th>
+                    <th class="text-white-50 fw-normal">Departman / Takım</th>
+                    <th class="text-white-50 fw-normal">Durum</th>
+                    <th class="text-white-50 fw-normal text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr style="border-bottom-color: rgba(255,255,255,0.05);">
+                        <td class="align-middle fw-bold">
+                            @user.Ad @user.Soyad
+                            <br/><small class="text-white-50 fw-normal">@user.Eposta</small>
+                        </td>
+                        <td class="align-middle">
+                            @if(user.RolID == 1) {
+                                <span class="badge bg-danger rounded-pill px-3">Yönetici</span>
+                            } else {
+                                <span class="badge bg-info text-dark rounded-pill px-3">Çalışan</span>
+                            }
+                        </td>
+                        <td class="align-middle">
+                            @if(user.DepartmanID != null) {
+                                <div class="small fw-bold text-white">@user.Departman?.Ad</div>
+                                @if(user.TakimID != null) {
+                                    <div class="small text-white-50"><i class="bi bi-arrow-return-right"></i> @user.Takim?.Ad</div>
+                                }
+                            } else {
+                                <span class="text-warning small fst-italic">Atama Bekliyor</span>
+                            }
+                        </td>
+                        <td class="align-middle">
+                            @if(user.AktiflikDurumu == "Çevrimiçi" || user.AktiflikDurumu == "Online") {
+                                <span class="text-success small"><i class="bi bi-circle-fill"></i> Çevrimiçi</span>
+                            } else {
+                                <span class="text-secondary small"><i class="bi bi-circle-fill"></i> @user.AktiflikDurumu</span>
+                            }
+                        </td>
+                        <td class="align-middle text-end">
+                            <button class="btn btn-sm btn-outline-light rounded-pill px-3 assign-btn" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#assignModal"
+                                    data-id="@user.CalisanID"
+                                    data-name="@user.Ad @user.Soyad"
+                                    data-dept="@user.DepartmanID"
+                                    data-team="@user.TakimID">
+                                Düzenle
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Assign Modal -->
+<div class="modal fade" id="assignModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-panel" style="border: 1px solid rgba(255,255,255,0.1);">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title text-white fw-bold">Çalışan Görevlendir</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-controller="Team" asp-action="AssignEmployee" method="post">
+                <div class="modal-body pt-4">
+                    <input type="hidden" name="CalisanID" id="assignCalisanID" />
+                    <p class="text-white-50 small mb-3">Çalışan: <strong class="text-white" id="assignNameText"></strong></p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Departman</label>
+                        <select name="DepartmanID" id="assignDeptID" class="form-control glass-input" asp-items="departmanlar">
+                            <option value="">(Departman Seçin)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Bağlı Takım</label>
+                        <select name="TakimID" id="assignTeamID" class="form-control glass-input" asp-items="takimlar">
+                            <option value="">(Takım Seçin / Boş Bırakılabilir)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-glass-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.assign-btn').click(function() {
+                var btn = $(this);
+                $('#assignCalisanID').val(btn.data('id'));
+                $('#assignNameText').text(btn.data('name'));
+                $('#assignDeptID').val(btn.data('dept'));
+                $('#assignTeamID').val(btn.data('team'));
+            });
+        });
+    </script>
+}

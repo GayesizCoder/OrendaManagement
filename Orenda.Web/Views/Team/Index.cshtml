@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "Ekip Yönetimi Özeti";
+}
+
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold text-white mb-0">Ekip Yönetimi</h2>
+        <p class="text-white-50">Şirketinizin organizasyon şemasına genel bakış.</p>
+    </div>
+
+    <div class="col-md-3">
+        <a asp-controller="Team" asp-action="Departments" class="text-decoration-none">
+            <div class="glass-panel p-4 text-center h-100 hover-effect">
+                <div class="display-4 text-purple mb-2"><i class="bi bi-building"></i></div>
+                <h3 class="text-white fw-bold mb-1">@ViewBag.TotalDepartments</h3>
+                <span class="text-white-50">Departman</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a asp-controller="Team" asp-action="Teams" class="text-decoration-none">
+            <div class="glass-panel p-4 text-center h-100 hover-effect">
+                <div class="display-4 text-purple mb-2"><i class="bi bi-people-fill"></i></div>
+                <h3 class="text-white fw-bold mb-1">@ViewBag.TotalTeams</h3>
+                <span class="text-white-50">Takım</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a asp-controller="Team" asp-action="Employees" class="text-decoration-none">
+            <div class="glass-panel p-4 text-center h-100 hover-effect">
+                <div class="display-4 text-purple mb-2"><i class="bi bi-person-badge"></i></div>
+                <h3 class="text-white fw-bold mb-1">@ViewBag.TotalEmployees</h3>
+                <span class="text-white-50">Çalışan</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a asp-controller="Team" asp-action="Employees" class="text-decoration-none">
+            <div class="glass-panel p-4 text-center h-100 hover-effect border-warning">
+                <div class="display-4 text-warning mb-2"><i class="bi bi-person-exclamation"></i></div>
+                <h3 class="text-warning fw-bold mb-1">@ViewBag.UnassignedEmployees</h3>
+                <span class="text-white-50">Atanmamış Personel</span>
+            </div>
+        </a>
+    </div>
+</div>
+
+<style>
+    .hover-effect {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-effect:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(108, 92, 231, 0.2);
+    }
+    .text-purple {
+        color: var(--accent-purple) !important;
+    }
+</style>

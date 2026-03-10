@@ -13,5 +13,6 @@ namespace Orenda.Web.Data
         public DbSet<ToDo> ToDos { get; set; }
         public DbSet<Departman> Departmanlar { get; set; }
         public DbSet<Takim> Takimlar { get; set; }
+        public DbSet<SistemLog> SistemLoglari { get; set; }
     }
 }

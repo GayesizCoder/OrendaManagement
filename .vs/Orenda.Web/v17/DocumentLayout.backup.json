@@ -42,8 +42,7 @@
               "RelativeToolTip": "Orenda.Web\\Views\\Home\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-05T10:03:10.92Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-05T10:03:10.92Z"
             },
             {
               "$type": "Document",
@@ -87,9 +86,9 @@
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Program.cs",
               "RelativeDocumentMoniker": "Orenda.Web\\Program.cs",
-              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Program.cs*",
-              "RelativeToolTip": "Orenda.Web\\Program.cs*",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAowB4AAAAGAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Gaye\\Desktop\\Orenda\\Egzersiz\\Orenda.Web\\Orenda.Web\\Program.cs",
+              "RelativeToolTip": "Orenda.Web\\Program.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAB4AAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-05T09:48:29.872Z",
               "EditorCaption": ""

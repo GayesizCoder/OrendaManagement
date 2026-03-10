@@ -9,6 +9,18 @@ builder.Services.AddDbContext<OrendaDbContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<Orenda.Web.Services.ILogService, Orenda.Web.Services.LogService>();
+
+// Authentication & Authorization Ayarları
+builder.Services.AddAuthentication("OrendaAuthCookie")
+    .AddCookie("OrendaAuthCookie", options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/Login";
+        options.Cookie.Name = "OrendaAuthCookie";
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,6 +36,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication(); // Önemli: Authorization'dan önce gelmeli
 app.UseAuthorization();
 
 app.MapControllerRoute(
