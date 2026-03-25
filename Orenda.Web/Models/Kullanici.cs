@@ -55,5 +55,8 @@ namespace Orenda.Web.Models
         public string AktiflikDurumu { get; set; } = "Çevrimdışı";
 
         public double HaftalikVerimlilikSkoru { get; set; } = 0;
+
+        // Orenda Life / Sağlık Verileri
+        public virtual ICollection<SaglikVerisi>? SaglikVerileri { get; set; }
     }
 }

@@ -119,7 +119,12 @@
         <div class="glass-panel p-4 tasks-card" style="max-height: 500px; overflow-y: auto;">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h5 class="fw-bold m-0"><i class="bi bi-list-check me-2"></i>Aktif Görevlerim</h5>
-                <a asp-controller="ToDo" asp-action="Index" class="btn btn-sm btn-outline-light rounded-pill px-3">Tümünü Gör</a>
+                <div class="d-flex gap-2">
+                    <a asp-controller="ToDo" asp-action="Index" asp-route-create="true" class="btn btn-sm btn-purple rounded-pill px-3">
+                        <i class="bi bi-plus-lg me-1"></i> Yeni Görev
+                    </a>
+                    <a asp-controller="ToDo" asp-action="Index" class="btn btn-sm btn-outline-light rounded-pill px-3">Tümünü Gör</a>
+                </div>
             </div>
             
             @if (Model.GuncelGorevler != null && Model.GuncelGorevler.Any())
@@ -136,11 +141,17 @@
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
                                 <strong class="d-block text-white mb-1">@gorev.Baslik</strong>
-                                <small class="text-white-50 text-truncate d-block" style="max-width: 250px;">
+                                <small class="text-white-50 text-truncate d-block mb-2" style="max-width: 250px;">
                                     @(gorev.Aciklama?.Length > 50 ? gorev.Aciklama.Substring(0, 50) + "..." : gorev.Aciklama)
                                 </small>
+                                <div class="progress" style="height: 4px; background: rgba(255,255,255,0.1); width: 100%;">
+                                    <div class="progress-bar" style="width: @(gorev.TamamlanmaOrani.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))%; background: var(--accent-purple);"></div>
+                                </div>
                             </div>
-                            <span class="badge bg-dark border border-secondary border-opacity-25 ms-2 rounded-pill fw-normal">@gorev.Durum</span>
+                            <div class="text-end">
+                                <span class="badge bg-dark border border-secondary border-opacity-25 ms-2 rounded-pill fw-normal d-block mb-1">@gorev.Durum</span>
+                                <small class="text-white-50" style="font-size: 0.70rem;">%@gorev.TamamlanmaOrani</small>
+                            </div>
                         </div>
                     </div>
                 }

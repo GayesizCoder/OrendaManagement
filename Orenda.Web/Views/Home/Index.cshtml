@@ -1,4 +1,4 @@
-﻿@model Orenda.Web.Models.ViewModels.DashboardViewModel
+@model Orenda.Web.Models.ViewModels.DashboardViewModel
 <style>
     /* Dashboard-Specific Styles */
     .dashboard-grid {
@@ -95,6 +95,9 @@
         </div>
 
         <div class="d-flex align-items-center gap-3">
+            <a asp-controller="ToDo" asp-action="Index" asp-route-create="true" class="btn btn-purple rounded-pill px-4 shadow-sm">
+                <i class="bi bi-plus-lg me-2"></i> Görev Oluştur
+            </a>
             <div class="top-search-bar">
                 <i class="bi bi-search text-white-50"></i>
                 <input type="text" placeholder="Ara...">
@@ -182,40 +185,53 @@
             </div>
         </div>
 
-        <!-- 3. Media / Preview Card -->
-        <div class="glass-panel p-4 media-card" style="background: rgba(10, 10, 15, 0.6);">
+        <!-- 3. Media / Preview Card -> Spotlight -->
+        <div class="glass-panel p-4 media-card d-flex flex-column justify-content-between" style="background: rgba(10, 10, 15, 0.6);">
             <div class="d-flex justify-content-between mb-3">
-                <h6 class="fw-bold"><i class="bi bi-file-earmark-play"></i> Dosya Önizleme</h6>
+                <h6 class="fw-bold"><i class="bi bi-star"></i> Günün Öne Çıkanı</h6>
             </div>
-            <div class="d-flex justify-content-center align-items-center h-50 my-4 text-white-50 small border border-secondary border-opacity-25 rounded" style="background: rgba(0,0,0,0.2);">
-                Seçili dosya yok
-            </div>
-            <div class="d-flex align-items-center mt-auto">
-                <div class="rounded-circle border border-secondary me-3 bg-dark d-flex justify-content-center align-items-center text-white-50" style="width:40px; height:40px;">
-                   <i class="bi bi-person"></i>
+            @if(Model.SonGirisYapan != null) {
+                <div class="d-flex justify-content-center align-items-center flex-grow-1 my-4 text-white p-3 border border-secondary border-opacity-25 rounded text-center" style="background: rgba(0,0,0,0.2);">
+                    <div>
+                        <i class="bi bi-person-check fs-1 text-success mb-2"></i>
+                        <h5 class="mb-1">@Model.SonGirisYapan.Kullanici?.Ad @Model.SonGirisYapan.Kullanici?.Soyad</h5>
+                        <small class="text-white-50">Sisteme en son giriş yapan takım arkadaşımız.</small>
+                    </div>
                 </div>
-                <div>
-                    <strong class="d-block text-white">-</strong>
-                    <small class="text-white-50">Yükleyen</small>
+                <div class="d-flex align-items-center mt-auto">
+                    <div class="rounded-circle border border-secondary me-3 bg-dark d-flex justify-content-center align-items-center text-white" style="width:40px; height:40px;">
+                        @(Model.SonGirisYapan.Kullanici?.Ad?.Substring(0,1))
+                    </div>
+                    <div>
+                        <strong class="d-block text-white">@Model.SonGirisYapan.IslemTarihi.ToString("HH:mm")</strong>
+                        <small class="text-white-50">Giriş Saati</small>
+                    </div>
                 </div>
-            </div>
+            } else {
+                <div class="d-flex justify-content-center align-items-center flex-grow-1 my-4 text-white-50 small border border-secondary border-opacity-25 rounded" style="background: rgba(0,0,0,0.2);">
+                    Seçili veya aktif bir kişi yok
+                </div>
+            }
         </div>
 
-        <!-- 4. Files / Assets List -->
+        <!-- 4. Files / Assets List -> Recent Activities -->
         <div class="glass-panel p-4 files-card">
-            <h5 class="fw-bold mb-4">Son Eklenenler</h5>
-            <p class="text-white-50 small text-center my-3">Sistemde yeni dosya bulunmuyor.</p>
-            
-            <!-- Example Template
-            <div class="pill-item">
-                <div class="bg-danger bg-opacity-25 text-danger rounded p-2 me-3">
-                    <i class="bi bi-file-pdf-fill"></i>
-                </div>
-                <div class="flex-grow-1">
-                    <strong class="d-block small">Dosya_Adi.pdf</strong>
-                </div>
-            </div>
-            -->
+            <h5 class="fw-bold mb-4">Son Aktiviteler</h5>
+            @if(Model.SonAktiviteler != null && Model.SonAktiviteler.Any()) {
+                foreach(var log in Model.SonAktiviteler) {
+                    <div class="pill-item">
+                        <div class="bg-purple bg-opacity-25 text-white rounded p-2 me-3 d-flex justify-content-center align-items-center" style="width:35px; height:35px;">
+                            <i class="bi bi-activity"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <strong class="d-block small text-white">@log.IslemTipi</strong>
+                            <small class="text-white-50">@log.Kullanici?.Ad @log.Kullanici?.Soyad - @log.IslemTarihi.ToString("HH:mm")</small>
+                        </div>
+                    </div>
+                }
+            } else {
+                <p class="text-white-50 small text-center my-3">Sistemde yeni aktivite bulunmuyor.</p>
+            }
         </div>
 
         <!-- 5. Large Team & Stats Panel -->
@@ -239,17 +255,36 @@
             
             <div class="row flex-grow-1">
                 <div class="col-md-6 border-end border-light border-opacity-10 pe-4">
-                    <h6 class="fw-bold text-white-50 mb-3">Departman Dağılılımı</h6>
-                    <p class="small text-white-50">Henüz ekip üyesi eklenmedi.</p>
+                    <h6 class="fw-bold text-white-50 mb-3">Departman Dağılımı</h6>
+                    @if(Model.DepartmanDagilimi != null && Model.DepartmanDagilimi.Any()) {
+                        foreach(var dep in Model.DepartmanDagilimi) {
+                            var yuzde = Model.DepartmanDoluKullaniciSayisi > 0 ? (int)Math.Round((double)dep.Value / Model.DepartmanDoluKullaniciSayisi * 100) : 0;
+                            <div class="d-flex justify-content-between text-white small mb-1">
+                                <span>@dep.Key</span>
+                                <span>@dep.Value Kişi</span>
+                            </div>
+                            <div class="progress mb-2" style="height: 4px; background: rgba(255,255,255,0.1);">
+                                <div class="progress-bar" style="width: @(yuzde)%; background: var(--accent-purple);"></div>
+                            </div>
+                        }
+                    } else {
+                        <p class="small text-white-50">Henüz ekip üyesi eklenmedi.</p>
+                    }
                     
                     <small class="text-white-50 d-block mb-1 mt-4">Genel İlerleme Durumu</small>
                     <div class="progress" style="height: 6px; background: rgba(255,255,255,0.1);">
-                        <div class="progress-bar" style="width: 0%; background: var(--accent-purple);"></div>
+                        <div class="progress-bar" style="width: @(Model.AktifGorevYuzdesi.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))%; background: var(--accent-purple);"></div>
                     </div>
                 </div>
                 <div class="col-md-6 ps-4 d-flex flex-column justify-content-center align-items-center text-center">
-                    <h6 class="fw-bold text-white-50 mb-4">Geliştirme Grafiği (Aylık)</h6>
-                    <p class="small text-white-50">Yeterli veri yok.</p>
+                    <h6 class="fw-bold text-white-50 mb-4">Aylık Proje Özeti</h6>
+                    <div class="position-relative d-flex justify-content-center align-items-center mb-3" style="width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(var(--accent-purple) @(Model.AktifGorevYuzdesi.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))%, rgba(255,255,255,0.1) 0);">
+                        <div class="position-absolute" style="width: 100px; height: 100px; background: rgba(20,20,30,1); border-radius: 50%;"></div>
+                        <div class="position-relative" style="z-index: 1;">
+                            <h3 class="m-0 fw-bold text-white">@Model.ToplamGorev</h3>
+                            <small class="text-white-50">Toplam</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

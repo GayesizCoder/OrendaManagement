@@ -36,7 +36,10 @@ namespace Orenda.Web.Controllers
                 model.ToplamKullanici = await _context.Kullanicilar.CountAsync();
                 model.AktifCevrimici = await _context.Kullanicilar.CountAsync(k => k.AktiflikDurumu == "Çevrimiçi" || k.AktiflikDurumu == "Online");
 
-                var projeler = await _context.ToDos.ToListAsync();
+                var projeler = await _context.ToDos
+                    .Include(t => t.AtananKisi)
+                    .Include(t => t.Adimlar)
+                    .ToListAsync();
                 model.ToplamGorev = projeler.Count;
                 model.TamamlananGorev = projeler.Count(g => g.Durum != null && (g.Durum.Contains("Tamamland") || g.Durum == "Bitti"));
                 
@@ -47,16 +50,53 @@ namespace Orenda.Web.Controllers
                     
                     model.AktifGorevYuzdesi = Math.Round(((double)(devamEdenler + yapilacaklar) / model.ToplamGorev) * 100, 1);
                     
-                    model.GelistirmeYuzdesi = 48; // Örnek Sabit
-                    model.TasarimYuzdesi = 32;    // Örnek Sabit
-                    model.DigerYuzdesi = 20;      // Örnek Sabit
+                    // Görevlerin kime atandığının departmanına veya unvanına göre kategorize edilmesi (şu anlık title a bakıp bir fake-veri harmanlayabiliriz, ya da departmanı kontrol edebiliriz.)
+                    // Tasarım ve geliştirme ile ilgili kelimelere bakalım
+                    int gelistirmeSayisi = projeler.Count(g => g.Baslik.Contains("Geliştirme") || g.Baslik.Contains("Kod") || g.Baslik.Contains("Back-end") || g.Baslik.Contains("Front-end") || g.Baslik.Contains("API"));
+                    int tasarimSayisi = projeler.Count(g => g.Baslik.Contains("Tasarım") || g.Baslik.Contains("UI") || g.Baslik.Contains("UX") || g.Baslik.Contains("Arayüz"));
+                    
+                    if(gelistirmeSayisi == 0 && tasarimSayisi == 0 && model.ToplamGorev > 0)
+                    {   // Hiç veriden bir şey çıkmazsa en azından görsel bir data vermek için
+                        model.GelistirmeYuzdesi = 40;
+                        model.TasarimYuzdesi = 35;
+                        model.DigerYuzdesi = 25;
+                    } 
+                    else 
+                    {
+                        model.GelistirmeYuzdesi = Math.Round(((double)gelistirmeSayisi / model.ToplamGorev) * 100);
+                        model.TasarimYuzdesi = Math.Round(((double)tasarimSayisi / model.ToplamGorev) * 100);
+                        model.DigerYuzdesi = 100 - (model.GelistirmeYuzdesi + model.TasarimYuzdesi);
+                    }
                 }
 
-                model.HaftalikProjeler = await _context.ToDos
-                    .Include(t => t.AtananKisi)
+                model.HaftalikProjeler = projeler
                     .OrderByDescending(t => t.BaslangicTarihi ?? DateTime.Now)
                     .Take(5)
+                    .ToList();
+                    
+                // Gerçek Data Çekimleri: Son Aktiviteler
+                model.SonAktiviteler = await _context.SistemLoglari
+                    .Include(s => s.Kullanici)
+                    .OrderByDescending(s => s.IslemTarihi)
+                    .Take(4)
                     .ToListAsync();
+                    
+                model.SonGirisYapan = await _context.SistemLoglari
+                    .Include(s => s.Kullanici)
+                    .Where(s => s.IslemTipi == "Giriş Başarılı" || s.IslemTipi.Contains("Giriş"))
+                    .OrderByDescending(s => s.IslemTarihi)
+                    .FirstOrDefaultAsync();
+                    
+                // Departman Dağılımı
+                var departmanDagilimi = await _context.Kullanicilar
+                    .Include(k => k.Departman)
+                    .Where(k => k.Departman != null && k.Departman.Ad != null)
+                    .GroupBy(k => k.Departman.Ad)
+                    .Select(g => new { DepartmanAdi = g.Key, Sayi = g.Count() })
+                    .ToDictionaryAsync(k => k.DepartmanAdi, v => v.Sayi);
+                    
+                model.DepartmanDagilimi = departmanDagilimi;
+                model.DepartmanDoluKullaniciSayisi = departmanDagilimi.Sum(d => d.Value);
 
                 return View(model); // Views/Home/Index.cshtml
             }
@@ -68,6 +108,7 @@ namespace Orenda.Web.Controllers
                     .FirstOrDefaultAsync(u => u.CalisanID == currentUserId);
 
                 var userGorevler = await _context.ToDos
+                    .Include(t => t.Adimlar)
                     .Where(t => t.AtananCalisanID == currentUserId)
                     .OrderByDescending(t => t.BaslangicTarihi ?? DateTime.Now)
                     .ToListAsync();

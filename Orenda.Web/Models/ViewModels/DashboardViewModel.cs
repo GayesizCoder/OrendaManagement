@@ -19,5 +19,14 @@ namespace Orenda.Web.Models.ViewModels
         public double DigerYuzdesi { get; set; }
 
         public List<ToDo> HaftalikProjeler { get; set; } = new List<ToDo>();
+
+        // Yeni eklenen gerçek veriler
+        public List<SistemLog> SonAktiviteler { get; set; } = new List<SistemLog>();
+        public Dictionary<string, int> DepartmanDagilimi { get; set; } = new Dictionary<string, int>();
+        
+        public SistemLog? SonGirisYapan { get; set; }
+        
+        // Departman Dağılım Toplamı
+        public int DepartmanDoluKullaniciSayisi { get; set; }
     }
 }

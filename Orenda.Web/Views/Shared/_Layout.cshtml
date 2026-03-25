@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
@@ -25,77 +25,144 @@
             background: rgba(255, 255, 255, 0.1);
             transform: translateX(5px);
         }
+
+        /* Sidebar Collapse Styles */
+        .sidebar {
+            transition: all 0.3s ease;
+            width: 260px;
+        }
+        .sidebar.collapsed {
+            width: 80px !important;
+            min-width: 80px !important;
+        }
+        .sidebar.collapsed .sidebar-text, 
+        .sidebar.collapsed .user-profile .flex-grow-1,
+        .sidebar.collapsed .logo-icon {
+            display: none !important;
+        }
+        .sidebar.collapsed #sidebarToggle {
+            position: static !important;
+            margin: 0 auto !important;
+            display: block;
+        }
+        .sidebar.collapsed .nav-link {
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin: 0 auto 10px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .sidebar.collapsed .nav-link i {
+            margin: 0 !important;
+            font-size: 1.2rem;
+        }
+        .sidebar.collapsed .logo-container {
+            justify-content: center !important;
+            padding-right: 0 !important;
+        }
+        .sidebar.collapsed .user-profile {
+            justify-content: center !important;
+        }
+        .sidebar.collapsed .user-profile img {
+            margin: 0 !important;
+        }
+
+        .main-content {
+            transition: all 0.3s ease;
+            margin-left: 280px;
+        }
+        .main-content.expanded {
+            margin-left: 100px !important;
+        }
     </style>
 </head>
 <body>
     <div class="d-flex">
         <!-- Sidebar with Glassmorphism -->
-        <nav class="sidebar glass-panel m-3" style="min-width: 260px; height: calc(100vh - 2rem); position: fixed; z-index: 1000;">
-            <div class="p-4 d-flex flex-column h-100">
-                <div class="d-flex align-items-center mb-5">
-                    <div class="bg-purple text-white rounded d-flex align-items-center justify-content-center me-3" style="width: 35px; height: 35px; background: var(--accent-purple); box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);">
+        <nav id="sidebar" class="sidebar glass-panel m-3" style="height: calc(100vh - 2rem); position: fixed; z-index: 1000;">
+            <div class="p-3 d-flex flex-column h-100">
+                <div class="d-flex align-items-center mb-5 logo-container position-relative">
+                    <div class="logo-icon bg-purple text-white rounded d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px; background: var(--accent-purple); box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);">
                         <i class="bi bi-layers-fill"></i>
                     </div>
-                    <h4 class="fw-bold mb-0 text-white" style="letter-spacing: 1px;">Orenda</h4>
+                    <h4 class="fw-bold mb-0 text-white sidebar-text" style="letter-spacing: 1px;">Orenda</h4>
+                    <button id="sidebarToggle" class="btn btn-sm btn-link text-white-50 position-absolute end-0 p-0 m-0">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
                 </div>
 
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
+                <ul class="nav nav-pills flex-column mb-auto overflow-hidden">
+                    <li class="nav-item" title="Dashboard">
                         <a asp-controller="Home" asp-action="Index"
                            class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "bg-purple active" : "")">
-                            <i class="bi bi-grid-fill me-2"></i> Dashboard
+                            <i class="bi bi-grid-fill me-3"></i> <span class="sidebar-text">Dashboard</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" title="Görevler">
                         <a asp-controller="ToDo" asp-action="Index"
                            class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ToDo" ? "bg-purple active" : "")">
-                            <i class="bi bi-kanban me-2"></i> Görevler
+                            <i class="bi bi-kanban me-3"></i> <span class="sidebar-text">Görevler</span>
+                        </a>
+                    </li>
+                    <li class="nav-item border-bottom border-secondary pb-2 mb-2" title="Orenda Life">
+                        <a asp-controller="Life" asp-action="Index"
+                           class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Life" ? "bg-purple active" : "")">
+                            <i class="bi bi-heart-pulse-fill text-danger me-3"></i> <span class="sidebar-text">Orenda Life</span>
                         </a>
                     </li>
                     @if (User.IsInRole("Admin"))
                     {
-                        <li class="nav-item">
-                            <a asp-controller="Team" asp-action="Index" class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Team" ? "active-custom" : "")">
-                                <i class="bi bi-people me-2"></i> Ekip Yönetimi
+                        <li class="nav-item" title="Ekip Yönetimi">
+                            <a asp-controller="Team" asp-action="Index" class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Team" ? "bg-purple active" : "")">
+                                <i class="bi bi-people me-3"></i> <span class="sidebar-text">Ekip Yönetimi</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a asp-controller="Log" asp-action="Index" class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Log" ? "active-custom" : "")">
-                                <i class="bi bi-journal-text me-2"></i> Sistem Logları
+                        <li class="nav-item" title="Cihaz Yönetimi">
+                            <a asp-controller="Device" asp-action="Index" class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Device" ? "bg-purple active" : "")">
+                                <i class="bi bi-smartwatch me-3"></i> <span class="sidebar-text">Cihaz Yönetimi</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" title="Sistem Logları">
+                            <a asp-controller="Log" asp-action="Index" class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Log" ? "bg-purple active" : "")">
+                                <i class="bi bi-journal-text me-3"></i> <span class="sidebar-text">Sistem Logları</span>
                             </a>
                         </li>
                     }
                     else
                     {
-                        <li class="nav-item">
+                        <li class="nav-item" title="Takımım">
                             <a href="#" class="nav-link text-white-50">
-                                <i class="bi bi-people me-2"></i> Takımım
+                                <i class="bi bi-people me-3"></i> <span class="sidebar-text">Takımım</span>
                             </a>
                         </li>
                     }
                 </ul>
 
                 <div class="user-profile mt-auto pt-3 border-top border-secondary d-flex align-items-center">
-                    <img src="https://via.placeholder.com/40" class="rounded-circle me-3 border border-2" style="border-color: var(--accent-purple) !important;">
-                    <div class="flex-grow-1">
+                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2 border border-2" style="border-color: var(--accent-purple) !important; width:40px; height:40px;">
+                    <div class="flex-grow-1 overflow-hidden">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <strong class="d-block text-white">@User.Identity.Name</strong>
-                            <small class="text-white-50">@(User.IsInRole("Admin") ? "Yönetici" : "Çalışan")</small>
-                            <a asp-controller="Account" asp-action="Logout" class="d-block text-danger small mt-1 text-decoration-none">
+                            <strong class="d-block text-white text-truncate" style="font-size: 0.85rem;">@User.Identity.Name</strong>
+                            <small class="text-white-50 d-block" style="font-size: 0.75rem;">@(User.IsInRole("Admin") ? "Yönetici" : "Çalışan")</small>
+                            <a asp-controller="Account" asp-action="Logout" class="d-block text-danger small mt-1 text-decoration-none" style="font-size: 0.75rem;">
                                 <i class="bi bi-box-arrow-right"></i> Çıkış Yap
                             </a>
                         }
                         else
                         {
-                            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-sm w-100">Giriş Yap</a>
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-sm w-100 sidebar-text">Giriş Yap</a>
                         }
                     </div>
                 </div>
             </div>
         </nav>
 
-        <main role="main" class="flex-grow-1" style="margin-left: 280px; min-height: 100vh;">
+        <main id="mainContent" role="main" class="flex-grow-1 main-content" style="min-height: 100vh;">
             <div class="container-fluid p-4">
                 @RenderBody()
             </div>
@@ -105,6 +172,23 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $('#sidebarToggle').click(function() {
+                $('#sidebar').toggleClass('collapsed');
+                $('#mainContent').toggleClass('expanded');
+            });
+            
+            // Eğer isterseniz tooltip özelliğini ekleyerek kapalı iken üzerine gelindiğinde isimlerini gösterebilirsiniz.
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
+                    boundary: 'window'
+                });
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

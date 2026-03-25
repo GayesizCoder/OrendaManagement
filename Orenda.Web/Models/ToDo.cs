@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Orenda.Web.Models
@@ -26,8 +26,62 @@ namespace Orenda.Web.Models
         
         public DateTime? BaslangicTarihi { get; set; }
 
+        [MaxLength(50)]
+        public string OnayDurumu { get; set; } = "Planlanıyor";
+
+        [MaxLength(500)]
+        public string? OnayNotu { get; set; }
+
         // Navigation Property: Görevin kime ait olduğunu kod içinde kolayca görmek için
         [ForeignKey("AtananCalisanID")]
         public virtual Kullanici? AtananKisi { get; set; }
+
+        public virtual ICollection<GorevAdimi> Adimlar { get; set; } = new List<GorevAdimi>();
+
+        [NotMapped]
+        public double TamamlanmaOrani
+        {
+            get
+            {
+                if (Adimlar == null || !Adimlar.Any())
+                {
+                    return (Durum != null && (Durum.Contains("Tamamland") || Durum == "Bitti" || Durum == "Done")) ? 100 : 0;
+                }
+
+                double totalReallized = 0;
+                double explicitPercentSum = 0;
+                int defaultItemsCount = 0;
+
+                foreach (var adim in Adimlar)
+                {
+                    if (adim.AgirlikYuzdesi.HasValue)
+                    {
+                        explicitPercentSum += adim.AgirlikYuzdesi.Value;
+                        if (adim.TamamlandiMi)
+                            totalReallized += adim.AgirlikYuzdesi.Value;
+                    }
+                    else
+                    {
+                        defaultItemsCount++;
+                    }
+                }
+
+                if (defaultItemsCount > 0)
+                {
+                    double remainingPercent = Math.Max(0, 100 - explicitPercentSum);
+                    double weightPerDefaultItem = remainingPercent / defaultItemsCount;
+
+                    foreach (var adim in Adimlar)
+                    {
+                        if (!adim.AgirlikYuzdesi.HasValue && adim.TamamlandiMi)
+                        {
+                            totalReallized += weightPerDefaultItem;
+                        }
+                    }
+                }
+
+                return Math.Min(100, Math.Max(0, Math.Round(totalReallized, 2)));
+            }
+        }
     }
 }

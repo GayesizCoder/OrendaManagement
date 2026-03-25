@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Orenda.Web.Models;
 
 namespace Orenda.Web.Data
@@ -14,5 +14,7 @@ namespace Orenda.Web.Data
         public DbSet<Departman> Departmanlar { get; set; }
         public DbSet<Takim> Takimlar { get; set; }
         public DbSet<SistemLog> SistemLoglari { get; set; }
+        public DbSet<SaglikVerisi> SaglikVerileri { get; set; }
+        public DbSet<GorevAdimi> GorevAdimlari { get; set; }
     }
 }

@@ -1,0 +1,189 @@
+@model IEnumerable<Orenda.Web.Models.SaglikVerisi>
+@{
+    ViewData["Title"] = "Orenda Life";
+}
+
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-0">Orenda <span class="text-danger">Life</span> <i class="bi bi-smartwatch ms-2"></i></h2>
+            <p class="text-muted">Günlük Sağlık ve Aktivite İstatistiklerin</p>
+        </div>
+        <!-- Mock Data Generator Form -->
+        <form asp-action="GuncelleTestVerisi" method="post">
+            <button type="submit" class="btn btn-outline-danger shadow-sm">
+                <i class="bi bi-arrow-repeat me-2"></i> Saat Verisi Simüle Et
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Kalp Atışı Kartı -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card glass-panel border-0 h-100 p-4 position-relative overflow-hidden">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-secondary mb-0">Anlık Nabız</h5>
+                <i class="bi bi-heart-pulse-fill text-danger fs-3 heartbeat-animation"></i>
+            </div>
+            <div class="mt-auto text-center">
+                <h1 class="display-3 fw-bolder mb-0 text-dark">
+                    @ViewBag.CurrentHeartRate <span class="fs-4 text-muted fw-normal">bpm</span>
+                </h1>
+                @if (ViewBag.CurrentHeartRate > 100)
+                {
+                    <p class="text-warning mt-2 mb-0"><i class="bi bi-exclamation-triangle-fill me-1"></i> Yüksek nabız!</p>
+                }
+                else if (ViewBag.CurrentHeartRate > 0)
+                {
+                   <p class="text-success mt-2 mb-0"><i class="bi bi-check-circle-fill me-1"></i> Normal seviye</p> 
+                }
+                else
+                {
+                   <p class="text-muted mt-2 mb-0"><i class="bi bi-info-circle me-1"></i> Veri bekleniyor</p> 
+                }
+            </div>
+            <!-- Dekoratif arka plan çemberi -->
+            <div class="position-absolute rounded-circle bg-danger" style="width: 150px; height: 150px; opacity: 0.05; top: -30px; right: -30px;"></div>
+        </div>
+    </div>
+
+    <!-- Adım Sayar Kartı -->
+    <div class="col-md-6 col-lg-8">
+        <div class="card glass-panel border-0 h-100 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold text-secondary mb-0">Günlük Adım</h5>
+                <i class="bi bi-person-walking text-primary fs-3"></i>
+            </div>
+            
+            <div class="row align-items-center mb-3">
+                <div class="col-auto">
+                    <h2 class="fw-bold mb-0">@ViewBag.TotalSteps</h2>
+                    <small class="text-muted">/ @ViewBag.StepGoal hedef</small>
+                </div>
+                <div class="col">
+                    @{
+                        var progress = (ViewBag.TotalSteps * 100.0) / ViewBag.StepGoal;
+                        if (progress > 100) progress = 100;
+                        var progressColor = progress >= 100 ? "bg-success" : (progress > 50 ? "bg-primary" : "bg-warning");
+                    }
+                    <div class="progress" style="height: 15px; border-radius: 10px; background-color: rgba(0,0,0,0.05);">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated @progressColor" 
+                             role="progressbar" 
+                             style="width: @progress%" 
+                             aria-valuenow="@progress" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-muted small">Günlük hedefine ulaşmak için yürüyüş yapmayı ihmal etme. Smartwatch üzerinden veriler düzenli olarak senkronize edilmektedir.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Grafik Kartı -->
+    <div class="col-12">
+        <div class="card glass-panel border-0 p-4">
+            <h5 class="fw-bold text-secondary mb-4">Günlük Nabız Geçmişi</h5>
+            <div style="height: 300px;">
+                <canvas id="heartRateChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Server'dan C# ViewBag listelerini JS array'lerine çevir
+            var labels = @Html.Raw(Json.Serialize(ViewBag.HeartRateLabels));
+            var dataPoints = @Html.Raw(Json.Serialize(ViewBag.HeartRateHistory));
+
+            // Eğer hiç veri yoksa placeholder veriler oluştur
+            if (!dataPoints || dataPoints.length === 0) {
+                labels = ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00'];
+                dataPoints = [0, 0, 0, 0, 0, 0];
+            }
+
+            var ctx = document.getElementById('heartRateChart').getContext('2d');
+            
+            // Gradient ayarları
+            var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(220, 53, 69, 0.5)'); // Bootstrap danger color
+            gradient.addColorStop(1, 'rgba(220, 53, 69, 0.0)');
+
+            var heartRateChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Nabız (bpm)',
+                        data: dataPoints,
+                        backgroundColor: gradient,
+                        borderColor: '#dc3545',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#dc3545',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4 // Yumuşak kıvrımlar (bezier eğrisi)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            padding: 12,
+                            titleFont: { size: 14, family: "'Inter', sans-serif" },
+                            bodyFont: { size: 14, family: "'Inter', sans-serif" },
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + ' bpm';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 50,
+                            max: 150,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)',
+                                drawBorder: false
+                            },
+                            ticks: { font: { family: "'Inter', sans-serif" } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: "'Inter', sans-serif" } }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .heartbeat-animation {
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @@keyframes heartbeat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.3); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.3); }
+            60% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+}

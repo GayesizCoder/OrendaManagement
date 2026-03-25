@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orenda.Web.Data;
 
@@ -11,9 +12,11 @@ using Orenda.Web.Data;
 namespace Orenda.Web.Migrations
 {
     [DbContext(typeof(OrendaDbContext))]
-    partial class OrendaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260310142017_AddSaglikVerisiVeTakimlar")]
+    partial class AddSaglikVerisiVeTakimlar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,35 +46,6 @@ namespace Orenda.Web.Migrations
                     b.HasKey("DepartmanID");
 
                     b.ToTable("Departmanlar", "gayemkaratas_OrendaAdmin");
-                });
-
-            modelBuilder.Entity("Orenda.Web.Models.GorevAdimi", b =>
-                {
-                    b.Property<int>("AdimID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdimID"));
-
-                    b.Property<int?>("AgirlikYuzdesi")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Baslik")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<int>("GorevNo")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("TamamlandiMi")
-                        .HasColumnType("bit");
-
-                    b.HasKey("AdimID");
-
-                    b.HasIndex("GorevNo");
-
-                    b.ToTable("GorevAdimlari", "gayemkaratas_OrendaAdmin");
                 });
 
             modelBuilder.Entity("Orenda.Web.Models.Kullanici", b =>
@@ -276,31 +250,11 @@ namespace Orenda.Web.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("OnayDurumu")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("OnayNotu")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.HasKey("GorevNo");
 
                     b.HasIndex("AtananCalisanID");
 
                     b.ToTable("ToDo", "gayemkaratas_OrendaAdmin");
-                });
-
-            modelBuilder.Entity("Orenda.Web.Models.GorevAdimi", b =>
-                {
-                    b.HasOne("Orenda.Web.Models.ToDo", "ToDoTutucu")
-                        .WithMany("Adimlar")
-                        .HasForeignKey("GorevNo")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ToDoTutucu");
                 });
 
             modelBuilder.Entity("Orenda.Web.Models.Kullanici", b =>
@@ -375,11 +329,6 @@ namespace Orenda.Web.Migrations
             modelBuilder.Entity("Orenda.Web.Models.Takim", b =>
                 {
                     b.Navigation("Uyeler");
-                });
-
-            modelBuilder.Entity("Orenda.Web.Models.ToDo", b =>
-                {
-                    b.Navigation("Adimlar");
                 });
 #pragma warning restore 612, 618
         }

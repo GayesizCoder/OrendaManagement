@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Orenda.Web.Models.ToDo>
+@model IEnumerable<Orenda.Web.Models.ToDo>
 @{
     ViewData["Title"] = "Görev ve Proje Yönetimi";
     bool isAdmin = User.IsInRole("Admin");
@@ -17,12 +17,9 @@
             </div>
         </div>
         
-        @if (isAdmin)
-        {
-            <button class="btn btn-purple rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#yeniGorevModal">
-                <i class="bi bi-plus-lg me-2"></i> Yeni Görev
-            </button>
-        }
+        <button class="btn btn-purple rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#yeniGorevModal">
+            <i class="bi bi-plus-lg me-2"></i> Yeni Görev
+        </button>
     </div>
 
     <!-- Kanban Grid -->
@@ -83,53 +80,69 @@
 
 </div>
 
-<!-- Yeni Görev Modal (Sadece Admin) -->
-@if (isAdmin)
-{
-    <div class="modal fade" id="yeniGorevModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content glass-panel" style="background: rgba(20, 20, 35, 0.95); border: 1px solid rgba(255,255,255,0.1);">
-                <div class="modal-header border-secondary border-opacity-25">
-                    <h5 class="modal-title text-white fw-bold"><i class="bi bi-file-earmark-plus me-2 text-purple"></i> Yeni Görev Ata</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <form asp-action="Create" method="post">
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label text-white-50 small mb-1">Görev Başlığı <span class="text-danger">*</span></label>
-                            <input type="text" name="Baslik" class="form-control bg-dark text-white border-secondary" required placeholder="Projeyi özetleyen kısa bir başlık...">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-white-50 small mb-1">Açıklama / Detaylar</label>
-                            <textarea name="Aciklama" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="Görev ile ilgili teknik notlar veya detaylar..."></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-white-50 small mb-1">Atanacak Personel <span class="text-danger">*</span></label>
-                            <select name="AtananCalisanID" class="form-select bg-dark text-white border-secondary" asp-items="ViewBag.Calisanlar" required>
+<!-- Yeni Görev Modal -->
+<div class="modal fade" id="yeniGorevModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-panel" style="background: rgba(20, 20, 35, 0.95); border: 1px solid rgba(255,255,255,0.1);">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title text-white fw-bold"><i class="bi bi-file-earmark-plus me-2 text-purple"></i> Yeni Görev Ata</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="Create" method="post">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small mb-1">Görev Başlığı <span class="text-danger">*</span></label>
+                        <input type="text" name="Baslik" class="form-control bg-dark text-white border-secondary" required placeholder="Projeyi özetleyen kısa bir başlık...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small mb-1">Açıklama / Detaylar</label>
+                        <textarea name="Aciklama" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="Görev ile ilgili teknik notlar veya detaylar..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small mb-1">Atanacak Personel <span class="text-danger">*</span></label>
+                        <select name="AtananCalisanID" class="form-select bg-dark text-white border-secondary" asp-items="ViewBag.Calisanlar" required>
+                            @if (!isAdmin)
+                            {
+                                @* Non-admin users can only assign to themselves *@
+                            }
+                            else
+                            {
                                 <option value="">Bir çalışan seçin...</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-white-50 small mb-1">Durumu</label>
+                            <select name="Durum" class="form-select bg-dark text-white border-secondary">
+                                <option value="Yapılacak">Yapılacak</option>
+                                <option value="Devam Ediyor">Devam Ediyor</option>
+                                <option value="Tamamlandı">Tamamlandı</option>
                             </select>
                         </div>
-                        <div class="row">
-                            <div class="col-6 mb-3">
-                                <label class="form-label text-white-50 small mb-1">Durumu</label>
-                                <select name="Durum" class="form-select bg-dark text-white border-secondary">
-                                    <option value="Yapılacak">Yapılacak</option>
-                                    <option value="Devam Ediyor">Devam Ediyor</option>
-                                    <option value="Tamamlandı">Tamamlandı</option>
-                                </select>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <label class="form-label text-white-50 small mb-1">Bitiş Tarihi / Deadline</label>
-                                <input type="date" name="BitisTarihi" class="form-control bg-dark text-white border-secondary">
-                            </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-white-50 small mb-1">Bitiş Tarihi / Deadline</label>
+                            <input type="date" name="BitisTarihi" class="form-control bg-dark text-white border-secondary">
                         </div>
                     </div>
-                    <div class="modal-footer border-secondary border-opacity-25">
-                        <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">İptal</button>
-                        <button type="submit" class="btn btn-purple rounded-pill px-4">Görevi Oluştur</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer border-secondary border-opacity-25">
+                    <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-purple rounded-pill px-4">Görevi Oluştur</button>
+                </div>
+            </form>
         </div>
     </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('create')) {
+                var myModal = new bootstrap.Modal(document.getElementById('yeniGorevModal'));
+                myModal.show();
+            }
+        });
+    </script>
 }
+</div>

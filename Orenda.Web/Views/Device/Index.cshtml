@@ -1,0 +1,171 @@
+@model IEnumerable<Orenda.Web.Models.Kullanici>
+@{
+    ViewData["Title"] = "Cihaz ve Saat Yönetimi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-white mb-0">Cihaz / Saat Yönetimi</h2>
+        <p class="text-white-50">Personellere akıllı saat (Wear OS) veya NFC kart atamaları yapın.</p>
+    </div>
+</div>
+
+<div class="glass-panel p-4">
+    <div class="table-responsive">
+        <table class="table table-dark table-hover mb-0" style="background: transparent;">
+            <thead>
+                <tr style="border-bottom-color: rgba(255,255,255,0.1);">
+                    <th class="text-white-50 fw-normal">Ad Soyad</th>
+                    <th class="text-white-50 fw-normal">Departman</th>
+                    <th class="text-white-50 fw-normal">Kayıtlı Cihaz Kimliği (NFC/Android ID)</th>
+                    <th class="text-white-50 fw-normal text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr style="border-bottom-color: rgba(255,255,255,0.05);">
+                        <td class="align-middle fw-bold">
+                            @user.Ad @user.Soyad
+                            <br/><small class="text-white-50 fw-normal">@user.Eposta</small>
+                        </td>
+                        <td class="align-middle">
+                            @if(user.DepartmanID != null) {
+                                <div class="small fw-bold text-white">@user.Departman?.Ad</div>
+                            } else {
+                                <span class="text-warning small fst-italic">Atanamadı</span>
+                            }
+                        </td>
+                        <td class="align-middle">
+                            @if(!string.IsNullOrEmpty(user.RfidID)) {
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-2">
+                                    <i class="bi bi-link-45deg me-1"></i> @user.RfidID
+                                </span>
+                            } else {
+                                <span class="badge bg-secondary bg-opacity-10 text-white-50 border border-secondary rounded-pill px-3 py-2">
+                                    <i class="bi bi-slash-circle me-1"></i> Cihaz Yok
+                                </span>
+                            }
+                        </td>
+                        <td class="align-middle text-end">
+                            @if(string.IsNullOrEmpty(user.RfidID)) {
+                                <div class="dropdown d-inline-block">
+                                    <button class="btn btn-sm btn-outline-info rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-robot"></i> Tanımla
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-dark shadow border-secondary" style="font-size: 0.85rem;">
+                                        <li>
+                                            <a class="dropdown-item nfc-btn py-2" href="#" 
+                                               data-bs-toggle="modal" 
+                                               data-bs-target="#nfcModal"
+                                               data-id="@user.CalisanID"
+                                               data-name="@user.Ad @user.Soyad"
+                                               data-type="watch">
+                                                <i class="bi bi-smartwatch text-info me-2"></i> Akıllı Saat
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item nfc-btn py-2" href="#" 
+                                               data-bs-toggle="modal" 
+                                               data-bs-target="#nfcModal"
+                                               data-id="@user.CalisanID"
+                                               data-name="@user.Ad @user.Soyad"
+                                               data-type="card">
+                                                <i class="bi bi-credit-card-2-front text-primary me-2"></i> NFC Kart
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            } else {
+                                <form asp-controller="Device" asp-action="RemoveDevice" method="post" class="d-inline">
+                                    <input type="hidden" name="calisanId" value="@user.CalisanID" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="return confirm('@user.Ad kullanıcısının cihaz bağlantısını kaldırmak istediğinize emin misiniz?');">
+                                        <i class="bi bi-trash"></i> Bağlantıyı Kes
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- NFC Modal -->
+<div class="modal fade" id="nfcModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-panel" style="border: 1px solid rgba(255,255,255,0.1);">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title text-white fw-bold" id="nfcModalTitle"><i class="bi bi-broadcast"></i> Yeni Cihaz Atama</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" id="nfcCloseBtn"></button>
+            </div>
+            <div class="modal-body text-center py-5">
+                <input type="hidden" id="nfcCalisanID" />
+                <h6 class="text-white-50 mb-4"><span id="nfcNameText" class="text-white fw-bold"></span> için cihaz bekleniyor...</h6>
+                
+                <div class="spinner-grow text-warning" role="status" style="width: 3rem; height: 3rem; animation-duration: 1.5s;">
+                    <span class="visually-hidden">Dinleniyor...</span>
+                </div>
+                
+                <p class="text-warning mt-4 fw-bold" id="nfcStatusText">Lütfen saati ESP32 terminaline okutun veya saatte 'Kapıyı Aç' düğmesine basın.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            var checkInterval;
+
+            $('.nfc-btn').click(function() {
+                var btn = $(this);
+                var calisanId = btn.data('id');
+                var type = btn.data('type'); // 'watch' veya 'card'
+                
+                $('#nfcCalisanID').val(calisanId);
+                $('#nfcNameText').text(btn.data('name'));
+                
+                var titleText = type === 'watch' ? '<i class="bi bi-smartwatch text-info"></i> Akıllı Saat Atama' : '<i class="bi bi-credit-card-2-front text-primary"></i> NFC Kart Atama';
+                var instructionText = type === 'watch' 
+                    ? 'Lütfen saati ESP32 terminaline yaklaştırıp uygulamadan giriş yapın veya NFC ile okutun.' 
+                    : 'Lütfen NFC kartı ESP32 terminaline okutun.';
+
+                $('#nfcModalTitle').html(titleText);
+                
+                $('#nfcStatusText')
+                    .text(instructionText)
+                    .removeClass('text-success text-danger')
+                    .addClass('text-warning');
+                $('.spinner-grow').show();
+
+                // Backend'e "Bu ID için beklemeye başla" komutu yolla
+                // TODO: İleride type (watch/card) bilgisini de backend'e gönderebiliriz. Parametre olarak eklenebilir.
+                $.post('/api/Esp32/start-registration/' + calisanId, function(res) {
+                    
+                    // Her 2 saniyede bir ESP32 okudu mu diye kontrol et
+                    checkInterval = setInterval(function() {
+                        $.get('/api/Esp32/check-registration', function(checkRes) {
+                            if(checkRes.isComplete === true) {
+                                clearInterval(checkInterval);
+                                $('.spinner-grow').hide();
+                                $('#nfcStatusText').text('Cihaz Başarıyla Atandı! (Kayıt Tamam)').removeClass('text-warning').addClass('text-success');
+                                
+                                setTimeout(function(){
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }, 2000);
+
+                });
+            });
+
+            // Modal kapanırsa intervali temizle
+            $('#nfcModal').on('hidden.bs.modal', function () {
+                if(checkInterval) clearInterval(checkInterval);
+            });
+        });
+    </script>
+}
