@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Orenda.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d915d98c90699e920e5dc3f9df5482bf81a720a6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b37ac955e36cb1343441365f35e702c3316ae83b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Orenda.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Orenda.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
