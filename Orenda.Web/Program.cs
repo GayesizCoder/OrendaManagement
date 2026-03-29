@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Orenda.Web.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://*:5046");
 // Veritaban� ba�lant�s�n� projeye tan�t�r
 builder.Services.AddDbContext<OrendaDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -31,7 +32,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

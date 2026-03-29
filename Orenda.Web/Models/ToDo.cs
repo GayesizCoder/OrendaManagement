@@ -13,7 +13,7 @@ namespace Orenda.Web.Models
 
         [Required(ErrorMessage = "Başlık boş bırakılamaz")]
         [MaxLength(150)]
-        public string Baslik { get; set; }
+        public string Baslik { get; set; } = string.Empty;
 
         public string? Aciklama { get; set; }
 

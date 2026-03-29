@@ -16,13 +16,13 @@ namespace Orenda.Web.Models
         public virtual Departman? Departman { get; set; }
 
         [Required(ErrorMessage = "Takım adı zorunludur")]
-        public string Ad { get; set; }
+        public string Ad { get; set; } = string.Empty;
 
         public string? Aciklama { get; set; }
 
         public DateTime OlusturmaTarihi { get; set; } = DateTime.Now;
 
         // Navigation Property: A team can have many employees
-        public virtual ICollection<Kullanici> Uyeler { get; set; }
+        public virtual ICollection<Kullanici> Uyeler { get; set; } = new List<Kullanici>();
     }
 }

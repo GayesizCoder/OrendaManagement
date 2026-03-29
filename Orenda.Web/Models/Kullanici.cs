@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Orenda.Web.Models
@@ -13,11 +13,11 @@ namespace Orenda.Web.Models
 
         [Required(ErrorMessage = "Ad zorunludur")]
         [MaxLength(50)]
-        public string Ad { get; set; }
+        public string Ad { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Soyad zorunludur")]
         [MaxLength(50)]
-        public string Soyad { get; set; }
+        public string Soyad { get; set; } = string.Empty;
 
         [MaxLength(100)]
         public string? Eposta { get; set; } // SQL'de NULL olabilir
@@ -27,12 +27,12 @@ namespace Orenda.Web.Models
 
         [Required(ErrorMessage = "Kullanıcı adı zorunludur")]
         [MaxLength(100)]
-        public string KullaniciAdi { get; set; }
+        public string KullaniciAdi { get; set; } = string.Empty;
 
         [Column("SifreHash")] // SQL'deki gerçek kolon ismi
         [Required(ErrorMessage = "Şifre zorunludur")]
         [MaxLength(255)]
-        public string Sifre { get; set; }
+        public string Sifre { get; set; } = string.Empty;
 
         [MaxLength(50)]
         public string? RfidID { get; set; }

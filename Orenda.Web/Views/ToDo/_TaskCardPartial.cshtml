@@ -150,7 +150,7 @@
                 <small class="text-white-50" style="font-size: 0.75rem;">
                     @if(Model.BitisTarihi.HasValue)
                     {
-                        var isLate = Model.BitisTarihi.Value < DateTime.Now && !Model.Durum.Contains("Tamamland");
+                        var isLate = Model.BitisTarihi < DateTime.Now && !Model.Durum.Contains("Tamamland");
                         <span class="@(isLate ? "text-danger" : "")">
                             <i class="bi bi-clock"></i> @Model.BitisTarihi.Value.ToString("dd MMM")
                         </span>

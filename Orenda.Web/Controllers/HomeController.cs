@@ -91,7 +91,7 @@ namespace Orenda.Web.Controllers
                 var departmanDagilimi = await _context.Kullanicilar
                     .Include(k => k.Departman)
                     .Where(k => k.Departman != null && k.Departman.Ad != null)
-                    .GroupBy(k => k.Departman.Ad)
+                    .GroupBy(k => k.Departman!.Ad)
                     .Select(g => new { DepartmanAdi = g.Key, Sayi = g.Count() })
                     .ToDictionaryAsync(k => k.DepartmanAdi, v => v.Sayi);
                     
@@ -123,7 +123,7 @@ namespace Orenda.Web.Controllers
 
                 var empModel = new EmployeeDashboardViewModel
                 {
-                    KullaniciBilgisi = currUser,
+                    KullaniciBilgisi = currUser!,
                     ToplamGorev = userGorevler.Count,
                     TamamlananGorev = userGorevler.Count(g => g.Durum != null && (g.Durum.Contains("Tamamland") || g.Durum == "Bitti")),
                     DevamEdenGorev = userGorevler.Count(g => g.Durum != null && g.Durum.Contains("Devam")),

@@ -13,7 +13,7 @@ namespace Orenda.Web.Models
 
         [Required(ErrorMessage = "Adım başlığı gereklidir")]
         [MaxLength(150)]
-        public string Baslik { get; set; }
+        public string Baslik { get; set; } = string.Empty;
 
         public bool TamamlandiMi { get; set; } = false;
 
@@ -22,6 +22,6 @@ namespace Orenda.Web.Models
         public int? AgirlikYuzdesi { get; set; }
 
         [ForeignKey("GorevNo")]
-        public virtual ToDo ToDoTutucu { get; set; }
+        public virtual ToDo ToDoTutucu { get; set; } = null!;
     }
 }

@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Orenda.Web.Data;
-using Orenda.Web.Models;
+using Orenda.Web.Services;
+using System.Threading.Tasks;
 
 namespace Orenda.Web.Controllers.Api
 {
@@ -10,14 +8,15 @@ namespace Orenda.Web.Controllers.Api
     public class Esp32Controller : ControllerBase
     {
         private readonly OrendaDbContext _context;
+        private readonly ILogService _logService;
 
         // Basit bir memory-cache yapısı. Admin bir kullanıcı seçtiğinde bu ID'ye atanır.
-        // Gerçek çoklu kullanıcı/yoğun ortamlarda IMemoryCache veya veritabanı logu kullanmak daha güvenlidir.
         private static int? PendingRegistrationEmployeeId = null;
 
-        public Esp32Controller(OrendaDbContext context)
+        public Esp32Controller(OrendaDbContext context, ILogService logService)
         {
             _context = context;
+            _logService = logService;
         }
 
         // ==========================================
@@ -57,7 +56,15 @@ namespace Orenda.Web.Controllers.Api
 
             if (kapiyiAcanKullanici != null)
             {
-                // Yetkili biriyse (Örn: aktiflik durumu veya rolü kontrol edilebilir)
+                // Kullanıcı giriş yapmış kabul ediliyor
+                kapiyiAcanKullanici.AktiflikDurumu = "Çevrimiçi";
+                kapiyiAcanKullanici.SonGirisIP = HttpContext.Connection.RemoteIpAddress?.ToString();
+                
+                await _context.SaveChangesAsync();
+                
+                // Sisteme giriş logu düş
+                await _logService.LogAsync(kapiyiAcanKullanici.CalisanID, "Fiziksel Giriş Yapıldı", "ESP32/Saat okutarak sisteme giriş yapıldı (Kapı açıldı).");
+
                 return Ok(new { status = "AC", ad = kapiyiAcanKullanici.Ad, soyad = kapiyiAcanKullanici.Soyad });
             }
 
@@ -93,6 +100,6 @@ namespace Orenda.Web.Controllers.Api
 
     public class Esp32ScanDto
     {
-        public string Uid { get; set; }
+        public string Uid { get; set; } = string.Empty;
     }
 }

@@ -108,7 +108,7 @@ namespace Orenda.Web.Controllers.Api
     // API'nin beklediği JSON yapılarını temsil eden basit sınıflar (DTOs)
     public class HealthDataDto
     {
-        public string DeviceID { get; set; }
+        public string DeviceID { get; set; } = string.Empty;
         public int Nabiz { get; set; }
         public int AdimSayisi { get; set; }
         public DateTime? TarihSaat { get; set; }

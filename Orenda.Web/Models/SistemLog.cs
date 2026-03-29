@@ -14,18 +14,18 @@ namespace Orenda.Web.Models
 
         [Required]
         [MaxLength(100)]
-        public string IslemTipi { get; set; } // Örn: "Görev Eklendi", "Sisteme Giriş"
+        public string IslemTipi { get; set; } = string.Empty; // Örn: "Görev Eklendi", "Sisteme Giriş"
 
         [MaxLength(500)]
-        public string IslemDetayi { get; set; } // Örn: "Yeni bir yazılım görevi oluşturuldu."
+        public string IslemDetayi { get; set; } = string.Empty; // Örn: "Yeni bir yazılım görevi oluşturuldu."
         
         [MaxLength(50)]
-        public string IPAdresi { get; set; } // Logu tetikleyen network IP adresi
+        public string IPAdresi { get; set; } = string.Empty; // Logu tetikleyen network IP adresi
 
         public DateTime IslemTarihi { get; set; } = DateTime.Now;
 
         // Navigation Property: Olayı gerçekleştiren kişi
         [ForeignKey("KullaniciID")]
-        public virtual Kullanici Kullanici { get; set; }
+        public virtual Kullanici Kullanici { get; set; } = null!;
     }
 }
