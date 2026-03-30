@@ -9,7 +9,7 @@ namespace Orenda.Web.Models
         [Key]
         public int GorevNo { get; set; } // SQL'deki Primary Key
 
-        public int AtananCalisanID { get; set; } // Foreign Key
+        public int? AtananCalisanID { get; set; } // Foreign Key
 
         [Required(ErrorMessage = "Başlık boş bırakılamaz")]
         [MaxLength(150)]
@@ -32,9 +32,14 @@ namespace Orenda.Web.Models
         [MaxLength(500)]
         public string? OnayNotu { get; set; }
 
-        // Navigation Property: Görevin kime ait olduğunu kod içinde kolayca görmek için
+        public int? TakimID { get; set; }
+
+        // Navigation Properties
         [ForeignKey("AtananCalisanID")]
         public virtual Kullanici? AtananKisi { get; set; }
+
+        [ForeignKey("TakimID")]
+        public virtual Takim? Takim { get; set; }
 
         public virtual ICollection<GorevAdimi> Adimlar { get; set; } = new List<GorevAdimi>();
 

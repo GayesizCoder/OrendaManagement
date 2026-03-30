@@ -46,7 +46,7 @@ namespace Orenda.Web.Controllers
                 if (model.ToplamGorev > 0)
                 {
                     int devamEdenler = projeler.Count(g => g.Durum != null && g.Durum.Contains("Devam"));
-                    int yapilacaklar = projeler.Count(g => g.Durum != null && g.Durum.Contains("Yapilacak"));
+                    int yapilacaklar = projeler.Count(g => g.Durum != null && g.Durum.Contains("Yapılacak"));
                     
                     model.AktifGorevYuzdesi = Math.Round(((double)(devamEdenler + yapilacaklar) / model.ToplamGorev) * 100, 1);
                     
@@ -109,7 +109,7 @@ namespace Orenda.Web.Controllers
 
                 var userGorevler = await _context.ToDos
                     .Include(t => t.Adimlar)
-                    .Where(t => t.AtananCalisanID == currentUserId)
+                    .Where(t => t.AtananCalisanID == currentUserId || (currUser != null && currUser.TakimID != null && t.TakimID == currUser.TakimID))
                     .OrderByDescending(t => t.BaslangicTarihi ?? DateTime.Now)
                     .ToListAsync();
 
@@ -127,13 +127,56 @@ namespace Orenda.Web.Controllers
                     ToplamGorev = userGorevler.Count,
                     TamamlananGorev = userGorevler.Count(g => g.Durum != null && (g.Durum.Contains("Tamamland") || g.Durum == "Bitti")),
                     DevamEdenGorev = userGorevler.Count(g => g.Durum != null && g.Durum.Contains("Devam")),
-                    YapilacakGorev = userGorevler.Count(g => g.Durum != null && g.Durum.Contains("Yapilacak")),
+                    YapilacakGorev = userGorevler.Count(g => g.Durum != null && g.Durum.Contains("Yapılacak")),
                     GuncelGorevler = userGorevler.Take(5).ToList(),
                     TakimArkadaslari = teamMembers
                 };
 
                 return View("EmployeeDashboard", empModel);
             }
+        }
+        public async Task<IActionResult> MyTeam()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            int currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
+
+            var currUser = await _context.Kullanicilar
+                .Include(u => u.Takim)
+                .ThenInclude(t => t!.Departman)
+                .FirstOrDefaultAsync(u => u.CalisanID == currentUserId);
+
+            if (currUser == null) return RedirectToAction("Login", "Account");
+
+            var teamMembers = new List<Kullanici>();
+            var teamTasks = new List<ToDo>();
+
+            if (currUser.TakimID != null)
+            {
+                teamMembers = await _context.Kullanicilar
+                    .Where(u => u.TakimID == currUser.TakimID)
+                    .OrderBy(u => u.Ad)
+                    .ToListAsync();
+
+                teamTasks = await _context.ToDos
+                    .Include(t => t.AtananKisi)
+                    .Include(t => t.Adimlar)
+                    .Where(t => t.TakimID == currUser.TakimID)
+                    .OrderByDescending(t => t.BaslangicTarihi ?? DateTime.Now)
+                    .ToListAsync();
+            }
+
+            var model = new EmployeeDashboardViewModel
+            {
+                KullaniciBilgisi = currUser,
+                TakimArkadaslari = teamMembers,
+                GuncelGorevler = teamTasks,
+                ToplamGorev = teamTasks.Count,
+                TamamlananGorev = teamTasks.Count(g => g.Durum != null && (g.Durum.Contains("Tamamland") || g.Durum == "Bitti")),
+                DevamEdenGorev = teamTasks.Count(g => g.Durum != null && g.Durum.Contains("Devam")),
+                YapilacakGorev = teamTasks.Count(g => g.Durum != null && g.Durum.Contains("Yapılacak"))
+            };
+
+            return View(model);
         }
     }
 }

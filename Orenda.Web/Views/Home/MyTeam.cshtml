@@ -1,0 +1,184 @@
+@model Orenda.Web.Models.ViewModels.EmployeeDashboardViewModel
+@{
+    ViewData["Title"] = "Takımım";
+    var userDetails = Model.KullaniciBilgisi;
+}
+
+<style>
+    .team-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    
+    .team-header { grid-column: 1 / 3; }
+    
+    .member-avatar {
+        width: 45px;
+        height: 45px;
+        background: rgba(108, 92, 231, 0.1);
+        border: 1px solid rgba(108, 92, 231, 0.3);
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--accent-purple);
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .team-badge {
+       background: linear-gradient(135deg, var(--accent-purple), #8e44ad);
+       padding: 5px 15px;
+       border-radius: 20px;
+       font-size: 0.8rem;
+       font-weight: bold;
+    }
+
+    .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+    }
+</style>
+
+<div class="container-fluid pe-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
+        <div class="d-flex align-items-center">
+            <div class="rounded-circle bg-purple p-2 me-3 shadow-lg" style="background: var(--accent-purple);">
+                <i class="bi bi-people-fill text-white fs-4"></i>
+            </div>
+            <div>
+                <h2 class="fw-bold mb-0">Takım Yönetimi</h2>
+                <small class="text-white-50">Ekip arkadaşlarınızla uyum içinde kalın.</small>
+            </div>
+        </div>
+        @if(userDetails.Takim != null) {
+            <div class="team-badge shadow-sm">
+                @userDetails.Takim.Ad.ToUpper()
+            </div>
+        }
+    </div>
+
+    @if (userDetails.TakimID == null)
+    {
+        <div class="glass-panel p-5 text-center mt-4">
+            <i class="bi bi-diagram-3 display-1 text-white-50 mb-4 d-block"></i>
+            <h3 class="text-white fw-bold">Henüz bir takıma atanmamışsınız.</h3>
+            <p class="text-white-50">Yöneticiniz sizi bir takıma atadığında burada ekip arkadaşlarınızı görebilirsiniz.</p>
+            <a asp-action="Index" class="btn btn-purple mt-3 px-4 rounded-pill">Masama Dön</a>
+        </div>
+    }
+    else
+    {
+        <div class="team-grid">
+            
+            <!-- Team Info & Members -->
+            <div class="glass-panel p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-light border-opacity-10 pb-3">
+                    <h5 class="fw-bold m-0 text-white"><i class="bi bi-person-check me-2"></i>Ekip Arkadaşları</h5>
+                    <span class="badge bg-dark border border-secondary border-opacity-25 rounded-pill">@Model.TakimArkadaslari.Count Üye</span>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var member in Model.TakimArkadaslari)
+                    {
+                        <div class="d-flex align-items-center p-3 rounded transition-hover" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
+                            <div class="member-avatar me-3">
+                                @(member.Ad.Substring(0, 1))@(member.Soyad.Substring(0, 1))
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="text-white fw-bold mb-0">@member.Ad @member.Soyad</h6>
+                                    @if(member.CalisanID == userDetails.CalisanID) {
+                                        <span class="badge bg-purple" style="font-size: 0.6rem;">SEN</span>
+                                    }
+                                </div>
+                                <div class="d-flex align-items-center mt-1">
+                                    @if (member.AktiflikDurumu == "Çevrimiçi" || member.AktiflikDurumu == "Online")
+                                    {
+                                        <span class="status-indicator bg-success"></span>
+                                        <small class="text-success" style="font-size: 0.7rem;">Müsait</small>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-indicator bg-secondary"></span>
+                                        <small class="text-white-50" style="font-size: 0.7rem;">Uzakta</small>
+                                    }
+                                    <span class="mx-2 text-white-50 small">|</span>
+                                    <small class="text-white-50" style="font-size: 0.7rem;">@member.Eposta</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                
+                @if(userDetails.Takim?.Departman != null) {
+                    <div class="mt-4 p-3 rounded" style="background: rgba(108, 92, 231, 0.05); border: 1px dashed rgba(108, 92, 231, 0.3);">
+                        <small class="text-white-50 d-block"><i class="bi bi-building me-1"></i> Bağlı Olunan Departman</small>
+                        <span class="text-white fw-bold">@userDetails.Takim.Departman.Ad</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Team Tasks -->
+            <div class="glass-panel p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-light border-opacity-10 pb-3">
+                    <h5 class="fw-bold m-0 text-white"><i class="bi bi-kanban me-2"></i>Takım Görevleri</h5>
+                    <div class="d-flex gap-2">
+                        <div class="badge bg-warning text-dark rounded-pill">@Model.YapilacakGorev</div>
+                        <div class="badge bg-purple text-white rounded-pill">@Model.DevamEdenGorev</div>
+                    </div>
+                </div>
+
+                @if(Model.GuncelGorevler != null && Model.GuncelGorevler.Any())
+                {
+                    <div class="d-flex flex-column gap-3" style="max-height: 600px; overflow-y: auto; padding-right: 5px;">
+                        @foreach(var gorev in Model.GuncelGorevler)
+                        {
+                            <div class="p-3 rounded border-start border-4 shadow-sm" style="background: rgba(255,255,255,0.03); border-color: @(gorev.Durum?.Contains("Devam") == true ? "var(--accent-purple)" : (gorev.Durum?.Contains("Tamamland") == true ? "#2ecc71" : "#f1c40f"));">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="text-white fw-bold mb-0">@gorev.Baslik</h6>
+                                    <span class="badge bg-dark small border border-secondary border-opacity-25" style="font-size: 0.6rem;">@gorev.Durum</span>
+                                </div>
+                                <p class="text-white-50 small mb-3">@(gorev.Aciklama?.Length > 80 ? gorev.Aciklama.Substring(0,80) + "..." : gorev.Aciklama)</p>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-dark border border-secondary d-flex justify-content-center align-items-center text-white-50 me-2" style="width: 25px; height: 25px; font-size: 0.65rem;" title="Atanan: @(gorev.AtananKisi?.Ad ?? "Henüz Yok")">
+                                            @(gorev.AtananKisi?.Ad?.Substring(0,1) ?? "?")
+                                        </div>
+                                        <small class="text-white-50" style="font-size: 0.7rem;">@gorev.Adimlar.Count(a => a.TamamlandiMi)/@gorev.Adimlar.Count Adım</small>
+                                    </div>
+                                    <div class="progress flex-grow-1 mx-3" style="height: 4px; background: rgba(255,255,255,0.05);">
+                                        <div class="progress-bar" style="width: @gorev.TamamlanmaOrani%; background: var(--accent-purple);"></div>
+                                    </div>
+                                    <small class="text-white fw-bold" style="font-size: 0.7rem;">%@gorev.TamamlanmaOrani</small>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center p-5">
+                       <i class="bi bi-clipboard-x fs-1 text-white-50 d-block mb-3"></i>
+                       <p class="text-white-50">Takımınıza atanmış aktif bir görev bulunamadı.</p>
+                    </div>
+                }
+                
+                <div class="mt-4">
+                    <a asp-controller="ToDo" asp-action="Index" class="btn btn-sm btn-outline-light w-100 rounded-pill">
+                        Tüm Görevleri Yönet <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    }
+
+</div>

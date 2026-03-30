@@ -99,17 +99,17 @@
                         <textarea name="Aciklama" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="Görev ile ilgili teknik notlar veya detaylar..."></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label text-white-50 small mb-1">Atanacak Personel <span class="text-danger">*</span></label>
-                        <select name="AtananCalisanID" class="form-select bg-dark text-white border-secondary" asp-items="ViewBag.Calisanlar" required>
-                            @if (!isAdmin)
-                            {
-                                @* Non-admin users can only assign to themselves *@
-                            }
-                            else
-                            {
-                                <option value="">Bir çalışan seçin...</option>
-                            }
+                        <label class="form-label text-white-50 small mb-1">Atanacak Personel</label>
+                        <select name="AtananCalisanID" class="form-select bg-dark text-white border-secondary" asp-items="ViewBag.Calisanlar">
+                            <option value="">(İsteğe bağlı) Bir çalışan seçin...</option>
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small mb-1">Atanacak Takım</label>
+                        <select name="TakimID" class="form-select bg-dark text-white border-secondary" asp-items="ViewBag.Takimlar">
+                            <option value="">(İsteğe bağlı) Bir takım seçin...</option>
+                        </select>
+                        <small class="text-info" style="font-size: 0.7rem;"><i class="bi bi-info-circle me-1"></i> Görevi bir kişiye, bir takıma veya her ikisine birden atayabilirsiniz.</small>
                     </div>
                     <div class="row">
                         <div class="col-6 mb-3">

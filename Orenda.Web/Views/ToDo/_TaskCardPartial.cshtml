@@ -2,10 +2,17 @@
 @using System.Security.Claims
 @{
     bool isAdmin = User.IsInRole("Admin");
-    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var userIdClaim = User.FindFirst("CalisanID")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     int currentUserId = userIdClaim != null ? int.Parse(userIdClaim) : 0;
+    
+    // Check if user is in the team this task is assigned to
+    // Note: This requires the Takim object to be included in the query (which I did in the controller)
+    bool isInAssignedTeam = Model.TakimID.HasValue && Model.Takim != null && Model.Takim.Uyeler != null && Model.Takim.Uyeler.Any(u => u.CalisanID == currentUserId);
+    // Alternative check if Uyeler is not loaded: we might need to rely on the controller logic for button visibility, 
+    // but for display, we just need the Team name.
+    
     bool isManager = isAdmin || (Model.AtayanCalisanID == currentUserId);
-    bool isAssignee = Model.AtananCalisanID == currentUserId;
+    bool isAssignee = Model.AtananCalisanID == currentUserId || isInAssignedTeam;
 
     // Status color logic (fallback)
     string statusBadgeClass = "bg-warning text-dark";
@@ -29,12 +36,26 @@
         <div class="d-flex justify-content-between align-items-start mb-2">
             <div>
                 <h6 class="card-title text-white fw-bold mb-1">@Model.Baslik</h6>
-                <span class="badge @onayColor" style="font-size: 0.65rem;">
-                    @if(Model.OnayDurumu == "Onay Bekliyor") { <i class="bi bi-hourglass-split"></i> }
-                    else if(Model.OnayDurumu == "Onaylandı") { <i class="bi bi-check-circle-fill"></i> }
-                    else if(Model.OnayDurumu == "Reddedildi") { <i class="bi bi-x-circle-fill"></i> }
-                    @Model.OnayDurumu
-                </span>
+                <div class="d-flex flex-wrap gap-1 mb-1">
+                    <span class="badge @onayColor" style="font-size: 0.65rem;">
+                        @if(Model.OnayDurumu == "Onay Bekliyor") { <i class="bi bi-hourglass-split"></i> }
+                        else if(Model.OnayDurumu == "Onaylandı") { <i class="bi bi-check-circle-fill"></i> }
+                        else if(Model.OnayDurumu == "Reddedildi") { <i class="bi bi-x-circle-fill"></i> }
+                        @Model.OnayDurumu
+                    </span>
+                    @if (Model.TakimID.HasValue)
+                    {
+                        <span class="badge bg-purple text-white" style="font-size: 0.65rem;" title="Takım Görevi">
+                            <i class="bi bi-people-fill me-1"></i> @(Model.Takim?.Ad ?? "Takım")
+                        </span>
+                    }
+                    @if (Model.AtananCalisanID.HasValue)
+                    {
+                         <span class="badge bg-secondary text-white-50" style="font-size: 0.65rem;" title="Bireysel Görev">
+                            <i class="bi bi-person-fill me-1"></i> @(Model.AtananKisi?.Ad ?? "Atandı")
+                         </span>
+                    }
+                </div>
             </div>
             
             @if(isAdmin)
@@ -160,29 +181,29 @@
             
             <!-- Durum Güncelleme Butonu -->
             <div class="dropdown">
-                <button class="btn btn-sm badge @statusBadgeClass dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border: none;">
+                <button class="btn btn-sm badge @statusBadgeClass dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-expanded="false" style="border: none;">
                     @Model.Durum
                 </button>
-                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow-sm" style="font-size: 0.85rem; background: rgba(30, 30, 40, 0.95); border: 1px solid rgba(255,255,255,0.1);">
+                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow-sm dropdown-menu-custom" style="font-size: 0.85rem;">
                     <li>
                         <form asp-action="UpdateStatus" method="post">
                             <input type="hidden" name="id" value="@Model.GorevNo" />
                             <input type="hidden" name="yeniDurum" value="Yapılacak" />
-                            <button type="submit" class="dropdown-item py-2 text-warning"><i class="bi bi-circle me-2"></i>Yapılacak</button>
+                            <button type="submit" class="dropdown-item py-2 text-white"><i class="bi bi-circle me-2 text-warning"></i>Yapılacak</button>
                         </form>
                     </li>
                     <li>
                         <form asp-action="UpdateStatus" method="post">
                             <input type="hidden" name="id" value="@Model.GorevNo" />
                             <input type="hidden" name="yeniDurum" value="Devam Ediyor" />
-                            <button type="submit" class="dropdown-item py-2 text-purple"><i class="bi bi-play-circle me-2"></i>Devam Ediyor</button>
+                            <button type="submit" class="dropdown-item py-2 text-white"><i class="bi bi-play-circle me-2 text-purple"></i>Devam Ediyor</button>
                         </form>
                     </li>
                     <li>
                         <form asp-action="UpdateStatus" method="post">
                             <input type="hidden" name="id" value="@Model.GorevNo" />
                             <input type="hidden" name="yeniDurum" value="Tamamlandı" />
-                            <button type="submit" class="dropdown-item py-2 text-success"><i class="bi bi-check-circle me-2"></i>Tamamlandı</button>
+                            <button type="submit" class="dropdown-item py-2 text-white"><i class="bi bi-check-circle me-2 text-success"></i>Tamamlandı</button>
                         </form>
                     </li>
                 </ul>

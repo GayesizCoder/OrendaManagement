@@ -1,0 +1,17 @@
+﻿  Geri y├╝klenecek projeler belirleniyor...
+  Geri y├╝kleme i├ğin t├╝m projeler g├╝ncel.
+C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Views\Home\Index.cshtml(175,29): warning CS8602: Olas─▒ bir null ba┼şvurunun ba┼şvurma i┼şlemi. [C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj]
+C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Controllers\ToDoController.cs(242,18): error CS0103: 'isAdmin' ad─▒ ge├ğerli ba─şlamda yok [C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj]
+C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Views\ToDo\_TaskCardPartial.cshtml(174,75): warning CS8602: Olas─▒ bir null ba┼şvurunun ba┼şvurma i┼şlemi. [C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj]
+
+Olu┼şturma BA┼ŞARISIZ OLDU.
+
+C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Views\Home\Index.cshtml(175,29): warning CS8602: Olas─▒ bir null ba┼şvurunun ba┼şvurma i┼şlemi. [C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj]
+C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Views\ToDo\_TaskCardPartial.cshtml(174,75): warning CS8602: Olas─▒ bir null ba┼şvurunun ba┼şvurma i┼şlemi. [C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj]
+C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Controllers\ToDoController.cs(242,18): error CS0103: 'isAdmin' ad─▒ ge├ğerli ba─şlamda yok [C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj]
+    2 Uyar─▒
+    1 Hata
+
+Ge├ğen S├╝re 00:00:01.40
+
+─░┼ş y├╝k├╝ g├╝ncelle┼ştirmeleri var. Daha fazla bilgi i├ğin `dotnet workload list` ├ğal─▒┼şt─▒r─▒n.

@@ -1,0 +1,98 @@
+﻿Using project 'C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj'.
+Using startup project 'C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj'.
+dotnet msbuild /getProperty:ProjectName /getProperty:AssemblyName /getProperty:DesignAssembly /getProperty:Language /getProperty:OutputPath /getProperty:PlatformTarget /getProperty:ProjectAssetsFile /getProperty:ProjectDir /getProperty:RootNamespace /getProperty:RuntimeFrameworkVersion /getProperty:TargetFileName /getProperty:TargetFrameworkMoniker /getProperty:Nullable /getProperty:TargetFramework /getProperty:TargetPlatformIdentifier /getProperty:Platform /t:ResolvePackageAssets /getItem:RuntimeCopyLocalItems C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj
+dotnet msbuild /getProperty:ProjectName /getProperty:AssemblyName /getProperty:DesignAssembly /getProperty:Language /getProperty:OutputPath /getProperty:PlatformTarget /getProperty:ProjectAssetsFile /getProperty:ProjectDir /getProperty:RootNamespace /getProperty:RuntimeFrameworkVersion /getProperty:TargetFileName /getProperty:TargetFrameworkMoniker /getProperty:Nullable /getProperty:TargetFramework /getProperty:TargetPlatformIdentifier /getProperty:Platform /t:ResolvePackageAssets /getItem:RuntimeCopyLocalItems C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj
+Build started...
+dotnet build C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj /verbosity:quiet /nologo /p:PublishAot=false
+
+Olu┼şturma ba┼şar─▒l─▒ oldu.
+    0 Uyar─▒
+    0 Hata
+
+Ge├ğen S├╝re 00:00:01.02
+
+─░┼ş y├╝k├╝ g├╝ncelle┼ştirmeleri var. Daha fazla bilgi i├ğin `dotnet workload list` ├ğal─▒┼şt─▒r─▒n.
+
+Build succeeded.
+dotnet exec --depsfile C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0\Orenda.Web.deps.json --additionalprobingpath C:\Users\Gaye\.nuget\packages --additionalprobingpath "C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages" --runtimeconfig C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0\Orenda.Web.runtimeconfig.json C:\Users\Gaye\.dotnet\tools\.store\dotnet-ef\10.0.3\dotnet-ef\10.0.3\tools\net8.0\any\tools\net8.0\any\ef.dll database update --assembly C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0\Orenda.Web.dll --project C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj --startup-assembly C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0\Orenda.Web.dll --startup-project C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\Orenda.Web.csproj --project-dir C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\ --root-namespace Orenda.Web --language C# --framework net8.0 --design-assembly C:\Users\Gaye\.nuget\packages\microsoft.entityframeworkcore.design\8.0.0\lib\net8.0\Microsoft.EntityFrameworkCore.Design.dll --nullable --working-dir C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web --verbose
+Using assembly 'Orenda.Web'.
+Using startup assembly 'Orenda.Web'.
+Using application base 'C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0'.
+Using working directory 'C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web'.
+Using root namespace 'Orenda.Web'.
+Using project directory 'C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\'.
+Remaining arguments: .
+Finding DbContext classes...
+Finding IDesignTimeDbContextFactory implementations...
+Finding application service provider in assembly 'Orenda.Web'...
+Finding Microsoft.Extensions.Hosting service provider...
+Using environment 'Development'.
+Using application service provider from Microsoft.Extensions.Hosting.
+Found DbContext 'OrendaDbContext'.
+Finding DbContext classes in the project...
+Using context 'OrendaDbContext'.
+Finding design-time services referenced by assembly 'Orenda.Web'...
+Finding design-time services referenced by assembly 'Orenda.Web'...
+No referenced design-time services were found.
+Finding design-time services for provider 'Microsoft.EntityFrameworkCore.SqlServer'...
+Using design-time services from provider 'Microsoft.EntityFrameworkCore.SqlServer'.
+Finding IDesignTimeServices implementations in assembly 'Orenda.Web'...
+No design-time services were found.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (573ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+Executed DbCommand (573ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1,021ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+Executed DbCommand (1,021ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (131ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+Executed DbCommand (131ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (113ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+Executed DbCommand (113ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (129ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+Executed DbCommand (129ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260329213244_AddTakimIDToDo'.
+Applying migration '20260329213244_AddTakimIDToDo'.
+fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+      Failed executing DbCommand (192ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [gayemkaratas_OrendaAdmin].[ToDo] DROP CONSTRAINT [FK_ToDo_Kisiler_AtananCalisanID];
+Failed executing DbCommand (192ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+ALTER TABLE [gayemkaratas_OrendaAdmin].[ToDo] DROP CONSTRAINT [FK_ToDo_Kisiler_AtananCalisanID];
+Microsoft.Data.SqlClient.SqlException (0x80131904): 'FK_ToDo_Kisiler_AtananCalisanID' is not a constraint.
+Could not drop constraint. See previous errors.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteNonQueryTds(String methodName, Boolean isAsync, Int32 timeout, Boolean asyncWrite)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String methodName)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQuery(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.ExecuteNonQuery(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQuery(IEnumerable`1 migrationCommands, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.Migrate(String targetMigration)
+   at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.UpdateDatabase(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabaseImpl(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabase.<>c__DisplayClass0_0.<.ctor>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.Execute(Action action)
+ClientConnectionId:82248a4a-faac-40b8-86c4-5146e0c062b0
+Error Number:3728,State:1,Class:16
+'FK_ToDo_Kisiler_AtananCalisanID' is not a constraint.
+Could not drop constraint. See previous errors.

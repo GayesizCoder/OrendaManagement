@@ -30,26 +30,31 @@ namespace Orenda.Web.Controllers
             int currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
             bool isAdmin = User.IsInRole("Admin");
 
+            var currentUser = await _context.Kullanicilar.FirstOrDefaultAsync(k => k.CalisanID == currentUserId);
+            int? userTakimId = currentUser?.TakimID;
+
             IQueryable<ToDo> gorevSorgusu = _context.ToDos
                 .Include(t => t.AtananKisi)
+                .Include(t => t.Takim)
                 .Include(t => t.Adimlar);
 
             if (!isAdmin)
             {
-                // Eğer Admin değilse sadece kendine atananları görsün
-                gorevSorgusu = gorevSorgusu.Where(t => t.AtananCalisanID == currentUserId);
+                // EÄŸer Admin deÄŸilse kendine atananlarÄ± VEYA takÄ±mÄ±na atananlarÄ± gÃ¶rsÃ¼n
+                gorevSorgusu = gorevSorgusu.Where(t => t.AtananCalisanID == currentUserId || (t.TakimID != null && t.TakimID == userTakimId));
             }
 
             var gorevler = await gorevSorgusu.OrderByDescending(g => g.BaslangicTarihi).ToListAsync();
             
-            // Görev Atama Modal'ı için çalışan listesini gönder
+            // GÃ¶rev Atama Modal'Ä± iÃ§in Ã§alÄ±ÅŸan ve takÄ±m listesini gÃ¶nder
+            ViewBag.Takimlar = new SelectList(await _context.Takimlar.OrderBy(t => t.Ad).ToListAsync(), "TakimID", "Ad");
             if (isAdmin)
             {
                 ViewBag.Calisanlar = new SelectList(await _context.Kullanicilar.OrderBy(k => k.Ad).ToListAsync(), "CalisanID", "Ad");
             }
             else
             {
-                // Admin değilse sadece kendisini seçebilsin
+                // Admin deÄŸilse sadece kendisini seÃ§ebilsin
                 var kendisi = await _context.Kullanicilar.Where(k => k.CalisanID == currentUserId).ToListAsync();
                 ViewBag.Calisanlar = new SelectList(kendisi, "CalisanID", "Ad");
             }
@@ -66,6 +71,7 @@ namespace Orenda.Web.Controllers
             {
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
                 int currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
+            bool isAdmin = User.IsInRole("Admin");
 
                 model.AtayanCalisanID = currentUserId;
                 if (model.BaslangicTarihi == null) model.BaslangicTarihi = DateTime.Now;
@@ -73,7 +79,7 @@ namespace Orenda.Web.Controllers
                 _context.ToDos.Add(model);
                 await _context.SaveChangesAsync();
                 
-                await _logService.LogAsync(currentUserId, "Görev Oluşturuldu", $"'{model.Baslik}' adında yeni bir görev oluşturuldu ve ilgili personele atandı.");
+                await _logService.LogAsync(currentUserId, "GÃ¶rev OluÅŸturuldu", $"'{model.Baslik}' adÄ±nda yeni bir gÃ¶rev oluÅŸturuldu ve ilgili personele atandÄ±.");
             }
             return RedirectToAction(nameof(Index));
         }
@@ -90,12 +96,13 @@ namespace Orenda.Web.Controllers
 
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
                 int currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
-                await _logService.LogAsync(currentUserId, "Görev Silindi", $"'{gorev.Baslik}' adlı görev sistemden silindi.");
+            bool isAdmin = User.IsInRole("Admin");
+                await _logService.LogAsync(currentUserId, "GÃ¶rev Silindi", $"'{gorev.Baslik}' adlÄ± gÃ¶rev sistemden silindi.");
             }
             return RedirectToAction(nameof(Index));
         }
 
-        // --- HERKES (DURUM GÜNCELLEME) ---
+        // --- HERKES (DURUM GÃœNCELLEME) ---
 
         [HttpPost]
         public async Task<IActionResult> UpdateStatus(int id, string yeniDurum)
@@ -107,8 +114,16 @@ namespace Orenda.Web.Controllers
             int currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
             bool isAdmin = User.IsInRole("Admin");
 
-            // Kendi görevi mi veya admin mi kontrolü
-            if (!isAdmin && gorev.AtananCalisanID != currentUserId)
+            // Kendi gÃ¶revi mi veya admin mi kontrolÃ¼
+            bool isAssignee = gorev.AtananCalisanID == currentUserId;
+            bool isTeamTask = false;
+            if (gorev.TakimID.HasValue)
+            {
+                var user = await _context.Kullanicilar.FirstOrDefaultAsync(u => u.CalisanID == currentUserId);
+                isTeamTask = user?.TakimID == gorev.TakimID;
+            }
+
+            if (!isAdmin && !isAssignee && !isTeamTask)
             {
                 return Unauthorized();
             }
@@ -116,20 +131,20 @@ namespace Orenda.Web.Controllers
             string eskiDurum = gorev.Durum;
             gorev.Durum = yeniDurum;
 
-            // Eğer Tamamlandı ise bitiş tarihini atayabiliriz
-            if (yeniDurum == "Tamamlandı" || yeniDurum == "Bitti")
+            // EÄŸer TamamlandÄ± ise bitiÅŸ tarihini atayabiliriz
+            if (yeniDurum == "TamamlandÄ±" || yeniDurum == "Bitti")
             {
                 gorev.BitisTarihi = DateTime.Now;
             }
 
             await _context.SaveChangesAsync();
             
-            await _logService.LogAsync(currentUserId, "Görev Durumu Değişti", $"'{gorev.Baslik}' görevinin durumu '{eskiDurum}' -> '{yeniDurum}' olarak güncellendi.");
+            await _logService.LogAsync(currentUserId, "GÃ¶rev Durumu DeÄŸiÅŸti", $"'{gorev.Baslik}' gÃ¶revinin durumu '{eskiDurum}' -> '{yeniDurum}' olarak gÃ¼ncellendi.");
 
             return RedirectToAction(nameof(Index));
         }
         
-        // --- İŞ ADIMI (GÖREV BÖLÜMÜ) YÖNETİMİ ---
+        // --- Ä°Å ADIMI (GÃ–REV BÃ–LÃœMÃœ) YÃ–NETÄ°MÄ° ---
 
         [HttpPost]
         public async Task<IActionResult> AddSubTask(int gorevNo, string adimBaslik, int? agirlikYuzdesi)
@@ -141,8 +156,16 @@ namespace Orenda.Web.Controllers
             int currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
             bool isAdmin = User.IsInRole("Admin");
 
-            // Kendi görevi mi veya admin mi kontrolü
-            if (!isAdmin && gorev.AtananCalisanID != currentUserId)
+            // Kendi gÃ¶revi mi veya admin mi kontrolÃ¼
+            bool isAssignee = gorev.AtananCalisanID == currentUserId;
+            bool isTeamTask = false;
+            if (gorev.TakimID.HasValue)
+            {
+                var user = await _context.Kullanicilar.FirstOrDefaultAsync(u => u.CalisanID == currentUserId);
+                isTeamTask = user?.TakimID == gorev.TakimID;
+            }
+
+            if (!isAdmin && !isAssignee && !isTeamTask)
             {
                 return Unauthorized();
             }
@@ -160,7 +183,7 @@ namespace Orenda.Web.Controllers
                 _context.GorevAdimlari.Add(adim);
                 await _context.SaveChangesAsync();
                 
-                await _logService.LogAsync(currentUserId, "Görev Adımı Eklendi", $"'{gorev.Baslik}' görevine '{adimBaslik}' alt adımı eklendi.");
+                await _logService.LogAsync(currentUserId, "GÃ¶rev AdÄ±mÄ± Eklendi", $"'{gorev.Baslik}' gÃ¶revine '{adimBaslik}' alt adÄ±mÄ± eklendi.");
             }
 
             return RedirectToAction(nameof(Index));
@@ -176,7 +199,15 @@ namespace Orenda.Web.Controllers
             int currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
             bool isAdmin = User.IsInRole("Admin");
 
-            if (!isAdmin && adim.ToDoTutucu.AtananCalisanID != currentUserId)
+            bool isAssignee = adim.ToDoTutucu.AtananCalisanID == currentUserId;
+            bool isTeamTask = false;
+            if (adim.ToDoTutucu.TakimID.HasValue)
+            {
+                var user = await _context.Kullanicilar.FirstOrDefaultAsync(u => u.CalisanID == currentUserId);
+                isTeamTask = user?.TakimID == adim.ToDoTutucu.TakimID;
+            }
+
+            if (!isAdmin && !isAssignee && !isTeamTask)
             {
                 return Unauthorized();
             }
@@ -184,13 +215,13 @@ namespace Orenda.Web.Controllers
             adim.TamamlandiMi = completed;
             await _context.SaveChangesAsync();
 
-            string durumStr = completed ? "Tamamlandı" : "Bekliyor";
-            await _logService.LogAsync(currentUserId, "Görev Adımı Güncellendi", $"'{adim.ToDoTutucu.Baslik}' görevindeki '{adim.Baslik}' adımı {durumStr} olarak işaretlendi.");
+            string durumStr = completed ? "TamamlandÄ±" : "Bekliyor";
+            await _logService.LogAsync(currentUserId, "GÃ¶rev AdÄ±mÄ± GÃ¼ncellendi", $"'{adim.ToDoTutucu.Baslik}' gÃ¶revindeki '{adim.Baslik}' adÄ±mÄ± {durumStr} olarak iÅŸaretlendi.");
 
             return RedirectToAction(nameof(Index));
         }
 
-        // --- PLANLAMA VE ONAY AKIŞI ---
+        // --- PLANLAMA VE ONAY AKIÅI ---
         
         [HttpPost]
         public async Task<IActionResult> SubmitForApproval(int id)
@@ -200,9 +231,18 @@ namespace Orenda.Web.Controllers
 
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             int currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
+            bool isAdmin = User.IsInRole("Admin");
             
-            // Sadece göreve atanan kişi veya admin onaya gönderebilir
-            if (!User.IsInRole("Admin") && gorev.AtananCalisanID != currentUserId)
+            // Sadece gÃ¶reve atanan kiÅŸi, takÄ±m Ã¼yesi veya admin onaya gÃ¶nderebilir
+            bool isAssignee = gorev.AtananCalisanID == currentUserId;
+            bool isTeamTask = false;
+            if (gorev.TakimID.HasValue)
+            {
+                var user = await _context.Kullanicilar.FirstOrDefaultAsync(u => u.CalisanID == currentUserId);
+                isTeamTask = user?.TakimID == gorev.TakimID;
+            }
+
+            if (!isAdmin && !isAssignee && !isTeamTask)
             {
                 return Unauthorized();
             }
@@ -210,7 +250,7 @@ namespace Orenda.Web.Controllers
             gorev.OnayDurumu = "Onay Bekliyor";
             await _context.SaveChangesAsync();
 
-            await _logService.LogAsync(currentUserId, "Plan Onaya Gönderildi", $"'{gorev.Baslik}' kodlu görev planlaması onayına sunuldu.");
+            await _logService.LogAsync(currentUserId, "Plan Onaya GÃ¶nderildi", $"'{gorev.Baslik}' kodlu gÃ¶rev planlamasÄ± onayÄ±na sunuldu.");
 
             return RedirectToAction(nameof(Index));
         }
@@ -223,26 +263,24 @@ namespace Orenda.Web.Controllers
 
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             int currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
-            
-            // Sadece Admin veya Görevi Oluşturan (AtayanCalisanID) yönetici onaylayabilir
-            // Eğer AtayanCalisanID null ise, sadece Admin'ler.
-            bool isManager = User.IsInRole("Admin") || (gorev.AtayanCalisanID == currentUserId);
+            bool isAdmin = User.IsInRole("Admin");
+            bool isManager = isAdmin || (gorev.AtayanCalisanID == currentUserId);
 
             if (!isManager)
             {
                 return Unauthorized();
             }
 
-            gorev.OnayDurumu = karar == "Onayla" ? "Onaylandı" : "Reddedildi";
+            gorev.OnayDurumu = karar == "Onayla" ? "OnaylandÄ±" : "Reddedildi";
             gorev.OnayNotu = onayNotu;
             
             await _context.SaveChangesAsync();
 
             string logMessage = karar == "Onayla" 
-                ? $"'{gorev.Baslik}' görev planlaması onaylandı."
-                : $"'{gorev.Baslik}' görev planı reddedildi. Not: {onayNotu}";
+                ? $"'{gorev.Baslik}' gÃ¶rev planlamasÄ± onaylandÄ±."
+                : $"'{gorev.Baslik}' gÃ¶rev planÄ± reddedildi. Not: {onayNotu}";
 
-            await _logService.LogAsync(currentUserId, "Plan Değerlendirildi", logMessage);
+            await _logService.LogAsync(currentUserId, "Plan DeÄŸerlendirildi", logMessage);
 
             return RedirectToAction(nameof(Index));
         }
