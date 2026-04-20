@@ -7,7 +7,7 @@ Orenda, kurumsal ekiplerin iş akışlarını dijitalleştiren, akıllı saat (W
 <p align="center">
   <img src="./assets/screenshots/dashboard_v2.png" width="800" alt="Orenda Dashboard">
   <br>
-  <em>Gelişmiş Dashboard ve Glassmorphism Arayüzü</em>
+  <em>Gelişmiş Dashboard ve  Arayüz</em>
 </p>
 
 <p align="center">
@@ -46,7 +46,7 @@ Orenda, kurumsal ekiplerin iş akışlarını dijitalleştiren, akıllı saat (W
 
 1. Depoyu yerel makinenize klonlayın:
    ```bash
-   git clone https://github.com/KULLANICI_ADINIZ/Orenda.git
+   git clone https://github.com/GayesizCoder/Orenda.git
    ```
 2. `Orenda.Web` klasöründeki `appsettings.Example.json` dosyasını `appsettings.json` olarak kopyalayın.
 3. Kendi veritabanı bağlantı dizginizi (Connection String) `appsettings.json` dosyasına ekleyin.
