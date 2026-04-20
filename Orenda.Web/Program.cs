@@ -2,7 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Orenda.Web.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://*:5046");
+builder.WebHost.ConfigureKestrel(options =>
+{
+    // Hem IPv4 hem IPv6'yı her türlü ağdan (ESP32 dahil) 5046 portundan kabul et
+    options.ListenAnyIP(5046); 
+});
 // Veritaban� ba�lant�s�n� projeye tan�t�r
 builder.Services.AddDbContext<OrendaDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

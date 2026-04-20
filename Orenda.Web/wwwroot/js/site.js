@@ -1,4 +1,14 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+// Dropdown Menu Isolation and Animation Stabilization (Legacy & IPv6 Compatible)
+$(document).ready(function() {
+    // When a dropdown is shown (e.g., Task Status menu)
+    $(document).on('show.bs.dropdown', '.task-card .dropdown', function () {
+        $('body').addClass('menu-open');
+        $(this).closest('.task-card').addClass('active-card');
+    });
 
-// Write your JavaScript code.
+    // When the dropdown is hidden
+    $(document).on('hidden.bs.dropdown', '.task-card .dropdown', function () {
+        $('body').removeClass('menu-open');
+        $('.task-card').removeClass('active-card');
+    });
+});

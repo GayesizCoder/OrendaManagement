@@ -29,12 +29,16 @@ namespace Orenda.Web.Controllers.Api
         [HttpPost("scan")]
         public async Task<IActionResult> ScanCard([FromBody] Esp32ScanDto request)
         {
-            if (string.IsNullOrEmpty(request.Uid))
+            // Tanı koymak için gelen isteği logla
+            string clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Bilinmiyor";
+            string rfid = request?.Uid?.ToUpper().Trim() ?? "BELİRTİLMEDİ";
+            
+            await _logService.LogAsync(1, "ESP32 İstek Geldi", $"IP: {clientIp}, UID: {rfid}");
+
+            if (string.IsNullOrEmpty(request?.Uid))
             {
                 return BadRequest(new { status = "HATA" });
             }
-
-            var rfid = request.Uid.ToUpper().Trim();
 
             // SENARYO A: Kayıt Bekleniyorsa (Admin düğmeye basmışsa)
             if (PendingRegistrationEmployeeId.HasValue)

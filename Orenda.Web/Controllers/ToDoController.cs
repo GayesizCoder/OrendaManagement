@@ -139,7 +139,12 @@ namespace Orenda.Web.Controllers
 
             await _context.SaveChangesAsync();
             
-            await _logService.LogAsync(currentUserId, "GÃ¶rev Durumu DeÄŸiÅŸti", $"'{gorev.Baslik}' gÃ¶revinin durumu '{eskiDurum}' -> '{yeniDurum}' olarak gÃ¼ncellendi.");
+            await _logService.LogAsync(currentUserId, "Görev Durumu Değişti", $"'{gorev.Baslik}' görevinin durumu '{eskiDurum}' -> '{yeniDurum}' olarak güncellendi.");
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return await GetTaskCard(id);
+            }
 
             return RedirectToAction(nameof(Index));
         }
@@ -183,7 +188,12 @@ namespace Orenda.Web.Controllers
                 _context.GorevAdimlari.Add(adim);
                 await _context.SaveChangesAsync();
                 
-                await _logService.LogAsync(currentUserId, "GÃ¶rev AdÄ±mÄ± Eklendi", $"'{gorev.Baslik}' gÃ¶revine '{adimBaslik}' alt adÄ±mÄ± eklendi.");
+                await _logService.LogAsync(currentUserId, "Görev Adımı Eklendi", $"'{gorev.Baslik}' görevine '{adimBaslik}' alt adımı eklendi.");
+            }
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return await GetTaskCard(gorevNo);
             }
 
             return RedirectToAction(nameof(Index));
@@ -213,12 +223,53 @@ namespace Orenda.Web.Controllers
             }
 
             adim.TamamlandiMi = completed;
+            bool statusChanged = false;
+            
+            // Eğer %100 olduysa otomatik onaya gönder ve durumu Tamamlandı yap
+            var masterTask = await _context.ToDos.Include(t=>t.Adimlar).FirstOrDefaultAsync(t=>t.GorevNo == adim.GorevNo);
+            if (masterTask != null && masterTask.TamamlanmaOrani >= 100)
+            {
+                if (masterTask.OnayDurumu != "Onaylandı")
+                {
+                    masterTask.OnayDurumu = "Onay Bekliyor";
+                }
+                
+                if (masterTask.Durum != "Tamamlandı")
+                {
+                    masterTask.Durum = "Tamamlandı";
+                    masterTask.BitisTarihi = DateTime.Now;
+                    statusChanged = true;
+                }
+            }
+
             await _context.SaveChangesAsync();
 
-            string durumStr = completed ? "TamamlandÄ±" : "Bekliyor";
-            await _logService.LogAsync(currentUserId, "GÃ¶rev AdÄ±mÄ± GÃ¼ncellendi", $"'{adim.ToDoTutucu.Baslik}' gÃ¶revindeki '{adim.Baslik}' adÄ±mÄ± {durumStr} olarak iÅŸaretlendi.");
+            string durumStr = completed ? "Tamamlandı" : "Bekliyor";
+            await _logService.LogAsync(currentUserId, "Görev Adımı Güncellendi", $"'{adim.ToDoTutucu.Baslik}' görevindeki '{adim.Baslik}' adımı {durumStr} olarak işaretlendi.");
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                if (statusChanged)
+                {
+                    Response.Headers.Add("X-Status-Changed", "true");
+                }
+                return await GetTaskCard(adim.GorevNo);
+            }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<IActionResult> GetTaskCard(int id)
+        {
+            var gorev = await _context.ToDos
+                .Include(t => t.AtananKisi)
+                .Include(t => t.Takim)
+                .Include(t => t.Adimlar)
+                .FirstOrDefaultAsync(t => t.GorevNo == id);
+            
+            if (gorev == null) return NotFound();
+            
+            return PartialView("_TaskCardPartial", gorev);
         }
 
         // --- PLANLAMA VE ONAY AKIÅI ---
@@ -264,9 +315,8 @@ namespace Orenda.Web.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             int currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
             bool isAdmin = User.IsInRole("Admin");
-            bool isManager = isAdmin || (gorev.AtayanCalisanID == currentUserId);
 
-            if (!isManager)
+            if (!isAdmin)
             {
                 return Unauthorized();
             }

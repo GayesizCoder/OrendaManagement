@@ -1,0 +1,20 @@
+/* Ironclad UI Fix: Bypassing stubborn browser cache */
+.dropdown-menu-custom {
+    transform: translateX(-240px) !important; /* Heavily pushed towards Side Panel */
+    margin-top: 15px !important;
+    top: 100% !important; /* Downward position */
+    bottom: auto !important;
+    border: 2px solid red !important; /* VISUAL DIAGNOSTIC: DELETE AFTER CONFIRMATION */
+    background: rgba(15, 15, 25, 0.99) !important;
+    z-index: 999999 !important;
+    box-shadow: 0 30px 100px rgba(0,0,0,1) !important;
+}
+
+/* Force lifting the active card when using this fix */
+.task-card:has(.dropdown-menu.show),
+.active-card {
+    z-index: 99999 !important;
+    transform: translateY(-8px) scale(1.02) !important;
+    opacity: 1 !important;
+    filter: none !important;
+}

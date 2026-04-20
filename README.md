@@ -1,58 +1,47 @@
-**Orenda**, işletmelerin iç süreçlerini (personel, departman, görev, cihaz ve log yönetimi) dijitalleştiren kapsamlı bir yönetim platformudur. Bu proje, sadece bir web arayüzü sunmakla 
-kalmaz; aynı zamanda dış donanımların (IoT cihazları ve akıllı saatler) sisteme veri gönderebilmesi için özel API uç noktaları (endpoints) barındırır.
+# Orenda - Akıllı Görev ve Ekip Yönetim Sistemi
 
-Çalıştırmak için:
-⚙️ Kurulum ve Çalıştırma
+Orenda, kurumsal ekiplerin iş akışlarını dijitalleştiren, akıllı saat (Wear OS) ve IoT (RFID) entegrasyonu ile personelin hem verimliliğini hem de sağlığını takip eden kapsamlı bir yönetim platformudur.
 
-Projenin yerel bilgisayarınızda (Localhost) çalıştırılması için adımlar:
+## 🚀 Öne Çıkan Özellikler
 
-    Projeyi Klonlayın:
-    Bash.
-    1-git clone [https://github.com/GayesizCoder/OrendaManagement.git](https://github.com/GayesizCoder/OrendaManagement.git)
+- **Gelişmiş Görev Yönetimi:** Görevlerin alt adımlara (Task Steps) bölünmesi, durum takibi ve hiyerarşik onay mekanizması.
+- **Ekip ve Departman Yapısı:** Şirket içi hiyerarşiyi yöneten, rol bazlı erişim kontrolüne sahip yönetim paneli.
+- **Wear OS Entegrasyonu:** Personelin akıllı saatleri üzerinden görev alması, durum güncellemesi yapması ve gerçek zamanlı sağlık verisi (Nabız vb.) transferi.
+- **Sağlık Verisi Takibi:** Çalışanların zindelik durumlarını izleyen ve sisteme raporlayan özel modül.
+- **Sistem Audit Log:** Tüm kullanıcı aktivitelerinin ve kritik sistem olaylarının takip edildiği gelişmiş günlükleme (Logging) sistemi.
+- **Modern UI/UX:** Glassmorphism etkileri, akıcı animasyonlar ve tamamen responsive (mobil uyumlu) arayüz.
 
-    Veritabanı Ayarlarını Yapın:
-    appsettings.json dosyasını açın ve DefaultConnection kısmına kendi MS SQL Server bağlantı dizenizi (Connection String) girin.
+## 🛠️ Teknoloji Yığını
 
-    Veritabanını Oluşturun (Migrations):
-    Package Manager Console (Visual Studio) üzerinden:
-    Bash:
-    1-Update-Database Veya .NET CLI üzerinden: dotnet ef database update
+- **Backend:** .NET 8.0 ASP.NET Core MVC
+- **Veritabanı:** MS SQL Server & Entity Framework Core (Code First)
+- **Güvenlik:** Cookie-based Authentication & Role-based Authorization
+- **Frontend:** HTML5, CSS3 (Vanilla), JavaScript (ES6+), FontAwesome
+- **Entegrasyon:** RESTful API for Wear OS & Mobile devices
 
-    Projeyi Başlatın:
-    Bash: 
-    1-dotnet run
+## 📂 Proje Yapısı
 
-## 🚀 Proje Mimarisi ve Öne Çıkan Özellikler
+- `Orenda.Web`: Ana web uygulaması ve API katmanı.
+- `Orenda.Models`: Veritabanı varlıkları ve veri modelleri.
+- `Orenda.Data`: DbContext ve Migration dosyaları.
+- `Orenda.Services`: İş mantığını (Business Logic) barındıran servis katmanı.
 
-Bu proje, sürdürülebilir ve genişletilebilir olması adına kurumsal standartlara uygun olarak geliştirilmiştir:
+## 🔧 Kurulum
 
-* **MVC Mimarisi:** Model, View ve Controller katmanları birbirinden izole edilerek temiz kod (Clean Code) prensiplerine uyulmuştur.
-* **Dependency Injection (Bağımlılık Enjeksiyonu):** `Services` katmanı (örn: `ILogService`) arayüzler (interfaces) üzerinden sisteme enjekte edilmiş, böylece kodun test edilebilirliği artırılmıştır.
-* **Code-First Yaklaşımı:** Veritabanı (MS SQL) tabloları ve ilişkileri Entity Framework Core kullanılarak `Migrations` üzerinden C# kodlarıyla inşa edilmiştir.
-* **IoT & Giyilebilir Teknoloji Entegrasyonu:** Web projesinin içine gömülü RESTful API'ler sayesinde ESP32 gibi mikrodenetleyiciler ve WearOS tabanlı akıllı saatler ile çift yönlü haberleşme sağlanmaktadır.
+1. Depoyu yerel makinenize klonlayın:
+   ```bash
+   git clone https://github.com/KULLANICI_ADINIZ/Orenda.git
+   ```
+2. `Orenda.Web` klasöründeki `appsettings.Example.json` dosyasını `appsettings.json` olarak kopyalayın.
+3. Kendi veritabanı bağlantı dizginizi (Connection String) `appsettings.json` dosyasına ekleyin.
+4. Terminalden projeyi başlatın:
+   ```bash
+   dotnet restore
+   dotnet run
+   ```
 
-## 🛠️ Kullanılan Teknolojiler (Tech Stack)
+## 🔒 Güvenlik Notu
+Bu projede hassas veriler (veritabanı şifreleri vb.) `.gitignore` ile korunmaktadır. Kendi ortamınızda kurulum yaparken `appsettings.json` dosyasına gerçek verilerinizi güvenli bir şekilde eklemelisiniz.
 
-* **Backend:** C#, ASP.NET Core 8.0 MVC
-* **Veritabanı & ORM:** MS SQL Server, Entity Framework Core 8
-* **Frontend:** Razor Pages (cshtml), Bootstrap, jQuery, HTML5/CSS3
-* **Güvenlik & Loglama:** Özel Log Servisi (`LogController`, `SistemLog`), Authentication altyapısı.
-
-## 📂 Klasör Yapısı (Folder Structure)
-
-Proje ölçeklenebilir bir dizin yapısına sahiptir:
-
-```text
-Orenda.Web/
-├── Controllers/
-│   ├── Api/               # Cihaz haberleşmeleri için API uç noktaları
-│   │   ├── Esp32Controller.cs
-│   │   └── WearOsController.cs
-│   ├── AccountController.cs # Kullanıcı giriş/çıkış işlemleri
-│   ├── TeamController.cs    # Personel ve Departman yönetimi
-│   └── ...
-├── Models/                # Veritabanı tabloları (Kullanıcı, Departman, GorevAdimi vb.)
-├── Views/                 # Razor HTML Şablonları ve Arayüzler
-├── Services/              # İş mantığı ve arayüzler (ILogService, LogService)
-├── Data/                  # EF Core DbContext ayarları (OrendaDbContext)
-└── Migrations/            # Veritabanı versiyon kontrol dosyaları
+---
+*Bu proje, profesyonel bir portfolyo çalışması olarak geliştirilmiştir.*

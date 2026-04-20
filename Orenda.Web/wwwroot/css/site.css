@@ -121,31 +121,44 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .transition-hover:hover, 
-.task-card:has(.show), 
+.active-card, 
 .task-card:focus-within { 
-    transform: translateY(-3px); 
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.3) !important;
-    border-color: rgba(255,255,255,0.2) !important;
-    z-index: 1050 !important;
+    transform: translateY(-5px) !important; 
+    box-shadow: 0 1rem 3rem rgba(0,0,0,0.5) !important;
+    border-color: rgba(108, 92, 231, 0.4) !important;
+    z-index: 10 !important; /* Base lift */
 }
 
 /* Isolation: When a dropdown is open, disable all OTHER cards' hover and pointer events */
-body:has(.dropdown-menu.show) .task-card:not(:has(.show)) {
-    transform: none !important;
+/* Modern Browser Support: No JS needed for this part */
+.glass-panel:has(.dropdown-menu.show) .task-card:not(:has(.dropdown-menu.show)),
+body.menu-open .task-card:not(.active-card) {
+    transform: scale(0.97) !important;
     pointer-events: none !important;
-    opacity: 0.5;
-    filter: blur(0.5px);
-    transition: all 0.3s ease;
+    opacity: 0.25 !important;
+    filter: blur(4px) grayscale(80%);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure the active card is always on top */
+.task-card:has(.dropdown-menu.show),
+.active-card {
+    z-index: 9999 !important;
+    transform: translateY(-10px) scale(1.03) !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.9) !important;
 }
 
 /* Hard stack for the active card and its menu */
-.task-card:has(.show) {
-    z-index: 1100 !important;
-    transform: translateY(-3px) !important;
+.active-card {
+    z-index: 9999 !important; /* Absolute top priority */
+    transform: translateY(-8px) scale(1.02) !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8) !important;
 }
 
-.task-card:has(.show) .dropdown-menu {
-    transform: translateY(2px) !important; /* Slight offset for depth */
+.active-card .dropdown-menu {
+    transform: translateY(10px) !important;
+    display: block !important; 
+    opacity: 1 !important;
 }
 
 .task-card { 
@@ -154,14 +167,20 @@ body:has(.dropdown-menu.show) .task-card:not(:has(.show)) {
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-/* Dropdown Menu Enhancements */
+/* Dropdown Menu Enhancements - Pushed towards the Side Panel (Left) */
 .dropdown-menu-custom {
-    background: rgba(30, 30, 40, 0.98) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
-    padding: 8px !important;
-    z-index: 1060 !important;
+    background: rgba(20, 20, 30, 0.98) !important;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(108, 92, 231, 0.4) !important;
+    box-shadow: 0 20px 80px rgba(0,0,0,0.95) !important;
+    padding: 12px !important;
+    z-index: 99999 !important; /* Maximum priority */
+    min-width: 220px;
+    margin-top: 15px !important; /* Breathable space below the button */
+    top: 100% !important; /* Downward position as requested */
+    bottom: auto !important;
+    transform: translateX(-220px) !important; /* Strong shift towards the Side Panel */
 }
 
 .dropdown-item {

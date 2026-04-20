@@ -138,11 +138,60 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
+            // Dropdown Focus Handling: Uses delegation for better reliability
+            $(document).on('click', '.dropdown-toggle', function () {
+                const card = $(this).closest('.task-card');
+                $('.task-card').removeClass('active-card');
+                card.addClass('active-card');
+                $('body').addClass('menu-open');
+                console.log('Force lifting active card manually.');
+            });
+
+            $(document).on('hide.bs.dropdown', '.dropdown', function () {
+                const card = $(this).closest('.task-card');
+                card.removeClass('active-card');
+                $('body').removeClass('menu-open');
+                console.log('Menu closed, isolation ended.');
+            });
+
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('create')) {
                 var myModal = new bootstrap.Modal(document.getElementById('yeniGorevModal'));
                 myModal.show();
             }
+
+            // AJAX Form Handling
+            $(document).on('submit', '.ajax-form', function(e) {
+                e.preventDefault();
+                const form = $(this);
+                const containerId = form.closest('.task-card-wrapper').attr('id');
+                const openCollapseIds = form.closest('.task-card-wrapper').find('.collapse.show').map(function() { return this.id; }).get();
+
+                fetch(form.attr('action'), {
+                    method: 'POST',
+                    body: new URLSearchParams(new FormData(this)),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(r => {
+                    if (r.headers.get('X-Status-Changed') === 'true') {
+                        window.location.reload();
+                        return null;
+                    }
+                    return r.text();
+                })
+                .then(html => {
+                    if (!html) return;
+                    $(`#${containerId}`).replaceWith(html);
+                    openCollapseIds.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) new bootstrap.Collapse(el, { toggle: false }).show();
+                    });
+                });
+            });
+
+            $(document).on('change', '.subtask-check', function() {
+                $(this).closest('form').submit();
+            });
         });
     </script>
 }
