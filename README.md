@@ -2,6 +2,22 @@
 
 Orenda, kurumsal ekiplerin iş akışlarını dijitalleştiren, akıllı saat (Wear OS) ve IoT (RFID) entegrasyonu ile personelin hem verimliliğini hem de sağlığını takip eden kapsamlı bir yönetim platformudur.
 
+## 📸 Uygulama Görünümleri
+
+<p align="center">
+  <img src="./assets/screenshots/dashboard_v2.png" width="800" alt="Orenda Dashboard">
+  <br>
+  <em>Gelişmiş Dashboard ve Glassmorphism Arayüzü</em>
+</p>
+
+<p align="center">
+  <img src="./assets/screenshots/tasks_v2.png" width="400" alt="Orenda Tasks">
+  <img src="./assets/screenshots/watch_v2.png" width="400" alt="Orenda Wear OS">
+  <br>
+  <em>Görev Yönetimi ve Wear OS Entegrasyonu</em>
+</p>
+
+
 ## 🚀 Öne Çıkan Özellikler
 
 - **Gelişmiş Görev Yönetimi:** Görevlerin alt adımlara (Task Steps) bölünmesi, durum takibi ve hiyerarşik onay mekanizması.
