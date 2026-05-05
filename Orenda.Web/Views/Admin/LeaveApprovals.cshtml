@@ -1,0 +1,79 @@
+@model IEnumerable<Orenda.Web.Models.Izin>
+@{
+    ViewData["Title"] = "İzin Onayları";
+}
+
+<div class="container-fluid pe-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a asp-action="Management" class="text-purple text-decoration-none">Yönetim</a></li>
+                <li class="breadcrumb-item active text-white-50" aria-current="page">İzin Onayları</li>
+              </ol>
+            </nav>
+            <h2 class="fw-bold mb-0">Çalışan İzin Talepleri</h2>
+        </div>
+    </div>
+
+    <div class="glass-panel overflow-hidden">
+        <table class="table table-dark table-hover mb-0">
+            <thead class="bg-dark bg-opacity-50">
+                <tr>
+                    <th class="ps-4 py-3 border-0">Çalışan</th>
+                    <th class="py-3 border-0">Başlangıç</th>
+                    <th class="py-3 border-0">Bitiş</th>
+                    <th class="py-3 border-0">Sebep</th>
+                    <th class="py-3 border-0 text-center">Durum</th>
+                    <th class="pe-4 py-3 border-0 text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-white-50">Kayıtlı izin talebi bulunmuyor.</td>
+                    </tr>
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="ps-4 py-3 align-middle border-secondary border-opacity-10">
+                            <div class="d-flex align-items-center">
+                                <img src="https://ui-avatars.com/api/?name=@(item.Calisan?.Ad)+@(item.Calisan?.Soyad)&background=random&color=fff&size=32" class="rounded-circle me-3" style="width: 32px; height: 32px;">
+                                <div>
+                                    <span class="d-block fw-bold">@item.Calisan?.Ad @item.Calisan?.Soyad</span>
+                                    <small class="text-white-50">ID: @item.CalisanID</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3 align-middle border-secondary border-opacity-10">@item.BaslangicTarihi.ToString("dd.MM.yyyy")</td>
+                        <td class="py-3 align-middle border-secondary border-opacity-10">@item.BitisTarihi.ToString("dd.MM.yyyy")</td>
+                        <td class="py-3 align-middle border-secondary border-opacity-10 text-white-50">@item.Sebep</td>
+                        <td class="py-3 align-middle border-secondary border-opacity-10 text-center">
+                            @{
+                                string badgeClass = item.Durum switch {
+                                    "Onaylandı" => "bg-success",
+                                    "Reddedildi" => "bg-danger",
+                                    _ => "bg-warning text-dark"
+                                };
+                            }
+                            <span class="badge @badgeClass rounded-pill">@item.Durum</span>
+                        </td>
+                        <td class="pe-4 py-3 align-middle border-secondary border-opacity-10 text-end">
+                            @if (item.Durum == "Onay Bekliyor")
+                            {
+                                <form asp-action="ReviewLeave" method="post" class="d-flex align-items-center justify-content-end gap-2">
+                                    <input type="hidden" name="id" value="@item.IzinID" />
+                                    <input type="text" name="yoneticiNotu" class="form-control form-control-sm bg-dark text-white border-secondary border-opacity-25 rounded-pill px-3" style="width: 150px; font-size: 0.75rem;" placeholder="Gerekçe/Not...">
+                                    <button type="submit" name="karar" value="Onayla" class="btn btn-sm btn-success rounded-pill px-3">Onayla</button>
+                                    <button type="submit" name="karar" value="Reddet" class="btn btn-sm btn-outline-danger rounded-pill px-3">Reddet</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

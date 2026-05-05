@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("1384ba60-78cc-495e-89e2-e8e5a6f289ed")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Orenda.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+51b14b5fac96ae19429ca3e45d84773cddc52e35")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d69a5c8e26790c968ad9bd385afa62e71880093")]
 [assembly: System.Reflection.AssemblyProductAttribute("Orenda.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Orenda.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

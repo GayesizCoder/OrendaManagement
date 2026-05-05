@@ -88,9 +88,7 @@
                     @foreach (var member in Model.TakimArkadaslari)
                     {
                         <div class="d-flex align-items-center p-3 rounded transition-hover" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
-                            <div class="member-avatar me-3">
-                                @(member.Ad.Substring(0, 1))@(member.Soyad.Substring(0, 1))
-                            </div>
+                            <img src="https://ui-avatars.com/api/?name=@(member.Ad)+@(member.Soyad)&background=6c5ce7&color=fff&rounded=true" class="rounded-circle me-3" style="width: 45px; height: 45px;">
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h6 class="text-white fw-bold mb-0">@member.Ad @member.Soyad</h6>

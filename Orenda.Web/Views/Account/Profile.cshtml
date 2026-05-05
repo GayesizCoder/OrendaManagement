@@ -1,0 +1,359 @@
+@model Orenda.Web.Models.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "Profil Ayarlarım";
+    var saglik = ViewBag.SaglikVerisi as Orenda.Web.Models.SaglikVerisi;
+    var loglar = ViewBag.GirisCikisLoglari as List<Orenda.Web.Models.SistemLog>;
+}
+
+<div class="container-fluid pe-4">
+    <form asp-action="Profile" method="post" id="profileForm">
+        <!-- Browser Header Style Title -->
+        <div class="browser-header d-flex align-items-center mb-0">
+            <div class="browser-controls d-flex gap-2 me-4">
+                <span class="control red" onclick="window.history.back()" title="Kapat/Geri Dön" style="cursor: pointer;"></span>
+                <span class="control yellow"></span>
+                <span class="control green"></span>
+            </div>
+            <div class="browser-address-bar flex-grow-1">
+                <i class="bi bi-person-circle text-purple me-2"></i>
+                <span class="text-white-50 small">user/profile/settings</span>
+            </div>
+        </div>
+
+        <!-- Browser Tabs -->
+        <div class="browser-tabs-container position-relative mb-0">
+            <ul class="nav nav-tabs border-0 gap-1" id="profileTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active browser-tab py-2 px-4" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">
+                        <i class="bi bi-gear-fill me-2"></i> Kişisel Ayarlar
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link browser-tab py-2 px-4" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
+                        <i class="bi bi-shield-lock-fill me-2 text-danger"></i> Güvenlik
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link browser-tab py-2 px-4" id="myhealth-tab" data-bs-toggle="tab" data-bs-target="#myhealth" type="button" role="tab">
+                        <i class="bi bi-heart-pulse-fill me-2 text-success"></i> Sağlık Verilerim
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link browser-tab py-2 px-4" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button" role="tab">
+                        <i class="bi bi-activity me-2 text-info"></i> Aktivitelerim
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Tab Content Container -->
+        <div class="tab-content glass-panel-tabbed p-4" id="profileTabsContent">
+            
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show rounded-pill px-4 bg-success bg-opacity-10 border-success text-success mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- 1. KİŞİSEL AYARLAR -->
+            <div class="tab-pane fade show active" id="general" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-md-4 text-center border-end border-white border-opacity-10">
+                        <div class="profile-frame mb-4 mx-auto position-relative" style="width: 160px; height: 160px;">
+                            <img src="https://ui-avatars.com/api/?name=@(Model.Ad)+@(Model.Soyad)&background=6c5ce7&color=fff&size=160" class="rounded-circle shadow-lg border border-4 border-purple p-1 w-100 h-100">
+                            <button type="button" class="btn btn-purple btn-sm rounded-circle position-absolute bottom-0 end-0 p-2 shadow">
+                                <i class="bi bi-camera-fill"></i>
+                            </button>
+                        </div>
+                        <h5 class="fw-bold text-white mb-1">@Model.Ad @Model.Soyad</h5>
+                        <p class="text-white-50 small mb-4">Global ID: <code class="text-purple">@Model.GlobalID</code></p>
+                        
+                        <div class="bg-dark bg-opacity-25 rounded-4 p-3 border border-secondary border-opacity-10 mx-2">
+                            <div class="d-flex justify-content-around">
+                                <div>
+                                    <small class="text-white-50 d-block small">Görevler</small>
+                                    <span class="fw-bold">@ViewBag.GorevIstatistik.Toplam</span>
+                                </div>
+                                <div class="vr opacity-25"></div>
+                                <div>
+                                    <small class="text-white-50 d-block small">Başarı</small>
+                                    <span class="text-success fw-bold">%@((ViewBag.GorevIstatistik.Toplam > 0) ? (ViewBag.GorevIstatistik.Tamamlanan * 100 / ViewBag.GorevIstatistik.Toplam) : 0)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <h6 class="fw-bold mb-4 text-white">Profil Bilgileri</h6>
+                        <div class="row g-3 mb-5">
+                            <div class="col-md-6">
+                                <label class="form-label text-white-50 small mb-2">Ad</label>
+                                <input asp-for="Ad" class="form-control glass-input py-2" placeholder="Adınız">
+                                <span asp-validation-for="Ad" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-white-50 small mb-2">Soyad</label>
+                                <input asp-for="Soyad" class="form-control glass-input py-2" placeholder="Soyadınız">
+                                <span asp-validation-for="Soyad" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-white-50 small mb-2">E-posta</label>
+                                <input asp-for="Eposta" class="form-control glass-input py-2" placeholder="email@ornek.com">
+                                <span asp-validation-for="Eposta" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-white-50 small mb-2">Telefon</label>
+                                <input asp-for="Telefon" class="form-control glass-input py-2" placeholder="05xx xxx xx xx">
+                                <span asp-validation-for="Telefon" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mt-2">
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-10 h-100">
+                                    <h6 class="text-purple fw-bold mb-3 small"><i class="bi bi-shield-check me-2"></i> Hesap Özeti</h6>
+                                    <ul class="list-unstyled mb-0 x-small text-white-50">
+                                        <li class="mb-2 d-flex justify-content-between">
+                                            <span>Rol</span>
+                                            <span class="text-white">@ViewBag.KullaniciRol</span>
+                                        </li>
+                                        <li class="mb-2 d-flex justify-content-between">
+                                            <span>Üyelik</span>
+                                            <span class="text-white">Aktif</span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <span>Departman</span>
+                                            <span class="text-white">@(ViewBag.DepartmanAd ?? "Merkez")</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-10 h-100">
+                                    <h6 class="text-success fw-bold mb-3 small"><i class="bi bi-calendar-check me-2"></i> Yaklaşan Görevler</h6>
+                                    <div class="d-flex flex-column gap-2">
+                                        <div class="p-2 bg-dark bg-opacity-25 rounded border border-white border-opacity-5 x-small d-flex justify-content-between">
+                                            <span class="text-white-50 text-truncate me-2">Profil Güncelleme</span>
+                                            <span class="badge bg-purple bg-opacity-25 text-purple">Bugün</span>
+                                        </div>
+                                        <div class="p-2 bg-dark bg-opacity-25 rounded border border-white border-opacity-5 x-small d-flex justify-content-between">
+                                            <span class="text-white-50 text-truncate me-2">Güvenlik Kontrolü</span>
+                                            <span class="badge bg-success bg-opacity-25 text-success">Yarın</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. GÜVENLİK -->
+            <div class="tab-pane fade" id="security" role="tabpanel">
+                <div class="row justify-content-center">
+                    <div class="col-md-9">
+                        <div class="text-center mb-5">
+                            <i class="bi bi-shield-lock display-6 text-danger opacity-50 mb-3 d-block"></i>
+                            <h5 class="fw-bold text-white">Güvenlik ve Şifre Ayarları</h5>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label class="form-label text-white-50 small mb-2">Mevcut Şifre</label>
+                                <input asp-for="MevcutSifre" type="password" class="form-control glass-input py-2" placeholder="••••••••">
+                                <span asp-validation-for="MevcutSifre" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-white-50 small mb-2">Yeni Şifre</label>
+                                <input asp-for="YeniSifre" type="password" class="form-control glass-input py-2" placeholder="Min. 6 Karakter">
+                                <span asp-validation-for="YeniSifre" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-white-50 small mb-2">Yeni Şifre (Tekrar)</label>
+                                <input asp-for="YeniSifreTekrar" type="password" class="form-control glass-input py-2" placeholder="Şifreyi Onayla">
+                                <span asp-validation-for="YeniSifreTekrar" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. SAĞLIK VERİLERİM -->
+            <div class="tab-pane fade" id="myhealth" role="tabpanel">
+                <h5 class="fw-bold text-white mb-4"><i class="bi bi-heart-pulse-fill me-2 text-success"></i> Güncel Sağlık Verileriniz</h5>
+                <div class="row g-4">
+                    @if (saglik != null)
+                    {
+                        <div class="col-md-4">
+                            <div class="health-card p-4 rounded-4 bg-danger bg-opacity-10 border border-danger border-opacity-20 text-center">
+                                <i class="bi bi-heart-fill text-danger display-6 mb-3 d-block"></i>
+                                <h3 class="text-white fw-bold m-0">@saglik.Nabiz</h3>
+                                <small class="text-white-50 small">Nabız (BPM)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="health-card p-4 rounded-4 bg-success bg-opacity-10 border border-success border-opacity-20 text-center">
+                                <i class="bi bi-lightning-charge-fill text-success display-6 mb-3 d-block"></i>
+                                <h3 class="text-white fw-bold m-0">@saglik.AdimSayisi</h3>
+                                <small class="text-white-50 small">Bugünkü Adım</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="health-card p-4 rounded-4 bg-primary bg-opacity-10 border border-primary border-opacity-20 text-center">
+                                <i class="bi bi-moon-stars-fill text-primary display-6 mb-3 d-block"></i>
+                                <h3 class="text-white fw-bold m-0">@saglik.UykuSaati</h3>
+                                <small class="text-white-50 small">Uyku (Saat)</small>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-12 text-center py-3">
+                            <small class="text-white-50">Cihaz verisi bulunamadı.</small>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- 4. AKTİVİTELERİM -->
+            <div class="tab-pane fade" id="activity" role="tabpanel">
+                <h5 class="fw-bold text-white mb-4"><i class="bi bi-activity me-2 text-info"></i> Son Giriş-Çıkış Kayıtları</h5>
+                <div class="list-group list-group-flush bg-transparent">
+                    @foreach (var log in loglar ?? new List<Orenda.Web.Models.SistemLog>())
+                    {
+                        <div class="list-group-item bg-transparent border-secondary border-opacity-10 px-2 py-3 d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle @(log.IslemTipi.Contains("Giriş") ? "bg-success" : "bg-danger") bg-opacity-25 p-2 me-3">
+                                    <i class="bi @(log.IslemTipi.Contains("Giriş") ? "bi-box-arrow-in-right" : "bi-box-arrow-right") @(log.IslemTipi.Contains("Giriş") ? "text-success" : "text-danger")"></i>
+                                </div>
+                                <strong class="text-white">@log.IslemTipi</strong>
+                            </div>
+                            <span class="text-white-50">@log.IslemTarihi.ToString("dd MMMM, HH:mm")</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="mt-4 text-end save-btn-container">
+                <button type="submit" class="btn btn-purple rounded-pill px-5 py-2 fw-bold shadow-lg">
+                    <i class="bi bi-save me-2"></i> Değişiklikleri Kaydet
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Browser Style Header - Unified Border System */
+    .browser-header {
+        padding: 10px 20px;
+        border-radius: 15px 15px 0 0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: none;
+        background: rgba(30, 30, 45, 0.3); /* Subtle background to define it */
+    }
+
+    .browser-tabs-container {
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(30, 30, 45, 0.2);
+    }
+
+    .control {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        transition: transform 0.2s;
+    }
+    .control:hover { transform: scale(1.2); }
+    .red { background: #ff5f56; }
+    .yellow { background: #ffbd2e; }
+    .green { background: #27c93f; }
+    
+    .browser-address-bar {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 5px 15px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Tabs Styling - Integrated */
+    .browser-tab {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 2px solid transparent !important;
+        color: rgba(255, 255, 255, 0.4) !important;
+        padding: 8px 20px !important;
+        border-radius: 0 !important;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .browser-tab.active {
+        color: white !important;
+        border-bottom-color: var(--accent-purple) !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+    
+    .browser-tab:hover:not(.active) {
+        color: rgba(255, 255, 255, 0.8) !important;
+        background: rgba(255, 255, 255, 0.02) !important;
+    }
+
+    /* Content Container - Expanded to match sidebar */
+    .glass-panel-tabbed {
+        background: rgba(40, 40, 60, 0.4);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: none;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        min-height: calc(100vh - 160px); /* Extends to match sidebar */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tab-content {
+        flex-grow: 1; /* Pushes everything below to the bottom */
+    }
+
+    .save-btn-container {
+        margin-top: auto; /* Pushes the button to the very bottom of the panel */
+        padding-top: 20px;
+    }
+
+    .glass-input {
+        background: rgba(0, 0, 0, 0.3) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        border-radius: 8px !important;
+    }
+    
+    .glass-input:focus {
+        background: rgba(0, 0, 0, 0.5) !important;
+        border-color: var(--accent-purple) !important;
+        box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.25) !important;
+    }
+
+    .tab-content.switching { filter: blur(5px); transition: filter 0.2s ease; }
+    .x-small { font-size: 0.65rem; }
+    .small { font-size: 0.85rem; }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('button[data-bs-toggle="tab"]').on('show.bs.tab', function() {
+                $('#profileTabsContent').addClass('switching');
+                setTimeout(function() {
+                    $('#profileTabsContent').removeClass('switching');
+                }, 200);
+            });
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

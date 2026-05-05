@@ -1,0 +1,325 @@
+@model Orenda.Web.Models.ViewModels.EmployeeDetailsViewModel
+@{
+    ViewData["Title"] = Model.Kullanici.Ad + " " + Model.Kullanici.Soyad + " - Detaylar";
+}
+
+<div class="container-fluid pe-4">
+    <!-- Browser Header Style Title -->
+    <div class="browser-header d-flex align-items-center mb-0">
+        <div class="browser-controls d-flex gap-2 me-4">
+            <span class="control red" onclick="window.history.back()" title="Kapat/Geri Dön" style="cursor: pointer;"></span>
+            <span class="control yellow"></span>
+            <span class="control green"></span>
+        </div>
+        <div class="browser-address-bar flex-grow-1">
+            <i class="bi bi-shield-lock-fill text-success me-2"></i>
+            <span class="text-white-50 small">employee/details/@Model.Kullanici.CalisanID</span>
+        </div>
+    </div>
+
+    <!-- Browser Tabs -->
+    <div class="browser-tabs-container position-relative mb-0">
+        <ul class="nav nav-tabs border-0 gap-1" id="employeeTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active browser-tab" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">
+                    <i class="bi bi-person-lines-fill me-2"></i> Kişi Bilgisi
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link browser-tab" id="health-tab" data-bs-toggle="tab" data-bs-target="#health" type="button" role="tab">
+                    <i class="bi bi-heart-pulse-fill me-2 text-danger"></i> Sağlık
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link browser-tab" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button" role="tab">
+                    <i class="bi bi-clock-history me-2 text-info"></i> Giriş & Çıkış
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link browser-tab" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab">
+                    <i class="bi bi-journal-text me-2 text-warning"></i> Geçmiş İşlemler
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Tab Content Container -->
+    <div class="tab-content glass-panel-tabbed p-4" id="employeeTabsContent">
+        
+        <!-- 1. KİŞİ BİLGİSİ -->
+        <div class="tab-pane fade show active" id="info" role="tabpanel">
+            <div class="row g-5">
+                <div class="col-md-4 text-center">
+                    <div class="profile-frame mb-4">
+                        <img src="https://ui-avatars.com/api/?name=@(Model.Kullanici.Ad)+@(Model.Kullanici.Soyad)&background=6c5ce7&color=fff&size=200" class="rounded-circle shadow-lg border border-4 border-purple p-1">
+                    </div>
+                    <h3 class="fw-bold text-white mb-1">@Model.Kullanici.Ad @Model.Kullanici.Soyad</h3>
+                    <p class="text-white-50">@Model.Kullanici.Rol</p>
+                    <div class="badge bg-purple rounded-pill px-4 py-2 mt-2">@Model.Kullanici.GlobalID</div>
+                </div>
+                <div class="col-md-8">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="info-card p-3 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-10">
+                                <label class="text-white-50 small d-block mb-1">E-posta</label>
+                                <span class="text-white fw-bold">@Model.Kullanici.Eposta</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-card p-3 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-10">
+                                <label class="text-white-50 small d-block mb-1">Telefon</label>
+                                <span class="text-white fw-bold">@Model.Kullanici.Telefon</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-card p-3 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-10">
+                                <label class="text-white-50 small d-block mb-1">Departman</label>
+                                <span class="text-white fw-bold">@(Model.Kullanici.Departman?.Ad ?? "Belirtilmemiş")</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-card p-3 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-10">
+                                <label class="text-white-50 small d-block mb-1">Takım</label>
+                                <span class="text-white fw-bold">@(Model.Kullanici.Takim?.Ad ?? "Atanmamış")</span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="info-card p-4 rounded-4 bg-purple bg-opacity-10 border border-purple border-opacity-20 mt-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-purple fw-bold mb-1">Verimlilik Skoru</h6>
+                                        <p class="text-white-50 small mb-0">Haftalık performans ölçümü</p>
+                                    </div>
+                                    <div class="display-5 fw-bold text-white">@Model.Kullanici.HaftalikVerimlilikSkoru</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. SAĞLIK VERİLERİ -->
+        <div class="tab-pane fade" id="health" role="tabpanel">
+            <div class="row g-4">
+                @if (Model.SaglikVerisi != null)
+                {
+                    <div class="col-md-4">
+                        <div class="health-card p-4 rounded-4 bg-danger bg-opacity-10 border border-danger border-opacity-20 text-center h-100">
+                            <i class="bi bi-heart-fill text-danger display-6 mb-3 d-block"></i>
+                            <h3 class="text-white fw-bold m-0">@Model.SaglikVerisi.Nabiz</h3>
+                            <small class="text-white-50">Nabız (BPM)</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="health-card p-4 rounded-4 bg-info bg-opacity-10 border border-info border-opacity-20 text-center h-100">
+                            <i class="bi bi-lightning-charge-fill text-info display-6 mb-3 d-block"></i>
+                            <h3 class="text-white fw-bold m-0">@Model.SaglikVerisi.AdimSayisi</h3>
+                            <small class="text-white-50">Bugünkü Adım</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="health-card p-4 rounded-4 bg-primary bg-opacity-10 border border-primary border-opacity-20 text-center h-100">
+                            <i class="bi bi-moon-stars-fill text-primary display-6 mb-3 d-block"></i>
+                            <h3 class="text-white fw-bold m-0">@Model.SaglikVerisi.UykuSaati</h3>
+                            <small class="text-white-50">Uyku (Saat)</small>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-heartbreak text-white-25 display-1 mb-3 d-block"></i>
+                        <h4 class="text-white-50">Henüz sağlık verisi kaydedilmemiş.</h4>
+                        <p class="text-white-50 small">Akıllı saat senkronizasyonu bekleniyor.</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- 3. GİRİŞ & ÇIKIŞ -->
+        <div class="tab-pane fade" id="attendance" role="tabpanel">
+            <h5 class="fw-bold text-white mb-4"><i class="bi bi-clock-history me-2 text-info"></i> Son Giriş/Çıkış Hareketleri</h5>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0">
+                    <thead>
+                        <tr class="border-secondary border-opacity-25">
+                            <th class="text-white-50 fw-normal">İşlem</th>
+                            <th class="text-white-50 fw-normal">Tarih & Saat</th>
+                            <th class="text-white-50 fw-normal">IP Adresi</th>
+                            <th class="text-white-50 fw-normal">Detay</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model.GirisCikisLoglari)
+                        {
+                            <tr class="border-secondary border-opacity-10">
+                                <td>
+                                    <span class="badge @(log.IslemTipi.Contains("Giriş") ? "bg-success" : "bg-danger") bg-opacity-10 @(log.IslemTipi.Contains("Giriş") ? "text-success" : "text-danger") rounded-pill px-3">
+                                        @log.IslemTipi
+                                    </span>
+                                </td>
+                                <td class="text-white">@log.IslemTarihi.ToString("dd MMMM yyyy HH:mm")</td>
+                                <td class="text-white-50">@log.IPAdresi</td>
+                                <td class="text-white-50 small">@log.IslemDetayi</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4. GEÇMİŞ İŞLEMLER -->
+        <div class="tab-pane fade" id="history" role="tabpanel">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="history-section p-4 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-10 h-100">
+                        <h6 class="fw-bold text-white mb-3">Son İzinler</h6>
+                        @foreach (var izin in Model.Izinler.Take(3))
+                        {
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-white border-opacity-10">
+                                <div>
+                                    <span class="text-white d-block small">@izin.Sebep</span>
+                                    <small class="text-white-50">@izin.BaslangicTarihi.ToString("dd MMM") - @izin.BitisTarihi.ToString("dd MMM")</small>
+                                </div>
+                                <span class="badge @(izin.Durum == "Onaylandı" ? "text-success" : "text-warning") small">@izin.Durum</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="history-section p-4 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-10 h-100">
+                        <h6 class="fw-bold text-white mb-3">Son Dilekçeler</h6>
+                        @foreach (var talep in Model.Talepler.Take(3))
+                        {
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-white border-opacity-10">
+                                <div>
+                                    <span class="text-white d-block small">@talep.Konu</span>
+                                    <small class="text-white-50">@talep.OlusturulmaTarihi.ToString("dd MMM yyyy")</small>
+                                </div>
+                                <span class="badge bg-secondary text-white-50 small">@talep.Durum</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="history-section p-4 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-10">
+                        <h6 class="fw-bold text-white mb-3">Devam Eden Görevler</h6>
+                        <div class="row g-2">
+                            @foreach (var gorev in Model.Gorevler.Where(g => g.Durum != "Tamamlandı").Take(4))
+                            {
+                                <div class="col-md-6">
+                                    <div class="p-2 bg-dark bg-opacity-50 rounded border border-white border-opacity-10 d-flex justify-content-between align-items-center">
+                                        <span class="text-white-50 small text-truncate me-2">@gorev.Baslik</span>
+                                        <span class="badge bg-purple x-small">%@gorev.TamamlanmaOrani</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Browser Style Header */
+    .browser-header {
+        padding: 10px 20px;
+        border-radius: 15px 15px 0 0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: none;
+    }
+    .control {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        transition: transform 0.2s;
+    }
+    .control:hover { transform: scale(1.2); }
+    .red { background: #ff5f56; }
+    .yellow { background: #ffbd2e; }
+    .green { background: #27c93f; }
+    
+    .browser-address-bar {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 5px 15px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Tabs Styling */
+    .browser-tab {
+        background: rgba(30, 30, 45, 0.4) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-bottom: none !important;
+        color: rgba(255, 255, 255, 0.5) !important;
+        padding: 12px 25px !important;
+        border-radius: 12px 12px 0 0 !important;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .browser-tab.active {
+        background: rgba(40, 40, 60, 0.9) !important;
+        color: white !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .browser-tab:not(.active) {
+        filter: blur(0.5px);
+        opacity: 0.7;
+    }
+    
+    .browser-tab:hover:not(.active) {
+        filter: blur(0);
+        opacity: 1;
+        background: rgba(50, 50, 75, 0.6) !important;
+    }
+
+    /* Content Container */
+    .glass-panel-tabbed {
+        background: rgba(40, 40, 60, 0.5);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* When a tab is switching, add a slight blur to the whole content */
+    .tab-content.switching {
+        filter: blur(5px);
+        transition: filter 0.3s ease;
+    }
+
+    .info-card, .health-card, .history-section {
+        transition: transform 0.3s ease, background 0.3s ease;
+    }
+    
+    .info-card:hover, .health-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.08) !important;
+    }
+    
+    .x-small { font-size: 0.65rem; }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Tab switching effect
+            $('button[data-bs-toggle="tab"]').on('show.bs.tab', function() {
+                $('#employeeTabsContent').addClass('switching');
+                setTimeout(function() {
+                    $('#employeeTabsContent').removeClass('switching');
+                }, 300);
+            });
+        });
+    </script>
+}

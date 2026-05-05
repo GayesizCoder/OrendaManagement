@@ -118,5 +118,43 @@ namespace Orenda.Web.Controllers
             }
             return RedirectToAction(nameof(Employees));
         }
+        // 5. ÇALIŞAN DETAYLARI (TABLI GÖRÜNÜM)
+        public async Task<IActionResult> Details(int id)
+        {
+            var calisan = await _context.Kullanicilar
+                .Include(k => k.Departman)
+                .Include(k => k.Takim)
+                .FirstOrDefaultAsync(k => k.CalisanID == id);
+
+            if (calisan == null) return NotFound();
+
+            var model = new Orenda.Web.Models.ViewModels.EmployeeDetailsViewModel
+            {
+                Kullanici = calisan,
+                SaglikVerisi = await _context.SaglikVerileri
+                    .Where(s => s.CalisanID == id)
+                    .OrderByDescending(s => s.TarihSaat)
+                    .FirstOrDefaultAsync(),
+                GirisCikisLoglari = await _context.SistemLoglari
+                    .Where(l => l.KullaniciID == id && (l.IslemTipi == "Sisteme Giriş" || l.IslemTipi == "Sistemden Çıkış"))
+                    .OrderByDescending(l => l.IslemTarihi)
+                    .Take(10)
+                    .ToListAsync(),
+                Talepler = await _context.Talepler
+                    .Where(t => t.CalisanID == id)
+                    .OrderByDescending(t => t.OlusturulmaTarihi)
+                    .ToListAsync(),
+                Izinler = await _context.Izinler
+                    .Where(i => i.CalisanID == id)
+                    .OrderByDescending(i => i.BaslangicTarihi)
+                    .ToListAsync(),
+                Gorevler = await _context.ToDos
+                    .Where(g => g.AtananCalisanID == id)
+                    .OrderByDescending(g => g.BaslangicTarihi)
+                    .ToListAsync()
+            };
+
+            return View(model);
+        }
     }
 }

@@ -1,0 +1,70 @@
+@model IEnumerable<Orenda.Web.Models.ToDo>
+@{
+    ViewData["Title"] = "Görev Onayları";
+}
+
+<div class="container-fluid pe-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a asp-action="Management" class="text-purple text-decoration-none">Yönetim</a></li>
+                <li class="breadcrumb-item active text-white-50" aria-current="page">Görev Onayları</li>
+              </ol>
+            </nav>
+            <h2 class="fw-bold mb-0">Görev Planı Onayları</h2>
+        </div>
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">@Model.Count() Bekleyen Onay</span>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="glass-panel p-5 text-center">
+            <i class="bi bi-check2-circle display-1 text-success opacity-25 mb-3"></i>
+            <h4 class="text-white-50">Onay bekleyen görev planı bulunmuyor.</h4>
+            <p class="text-white-25">Tüm ekipler güncel ve planlı çalışıyor!</p>
+            <a asp-action="Management" class="btn btn-purple rounded-pill px-4 mt-3">Panele Dön</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var task in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-panel p-4 h-100 d-flex flex-column">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="badge bg-purple bg-opacity-25 text-purple rounded-pill px-3">@task.Takim?.Ad</span>
+                            <small class="text-white-50"><i class="bi bi-calendar-event me-1"></i> @task.BaslangicTarihi?.ToString("dd.MM.yyyy")</small>
+                        </div>
+                        
+                        <h5 class="fw-bold text-white mb-2">@task.Baslik</h5>
+                        <p class="text-white-50 small flex-grow-1">@task.Aciklama</p>
+                        
+                        <div class="bg-dark bg-opacity-50 rounded p-3 mb-3 border border-secondary border-opacity-10">
+                            <div class="d-flex align-items-center mb-2">
+                                <img src="https://ui-avatars.com/api/?name=@(task.AtananKisi?.Ad)+@(task.AtananKisi?.Soyad)&background=random&color=fff&size=24" class="rounded-circle me-2" style="width: 24px; height: 24px;">
+                                <small class="text-white">Atanan: @task.AtananKisi?.Ad @task.AtananKisi?.Soyad</small>
+                            </div>
+                        </div>
+
+                        <form asp-action="ReviewTask" method="post" class="mt-auto">
+                            <input type="hidden" name="id" value="@task.GorevNo" />
+                            <div class="mb-3">
+                                <textarea name="onayNotu" class="form-control bg-dark text-white border-secondary small" rows="2" placeholder="Değerlendirme notunuz..."></textarea>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="submit" name="karar" value="Onayla" class="btn btn-success flex-grow-1 rounded-pill">
+                                    <i class="bi bi-check-lg me-1"></i> Onayla
+                                </button>
+                                <button type="submit" name="karar" value="Reddet" class="btn btn-outline-danger flex-grow-1 rounded-pill">
+                                    <i class="bi bi-x-lg me-1"></i> Reddet
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

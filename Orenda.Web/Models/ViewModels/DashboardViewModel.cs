@@ -25,6 +25,7 @@ namespace Orenda.Web.Models.ViewModels
         public Dictionary<string, int> DepartmanDagilimi { get; set; } = new Dictionary<string, int>();
         
         public SistemLog? SonGirisYapan { get; set; }
+        public int GununOneCikaniIslemSayisi { get; set; }
         
         // Departman Dağılım Toplamı
         public int DepartmanDoluKullaniciSayisi { get; set; }

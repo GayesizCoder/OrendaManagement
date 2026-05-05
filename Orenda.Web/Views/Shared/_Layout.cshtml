@@ -96,6 +96,11 @@
                 </div>
 
                 <ul class="nav nav-pills flex-column mb-auto overflow-hidden">
+                    <li class="nav-item mb-2 pb-2 border-bottom border-secondary" title="Geri Dön">
+                        <a href="javascript:history.back()" class="nav-link text-white-50 transition-hover">
+                            <i class="bi bi-arrow-left-circle-fill me-3 fs-5"></i> <span class="sidebar-text">Geri Dön</span>
+                        </a>
+                    </li>
                     <li class="nav-item" title="Dashboard">
                         <a asp-controller="Home" asp-action="Index"
                            class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "bg-purple active" : "")">
@@ -116,6 +121,11 @@
                     </li>
                     @if (User.IsInRole("Admin"))
                     {
+                        <li class="nav-item mb-1" title="Çalışan Yönetimi">
+                            <a asp-controller="Admin" asp-action="Management" class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" ? "bg-purple active" : "")">
+                                <i class="bi bi-shield-lock-fill me-3"></i> <span class="sidebar-text">Çalışan Yönetimi</span>
+                            </a>
+                        </li>
                         <li class="nav-item" title="Ekip Yönetimi">
                             <a asp-controller="Team" asp-action="Index" class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Team" ? "bg-purple active" : "")">
                                 <i class="bi bi-people me-3"></i> <span class="sidebar-text">Ekip Yönetimi</span>
@@ -134,31 +144,56 @@
                     }
                     else
                     {
-                        <li class="nav-item" title="Takımım">
-                            <a asp-controller="Home" asp-action="MyTeam"
-                               class="nav-link text-white @(ViewContext.RouteData.Values["Action"]?.ToString() == "MyTeam" ? "bg-purple active" : "text-white-50")">
-                                <i class="bi bi-people me-3"></i> <span class="sidebar-text">Takımım</span>
-                            </a>
-                        </li>
+                        <li class="nav-item mb-2">
+                        <a class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "WorkLife" ? "bg-purple active" : "") d-flex align-items-center py-2 px-3 rounded-3 transition-all" asp-controller="WorkLife" asp-action="Index">
+                            <i class="bi bi-briefcase me-3 fs-5"></i>
+                            <span class="sidebar-text">Çalışma Hayatım</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Chat" ? "bg-purple active" : "") d-flex align-items-center py-2 px-3 rounded-3 transition-all" asp-controller="Chat" asp-action="Index">
+                            <i class="bi bi-chat-dots me-3 fs-5"></i>
+                            <span class="sidebar-text">Mesajlar</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link text-white @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "MyTeam" ? "bg-purple active" : "") d-flex align-items-center py-2 px-3 rounded-3 transition-all" asp-controller="Home" asp-action="MyTeam">
+                            <i class="bi bi-people me-3 fs-5"></i>
+                            <span class="sidebar-text">Takımım</span>
+                        </a>
+                    </li>
                     }
                 </ul>
 
+                <script>
+                    function copyToClipboard(text) {
+                        navigator.clipboard.writeText(text).then(() => {
+                            alert('ID kopyalandı: ' + text);
+                        });
+                    }
+                </script>
+
                 <div class="user-profile mt-auto pt-3 border-top border-secondary d-flex align-items-center">
-                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2 border border-2" style="border-color: var(--accent-purple) !important; width:40px; height:40px;">
-                    <div class="flex-grow-1 overflow-hidden">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <strong class="d-block text-white text-truncate" style="font-size: 0.85rem;">@User.Identity.Name</strong>
-                            <small class="text-white-50 d-block" style="font-size: 0.75rem;">@(User.IsInRole("Admin") ? "Yönetici" : "Çalışan")</small>
-                            <a asp-controller="Account" asp-action="Logout" class="d-block text-danger small mt-1 text-decoration-none" style="font-size: 0.75rem;">
-                                <i class="bi bi-box-arrow-right"></i> Çıkış Yap
-                            </a>
-                        }
-                        else
-                        {
-                            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-sm w-100 sidebar-text">Giriş Yap</a>
-                        }
-                    </div>
+                    <a asp-controller="Account" asp-action="Profile" class="d-flex align-items-center text-decoration-none w-100">
+                        <img src="https://ui-avatars.com/api/?name=@(User.Identity?.Name ?? "User")&background=6c5ce7&color=fff&rounded=true" class="rounded-circle me-2 border border-2" style="border-color: var(--accent-purple) !important; width:40px; height:40px;">
+                        <div class="flex-grow-1 overflow-hidden">
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <strong class="d-block text-white text-truncate" style="font-size: 0.85rem;">@User.Identity.Name</strong>
+                                <small class="text-white-50 d-block" style="font-size: 0.75rem;">@(User.IsInRole("Admin") ? "Yönetici" : "Çalışan")</small>
+                            }
+                        </div>
+                    </a>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="Account" asp-action="Logout" class="text-danger ms-2 p-2" title="Çıkış Yap">
+                            <i class="bi bi-box-arrow-right fs-5"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-sm w-100 sidebar-text">Giriş Yap</a>
+                    }
                 </div>
             </div>
         </nav>

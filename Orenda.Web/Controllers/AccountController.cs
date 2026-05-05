@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Orenda.Web.Data;
 using Orenda.Web.Models;
 using System.Linq;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity; // PasswordHasher için eklendi
 using Orenda.Web.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Orenda.Web.Controllers
 {
@@ -72,6 +73,7 @@ namespace Orenda.Web.Controllers
                         user.Sifre = _passwordHasher.HashPassword(user, sifre);
                     }
                     user.SonGirisIP = HttpContext.Connection.RemoteIpAddress?.ToString();
+                    user.AktiflikDurumu = "Çevrimiçi";
                     _context.SaveChanges();
 
                     // Claims oluşturma
@@ -105,6 +107,17 @@ namespace Orenda.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
+            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdStr, out int userId))
+            {
+                var user = await _context.Kullanicilar.FindAsync(userId);
+                if (user != null)
+                {
+                    user.AktiflikDurumu = "Çevrimdışı";
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             await HttpContext.SignOutAsync("OrendaAuthCookie");
             return RedirectToAction("Login");
         }
@@ -141,6 +154,92 @@ namespace Orenda.Web.Controllers
                 return RedirectToAction("Login");
             }
             return View(yeniKullanici);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var user = await _context.Kullanicilar
+                .Include(k => k.Departman)
+                .Include(k => k.Takim)
+                .FirstOrDefaultAsync(k => k.CalisanID == userId);
+            
+            if (user == null) return NotFound();
+
+            // Ek Veriler (Sekmeler için)
+            ViewBag.SaglikVerisi = await _context.SaglikVerileri
+                .Where(s => s.CalisanID == userId)
+                .OrderByDescending(s => s.TarihSaat)
+                .FirstOrDefaultAsync();
+
+            ViewBag.GirisCikisLoglari = await _context.SistemLoglari
+                .Where(l => l.KullaniciID == userId && (l.IslemTipi == "Sisteme Giriş" || l.IslemTipi == "Sistemden Çıkış"))
+                .OrderByDescending(l => l.IslemTarihi)
+                .Take(5)
+                .ToListAsync();
+
+            ViewBag.GorevIstatistik = new {
+                Toplam = await _context.ToDos.CountAsync(g => g.AtananCalisanID == userId),
+                Tamamlanan = await _context.ToDos.CountAsync(g => g.AtananCalisanID == userId && g.Durum == "Tamamlandı")
+            };
+
+            var model = new Orenda.Web.Models.ViewModels.ProfileViewModel
+            {
+                Ad = user.Ad,
+                Soyad = user.Soyad,
+                Eposta = user.Eposta,
+                Telefon = user.Telefon,
+                GlobalID = user.GlobalID
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Profile(Orenda.Web.Models.ViewModels.ProfileViewModel model)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var user = await _context.Kullanicilar.FindAsync(userId);
+
+            if (user == null) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                user.Ad = model.Ad;
+                user.Soyad = model.Soyad;
+                user.Eposta = model.Eposta;
+                user.Telefon = model.Telefon;
+
+                // Şifre değişikliği kontrolü
+                if (!string.IsNullOrEmpty(model.YeniSifre))
+                {
+                    if (string.IsNullOrEmpty(model.MevcutSifre))
+                    {
+                        ModelState.AddModelError("MevcutSifre", "Şifre değiştirmek için mevcut şifrenizi girmelisiniz.");
+                        return View(model);
+                    }
+
+                    var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.Sifre, model.MevcutSifre);
+                    if (verificationResult == PasswordVerificationResult.Failed)
+                    {
+                        ModelState.AddModelError("MevcutSifre", "Mevcut şifreniz hatalı.");
+                        return View(model);
+                    }
+
+                    user.Sifre = _passwordHasher.HashPassword(user, model.YeniSifre);
+                }
+
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Profiliniz başarıyla güncellendi.";
+                
+                // Update the Identity Name in the cookie (optional, but good for UX)
+                // Note: Full identity refresh usually requires re-signing in.
+                
+                return RedirectToAction(nameof(Profile));
+            }
+
+            return View(model);
         }
     }
 }

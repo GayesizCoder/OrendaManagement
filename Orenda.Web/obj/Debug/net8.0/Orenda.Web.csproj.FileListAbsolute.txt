@@ -169,3 +169,4 @@ C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0\pub
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0\publish\Orenda.Web.deps.json
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0\publish\Orenda.Web.runtimeconfig.json
 C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0\publish\Orenda.Web.staticwebassets.endpoints.json
+C:\Users\Gaye\Desktop\Orenda\Egzersiz\Orenda.Web\Orenda.Web\bin\Debug\net8.0\appsettings.Example.json

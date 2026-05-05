@@ -50,13 +50,13 @@ namespace Orenda.Web.Controllers
             ViewBag.Takimlar = new SelectList(await _context.Takimlar.OrderBy(t => t.Ad).ToListAsync(), "TakimID", "Ad");
             if (isAdmin)
             {
-                ViewBag.Calisanlar = new SelectList(await _context.Kullanicilar.OrderBy(k => k.Ad).ToListAsync(), "CalisanID", "Ad");
+                ViewBag.Calisanlar = new SelectList(await _context.Kullanicilar.OrderBy(k => k.Ad).ToListAsync(), "CalisanID", "Ad", currentUserId);
             }
             else
             {
                 // Admin deÄŸilse sadece kendisini seÃ§ebilsin
                 var kendisi = await _context.Kullanicilar.Where(k => k.CalisanID == currentUserId).ToListAsync();
-                ViewBag.Calisanlar = new SelectList(kendisi, "CalisanID", "Ad");
+                ViewBag.Calisanlar = new SelectList(kendisi, "CalisanID", "Ad", currentUserId);
             }
 
             return View(gorevler);
@@ -251,7 +251,7 @@ namespace Orenda.Web.Controllers
             {
                 if (statusChanged)
                 {
-                    Response.Headers.Add("X-Status-Changed", "true");
+                    Response.Headers["X-Status-Changed"] = "true";
                 }
                 return await GetTaskCard(adim.GorevNo);
             }

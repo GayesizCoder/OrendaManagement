@@ -51,4 +51,19 @@ app.MapControllerRoute(
     //pattern: "{controller=Account}/{action=Register}/{id?}");
     //pattern: "{controller=ToDo}/{action=Index}/{id?}");
 
+// Database Seeding & GlobalID Generation
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<OrendaDbContext>();
+    var usersWithoutId = context.Kullanicilar.Where(u => string.IsNullOrEmpty(u.GlobalID)).ToList();
+    if (usersWithoutId.Any())
+    {
+        foreach (var user in usersWithoutId)
+        {
+            user.GlobalID = $"{user.SirketKodu}-{100 + user.CalisanID}";
+        }
+        context.SaveChanges();
+    }
+}
+
 app.Run();

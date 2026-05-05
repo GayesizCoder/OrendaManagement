@@ -21,12 +21,14 @@ namespace Orenda.Web.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string view = "week")
         {
+            ViewBag.ViewMode = view;
             // Kullanıcı bilgilerini al
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             int currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
             bool isAdmin = User.IsInRole("Admin");
+            var bugun = DateTime.Today;
 
             if (isAdmin)
             {
@@ -69,8 +71,21 @@ namespace Orenda.Web.Controllers
                     }
                 }
 
-                model.HaftalikProjeler = projeler
-                    .OrderByDescending(t => t.BaslangicTarihi ?? DateTime.Now)
+                var aktifProjeler = projeler
+                    .Where(t => t.Durum == null || (!t.Durum.Contains("Tamamland") && t.Durum != "Bitti" && t.Durum != "Done"))
+                    .ToList();
+
+                if (view == "day")
+                {
+                    aktifProjeler = aktifProjeler.Where(t => (t.BaslangicTarihi ?? DateTime.Now).Date <= bugun && (t.BitisTarihi ?? (t.BaslangicTarihi ?? DateTime.Now).AddDays(1)).Date >= bugun).ToList();
+                }
+                else if (view == "month")
+                {
+                    aktifProjeler = aktifProjeler.Where(t => (t.BaslangicTarihi ?? DateTime.Now).Month == bugun.Month && (t.BaslangicTarihi ?? DateTime.Now).Year == bugun.Year).ToList();
+                }
+
+                model.HaftalikProjeler = aktifProjeler
+                    .OrderByDescending(t => t.GorevNo)
                     .Take(5)
                     .ToList();
                     
@@ -81,11 +96,41 @@ namespace Orenda.Web.Controllers
                     .Take(4)
                     .ToListAsync();
                     
-                model.SonGirisYapan = await _context.SistemLoglari
-                    .Include(s => s.Kullanici)
-                    .Where(s => s.IslemTipi == "Giriş Başarılı" || s.IslemTipi.Contains("Giriş"))
-                    .OrderByDescending(s => s.IslemTarihi)
+                var enAktifKullaniciData = await _context.SistemLoglari
+                    .Where(s => s.IslemTarihi >= bugun)
+                    .GroupBy(s => s.KullaniciID)
+                    .Select(g => new { UserId = g.Key, IslemSayisi = g.Count() })
+                    .OrderByDescending(g => g.IslemSayisi)
                     .FirstOrDefaultAsync();
+
+                if (enAktifKullaniciData != null)
+                {
+                    model.GununOneCikaniIslemSayisi = enAktifKullaniciData.IslemSayisi;
+                    model.SonGirisYapan = await _context.SistemLoglari
+                        .Include(s => s.Kullanici)
+                        .Where(s => s.KullaniciID == enAktifKullaniciData.UserId && s.IslemTarihi >= bugun)
+                        .OrderByDescending(s => s.IslemTarihi)
+                        .FirstOrDefaultAsync();
+                }
+                else
+                {
+                    // Bugün hiç işlem yoksa tüm zamanların en aktif kullanıcısını al
+                    var genelAktifKullaniciData = await _context.SistemLoglari
+                        .GroupBy(s => s.KullaniciID)
+                        .Select(g => new { UserId = g.Key, IslemSayisi = g.Count() })
+                        .OrderByDescending(g => g.IslemSayisi)
+                        .FirstOrDefaultAsync();
+                    
+                    if (genelAktifKullaniciData != null)
+                    {
+                        model.GununOneCikaniIslemSayisi = genelAktifKullaniciData.IslemSayisi;
+                        model.SonGirisYapan = await _context.SistemLoglari
+                            .Include(s => s.Kullanici)
+                            .Where(s => s.KullaniciID == genelAktifKullaniciData.UserId)
+                            .OrderByDescending(s => s.IslemTarihi)
+                            .FirstOrDefaultAsync();
+                    }
+                }
                     
                 // Departman Dağılımı
                 var departmanDagilimi = await _context.Kullanicilar
@@ -110,7 +155,7 @@ namespace Orenda.Web.Controllers
                 var userGorevler = await _context.ToDos
                     .Include(t => t.Adimlar)
                     .Where(t => t.AtananCalisanID == currentUserId || (currUser != null && currUser.TakimID != null && t.TakimID == currUser.TakimID))
-                    .OrderByDescending(t => t.BaslangicTarihi ?? DateTime.Now)
+                    .OrderByDescending(t => t.GorevNo)
                     .ToListAsync();
 
                 var teamMembers = new List<Kullanici>();
@@ -161,7 +206,7 @@ namespace Orenda.Web.Controllers
                     .Include(t => t.AtananKisi)
                     .Include(t => t.Adimlar)
                     .Where(t => t.TakimID == currUser.TakimID)
-                    .OrderByDescending(t => t.BaslangicTarihi ?? DateTime.Now)
+                    .OrderByDescending(t => t.GorevNo)
                     .ToListAsync();
             }
 

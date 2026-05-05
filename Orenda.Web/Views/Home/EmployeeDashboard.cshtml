@@ -77,8 +77,13 @@
                 <small class="text-white-50">Hoş geldin, @userDetails?.Ad @userDetails?.Soyad. İyi çalışmalar!</small>
             </div>
         </div>
-        <div class="text-white-50 small rounded-pill bg-dark bg-opacity-50 px-3 py-1 border border-secondary border-opacity-25">
-            <i class="bi bi-clock me-2"></i> @DateTime.Now.ToString("dd MMMM yyyy - dddd")
+        <div class="d-flex align-items-center gap-3">
+            <a asp-controller="ToDo" asp-action="Index" asp-route-create="true" class="btn btn-purple rounded-pill px-4 shadow-sm">
+                <i class="bi bi-plus-lg me-2"></i> Görev Ekle
+            </a>
+            <div class="text-white-50 small rounded-pill bg-dark bg-opacity-50 px-3 py-1 border border-secondary border-opacity-25">
+                <i class="bi bi-clock me-2"></i> @DateTime.Now.ToString("dd MMMM yyyy - dddd")
+            </div>
         </div>
     </div>
 

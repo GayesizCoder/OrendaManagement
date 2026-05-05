@@ -1,0 +1,179 @@
+@model IEnumerable<Orenda.Web.Models.Mesaj>
+@{
+    ViewData["Title"] = "Mesajlar";
+    var partners = ViewBag.Partners as IEnumerable<Orenda.Web.Models.Kullanici>;
+    var pendingRequests = ViewBag.PendingRequests as IEnumerable<Orenda.Web.Models.SohbetIstegi>;
+    var selectedPartner = ViewBag.SelectedPartner as Orenda.Web.Models.Kullanici;
+    var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+}
+
+<div class="container-fluid h-100 pe-4 position-relative overflow-hidden">
+    <!-- Chat Sidebar (Offcanvas Style) -->
+    <div id="chatSidebar" class="chat-sidebar glass-panel position-absolute h-100 shadow-lg transition-all" style="width: 320px; left: -320px; z-index: 1050; border-radius: 0 20px 20px 0;">
+        <div class="d-flex flex-column h-100">
+            <div class="p-4 border-bottom border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                <h4 class="fw-bold text-white mb-0">Sohbetler</h4>
+                <button class="btn btn-link text-white p-0" onclick="toggleSidebar()">
+                    <i class="bi bi-x-lg fs-5"></i>
+                </button>
+            </div>
+            
+            <div class="p-3">
+                <form asp-action="SendChatRequest" method="post" class="d-flex gap-2">
+                    <input type="text" name="globalId" class="form-control bg-dark border-secondary text-white rounded-3 px-3" placeholder="ID ile ekle...">
+                    <button type="submit" class="btn btn-purple rounded-3 px-3">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Pending Requests -->
+            @if (pendingRequests != null && pendingRequests.Any())
+            {
+                <div class="p-3 bg-purple bg-opacity-10">
+                    <small class="text-purple fw-bold d-block mb-2">İstekler (@pendingRequests.Count())</small>
+                    @foreach (var request in pendingRequests)
+                    {
+                        <div class="d-flex align-items-center justify-content-between p-2 rounded-3 bg-dark bg-opacity-25 mb-2">
+                            <img src="https://ui-avatars.com/api/?name=@(request.Gonderen?.Ad)+@(request.Gonderen?.Soyad)&background=random&color=fff&rounded=false" class="rounded-3 me-2" style="width: 30px; height: 30px;">
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="text-white small text-truncate">@request.Gonderen?.Ad</div>
+                            </div>
+                            <div class="d-flex gap-1">
+                                <form asp-action="HandleRequest" method="post">
+                                    <input type="hidden" name="istekId" value="@request.IstekID" />
+                                    <button name="karar" value="Onayla" class="btn btn-xs btn-success p-1 px-2 rounded-3"><i class="bi bi-check"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="flex-grow-1 overflow-auto p-2">
+                @if (partners != null)
+                {
+                    @foreach (var partner in partners)
+                    {
+                        <a asp-action="Index" asp-route-id="@partner.CalisanID" class="text-decoration-none">
+                            <div class="p-3 mb-2 rounded-3 d-flex align-items-center transition-all @(selectedPartner?.CalisanID == partner.CalisanID ? "bg-purple bg-opacity-25 border border-purple border-opacity-25" : "hover-bg-white-10")">
+                                <img src="https://ui-avatars.com/api/?name=@(partner.Ad)+@(partner.Soyad)&background=random&color=fff&rounded=false" class="rounded-3 me-3" style="width: 45px; height: 45px;">
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <h6 class="text-white fw-bold mb-0 text-truncate">@partner.Ad @partner.Soyad</h6>
+                                    <small class="text-white-50">@partner.Rol</small>
+                                </div>
+                                @if (partner.AktiflikDurumu == "Çevrimiçi")
+                                {
+                                    <span class="badge bg-success p-1 rounded-3 border border-2 border-dark" style="width: 10px; height: 10px;"></span>
+                                }
+                            </div>
+                        </a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Chat Content -->
+    <div class="row h-100 g-0 glass-panel overflow-hidden shadow-lg" style="min-height: 80vh; border-radius: 20px;">
+        <div class="col-12 d-flex flex-column position-relative">
+            <!-- Chat Header -->
+            <div class="p-3 border-bottom border-secondary border-opacity-10 d-flex align-items-center justify-content-between bg-black bg-opacity-10">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-purple rounded-3 me-3 position-relative" onclick="toggleSidebar()">
+                        <i class="bi bi-people-fill"></i>
+                        @if (pendingRequests != null && pendingRequests.Any())
+                        {
+                            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="width: 12px; height: 12px;"></span>
+                        }
+                    </button>
+                    @if (selectedPartner != null)
+                    {
+                        <img src="https://ui-avatars.com/api/?name=@(selectedPartner.Ad)+@(selectedPartner.Soyad)&background=random&color=fff&rounded=false" class="rounded-3 me-3" style="width: 40px; height: 40px;">
+                        <div>
+                            <h6 class="text-white fw-bold mb-0">@selectedPartner.Ad @selectedPartner.Soyad</h6>
+                            <small class="text-success">@selectedPartner.AktiflikDurumu</small>
+                        </div>
+                    }
+                    else
+                    {
+                        <h6 class="text-white fw-bold mb-0">Orenda Sohbet</h6>
+                    }
+                </div>
+            </div>
+
+            @if (selectedPartner != null)
+            {
+                <!-- Messages Area -->
+                <div class="flex-grow-1 overflow-auto p-4 d-flex flex-column gap-3" id="messageArea">
+                    @foreach (var msg in Model)
+                    {
+                        <div class="d-flex @(msg.GonderenID == currentUserId ? "justify-content-end" : "justify-content-start")">
+                            <div class="max-w-75 @(msg.GonderenID == currentUserId ? "bg-purple text-white rounded-3 shadow-sm" : "bg-dark bg-opacity-50 text-white rounded-3") p-3 border border-secondary border-opacity-10">
+                                @if (!string.IsNullOrEmpty(msg.FotografUrl))
+                                {
+                                    <img src="@msg.FotografUrl" class="img-fluid rounded-3 mb-2 d-block shadow-sm" style="max-height: 250px;">
+                                }
+                                <p class="mb-1">@msg.Icerik</p>
+                                <small class="@(msg.GonderenID == currentUserId ? "text-white-50" : "text-white-25") d-block text-end" style="font-size: 0.65rem;">
+                                    @msg.GonderilmeTarihi.ToString("HH:mm")
+                                </small>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Chat Input -->
+                <div class="p-4 border-top border-secondary border-opacity-10 bg-black bg-opacity-20">
+                    <form asp-action="SendMessage" method="post" class="d-flex gap-2">
+                        <input type="hidden" name="aliciId" value="@selectedPartner.CalisanID" />
+                        <div class="input-group">
+                            <button type="button" class="btn btn-outline-secondary border-0 text-white-50 rounded-start-3 px-3" onclick="document.getElementById('imgUrlInput').classList.toggle('d-none')">
+                                <i class="bi bi-image fs-5"></i>
+                            </button>
+                            <input type="text" name="icerik" class="form-control bg-dark border-0 text-white p-3" placeholder="Mesajınızı buraya yazın..." required autocomplete="off">
+                            <button type="submit" class="btn btn-purple px-4 rounded-end-3">
+                                <i class="bi bi-send-fill fs-5"></i>
+                            </button>
+                        </div>
+                        <input type="text" name="fotografUrl" id="imgUrlInput" class="form-control bg-dark border-secondary text-white rounded-3 px-3 d-none mt-2 position-absolute" style="bottom: 85px; left: 20px; width: calc(100% - 40px);" placeholder="Fotoğraf URL'si yapıştırın...">
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="h-100 d-flex flex-column align-items-center justify-content-center text-center p-5 opacity-50">
+                    <h3 class="text-white fw-bold">Hoş Geldiniz</h3>
+                    <p class="text-white-50">Sohbet başlatmak için soldaki menüden birini seçin.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .chat-sidebar { 
+        background: rgba(20, 20, 30, 0.95) !important;
+        backdrop-filter: blur(20px);
+        transition: left 0.3s ease-in-out;
+    }
+    .chat-sidebar.active { left: 0 !important; }
+    .hover-bg-white-10:hover { background: rgba(255,255,255,0.05); }
+    .max-w-75 { max-width: 75%; }
+    .cursor-pointer { cursor: pointer; }
+    #messageArea::-webkit-scrollbar { width: 4px; }
+    #messageArea::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+</style>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('chatSidebar').classList.toggle('active');
+    }
+
+    window.onload = function() {
+        var messageArea = document.getElementById('messageArea');
+        if (messageArea) {
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+    };
+</script>

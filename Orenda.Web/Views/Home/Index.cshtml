@@ -1,4 +1,4 @@
-﻿
+
 @model Orenda.Web.Models.ViewModels.DashboardViewModel
 <style>
     /* Dashboard-Specific Styles */
@@ -31,7 +31,7 @@
     /* Layout Cards */
     .projects-card { grid-column: 1 / 2; grid-row: 1 / 3; }
     .ongoing-card { grid-column: 2 / 3; grid-row: 1 / 2; }
-    .media-card { grid-column: 3 / 4; grid-row: 1 / 3; }
+    .media-card { grid-column: 3 / 4; grid-row: 1 / 2; }
     .files-card { grid-column: 1 / 2; grid-row: 3 / 4; }
     .team-card { grid-column: 2 / 4; grid-row: 2 / 4; }
 
@@ -42,16 +42,27 @@
     
     .timeline-bar {
         position: absolute;
-        height: 24px;
-        border-radius: 12px;
+        height: 28px;
+        border-radius: 14px;
         background: linear-gradient(90deg, #1e1e38, #2a2a4a);
-        top: 3px;
+        top: 1px;
         display: flex;
         align-items: center;
         padding: 0 10px;
         font-size: 0.8rem;
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         border: 1px solid rgba(255,255,255,0.05);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .timeline-bar span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex: 1;
+        min-width: 0;
+        margin-right: 5px;
     }
     .timeline-bar.purple { background: linear-gradient(90deg, var(--accent-purple), #8e7dfa); }
 
@@ -118,22 +129,50 @@
         <!-- 1. Projects Gantt/Timeline Chart -->
         <div class="glass-panel p-4 projects-card">
             <div class="d-flex justify-content-between mb-4">
-                <h5 class="fw-bold m-0">Projeler (Haftalık)</h5>
+                <h5 class="fw-bold m-0">Projeler @(ViewBag.ViewMode == "day" ? "(Günlük)" : ViewBag.ViewMode == "month" ? "(Aylık)" : "(Haftalık)")</h5>
                 <div class="d-flex gap-2">
-                    <span class="badge bg-white bg-opacity-10 text-white rounded-pill px-3 py-2">Gün</span>
-                    <span class="badge bg-purple rounded-pill px-3 py-2" style="background: var(--accent-purple);">Hafta</span>
-                    <span class="badge bg-white bg-opacity-10 text-white rounded-pill px-3 py-2">Ay</span>
+                    <a asp-controller="ToDo" asp-action="Index" asp-route-create="true" class="btn btn-sm btn-purple rounded-pill px-3 shadow-sm me-2" title="Yeni Görev Ekle">
+                        <i class="bi bi-plus-lg"></i>
+                    </a>
+                    <a href="?view=day" class="badge @(ViewBag.ViewMode == "day" ? "bg-purple" : "bg-white bg-opacity-10") text-white rounded-pill px-3 py-2 text-decoration-none" style="@(ViewBag.ViewMode == "day" ? "background: var(--accent-purple);" : "")">Gün</a>
+                    <a href="?view=week" class="badge @(ViewBag.ViewMode == "week" || string.IsNullOrEmpty(ViewBag.ViewMode) ? "bg-purple" : "bg-white bg-opacity-10") text-white rounded-pill px-3 py-2 text-decoration-none" style="@(ViewBag.ViewMode == "week" || string.IsNullOrEmpty(ViewBag.ViewMode) ? "background: var(--accent-purple);" : "")">Hafta</a>
+                    <a href="?view=month" class="badge @(ViewBag.ViewMode == "month" ? "bg-purple" : "bg-white bg-opacity-10") text-white rounded-pill px-3 py-2 text-decoration-none" style="@(ViewBag.ViewMode == "month" ? "background: var(--accent-purple);" : "")">Ay</a>
                 </div>
             </div>
 
             <div class="mt-4 border-top border-secondary border-opacity-25 pt-4">
                 @if (Model != null && Model.HaftalikProjeler.Any())
                 {
+                    var projelerList = Model.HaftalikProjeler.ToList();
+                    var minDate = projelerList.Min(p => p.BaslangicTarihi) ?? DateTime.Now.AddDays(-1);
+                    var maxDate = projelerList.Max(p => p.BitisTarihi) ?? minDate.AddDays(7);
+                    
+                    if ((maxDate - minDate).TotalDays < 7) {
+                        maxDate = minDate.AddDays(7);
+                    }
+                    var totalDays = (maxDate - minDate).TotalDays;
+
                     int i = 0;
-                    foreach (var gorev in Model.HaftalikProjeler)
+                    foreach (var gorev in projelerList)
                     {
-                        var leftPos = (i * 15) + "%"; // Basit bir fake offset
-                        var widthVal = (30 + (i * 5)) + "%"; // Fake uzunluk
+                        var baslangic = gorev.BaslangicTarihi ?? minDate;
+                        var bitis = gorev.BitisTarihi ?? baslangic.AddDays(3);
+                        if (bitis > maxDate) bitis = maxDate;
+                        if (baslangic < minDate) baslangic = minDate;
+
+                        var startDiff = (baslangic - minDate).TotalDays;
+                        var duration = (bitis - baslangic).TotalDays;
+                        if (duration < 1) duration = 1;
+
+                        var leftPercent = (startDiff / totalDays) * 100;
+                        var widthPercent = (duration / totalDays) * 100;
+                        
+                        if (leftPercent + widthPercent > 100) widthPercent = 100 - leftPercent;
+                        if (widthPercent < 5) widthPercent = 5;
+
+                        var leftPos = leftPercent.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + "%";
+                        var widthVal = widthPercent.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + "%";
+                        
                         var isPurple = (i % 2 == 0) ? "purple" : "";
                         var kategori = gorev.Baslik.Length > 12 ? gorev.Baslik.Substring(0, 12) + "..." : gorev.Baslik;
                         
@@ -173,15 +212,15 @@
             <div class="mt-4">
                 <div class="d-flex justify-content-between text-white-50 small mb-2">
                     <span><i class="bi bi-circle-fill text-purple me-2" style="color: var(--accent-purple); font-size: 8px;"></i>Geliştirme</span>
-                    <span>%@Model.GelistirmeYuzdesi</span>
+                    <span>%@Model?.GelistirmeYuzdesi</span>
                 </div>
                 <div class="d-flex justify-content-between text-white-50 small mb-2">
                     <span><i class="bi bi-circle-fill text-info me-2" style="font-size: 8px;"></i>Tasarım</span>
-                    <span>%@Model.TasarimYuzdesi</span>
+                    <span>%@Model?.TasarimYuzdesi</span>
                 </div>
                 <div class="d-flex justify-content-between text-white-50 small">
                     <span><i class="bi bi-circle-fill text-secondary me-2" style="font-size: 8px;"></i>Diğer</span>
-                    <span>%@Model.DigerYuzdesi</span>
+                    <span>%@Model?.DigerYuzdesi</span>
                 </div>
             </div>
         </div>
@@ -191,12 +230,12 @@
             <div class="d-flex justify-content-between mb-3">
                 <h6 class="fw-bold"><i class="bi bi-star"></i> Günün Öne Çıkanı</h6>
             </div>
-            @if(Model.SonGirisYapan != null) {
+            @if(Model?.SonGirisYapan != null) {
                 <div class="d-flex justify-content-center align-items-center flex-grow-1 my-4 text-white p-3 border border-secondary border-opacity-25 rounded text-center" style="background: rgba(0,0,0,0.2);">
                     <div>
                         <i class="bi bi-person-check fs-1 text-success mb-2"></i>
                         <h5 class="mb-1">@Model.SonGirisYapan.Kullanici?.Ad @Model.SonGirisYapan.Kullanici?.Soyad</h5>
-                        <small class="text-white-50">Sisteme en son giriş yapan takım arkadaşımız.</small>
+                        <small class="text-white-50">Sisteme bugün en çok veri kaydeden takım arkadaşımız.</small>
                     </div>
                 </div>
                 <div class="d-flex align-items-center mt-auto">
@@ -204,8 +243,8 @@
                         @(Model.SonGirisYapan.Kullanici?.Ad?.Substring(0,1))
                     </div>
                     <div>
-                        <strong class="d-block text-white">@Model.SonGirisYapan.IslemTarihi.ToString("HH:mm")</strong>
-                        <small class="text-white-50">Giriş Saati</small>
+                        <strong class="d-block text-white fs-5 mb-0">@Model.GununOneCikaniIslemSayisi</strong>
+                        <small class="text-white-50">İşlem Sayısı</small>
                     </div>
                 </div>
             } else {
@@ -218,7 +257,7 @@
         <!-- 4. Files / Assets List -> Recent Activities -->
         <div class="glass-panel p-4 files-card">
             <h5 class="fw-bold mb-4">Son Aktiviteler</h5>
-            @if(Model.SonAktiviteler != null && Model.SonAktiviteler.Any()) {
+            @if(Model?.SonAktiviteler != null && Model.SonAktiviteler.Any()) {
                 foreach(var log in Model.SonAktiviteler) {
                     <div class="pill-item">
                         <div class="bg-purple bg-opacity-25 text-white rounded p-2 me-3 d-flex justify-content-center align-items-center" style="width:35px; height:35px;">
@@ -239,17 +278,17 @@
         <div class="glass-panel p-4 team-card d-flex flex-column" style="background: linear-gradient(135deg, rgba(20,20,30,0.8), rgba(10,10,15,0.95));">
             <div class="d-flex justify-content-between align-items-center border-bottom border-light border-opacity-10 pb-3 mb-4">
                 <h5 class="fw-bold m-0 d-flex align-items-center">
-                    Ekip <span class="badge bg-white bg-opacity-10 ms-2 rounded-pill">@Model.ToplamKullanici</span>
+                    Ekip <span class="badge bg-white bg-opacity-10 ms-2 rounded-pill">@Model?.ToplamKullanici</span>
                 </h5>
                 
                 <div class="d-flex gap-4">
                     <div class="text-end">
                         <small class="text-white-50 d-block">Toplam Kullanıcı</small>
-                        <strong class="fs-5">@Model.ToplamKullanici</strong>
+                        <strong class="fs-5">@Model?.ToplamKullanici</strong>
                     </div>
                     <div class="text-end">
                         <small class="text-white-50 d-block">Aktif Çevrimiçi</small>
-                        <strong class="fs-5" style="color: var(--accent-purple);">@Model.AktifCevrimici</strong>
+                        <strong class="fs-5" style="color: var(--accent-purple);">@Model?.AktifCevrimici</strong>
                     </div>
                 </div>
             </div>
@@ -257,7 +296,7 @@
             <div class="row flex-grow-1">
                 <div class="col-md-6 border-end border-light border-opacity-10 pe-4">
                     <h6 class="fw-bold text-white-50 mb-3">Departman Dağılımı</h6>
-                    @if(Model.DepartmanDagilimi != null && Model.DepartmanDagilimi.Any()) {
+                    @if(Model?.DepartmanDagilimi != null && Model.DepartmanDagilimi.Any()) {
                         foreach(var dep in Model.DepartmanDagilimi) {
                             var yuzde = Model.DepartmanDoluKullaniciSayisi > 0 ? (int)Math.Round((double)dep.Value / Model.DepartmanDoluKullaniciSayisi * 100) : 0;
                             <div class="d-flex justify-content-between text-white small mb-1">
@@ -274,15 +313,15 @@
                     
                     <small class="text-white-50 d-block mb-1 mt-4">Genel İlerleme Durumu</small>
                     <div class="progress" style="height: 6px; background: rgba(255,255,255,0.1);">
-                        <div class="progress-bar" style="width: @(Model.AktifGorevYuzdesi.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))%; background: var(--accent-purple);"></div>
+                        <div class="progress-bar" style="width: @((Model?.AktifGorevYuzdesi ?? 0).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))%; background: var(--accent-purple);"></div>
                     </div>
                 </div>
                 <div class="col-md-6 ps-4 d-flex flex-column justify-content-center align-items-center text-center">
                     <h6 class="fw-bold text-white-50 mb-4">Aylık Proje Özeti</h6>
-                    <div class="position-relative d-flex justify-content-center align-items-center mb-3" style="width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(var(--accent-purple) @(Model.AktifGorevYuzdesi.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))%, rgba(255,255,255,0.1) 0);">
+                    <div class="position-relative d-flex justify-content-center align-items-center mb-3" style="width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(var(--accent-purple) @((Model?.AktifGorevYuzdesi ?? 0).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))%, rgba(255,255,255,0.1) 0);">
                         <div class="position-absolute" style="width: 100px; height: 100px; background: rgba(20,20,30,1); border-radius: 50%;"></div>
                         <div class="position-relative" style="z-index: 1;">
-                            <h3 class="m-0 fw-bold text-white">@Model.ToplamGorev</h3>
+                            <h3 class="m-0 fw-bold text-white">@Model?.ToplamGorev</h3>
                             <small class="text-white-50">Toplam</small>
                         </div>
                     </div>

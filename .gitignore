@@ -41,7 +41,7 @@ bld/
 # Sensitive files
 appsettings.json
 !appsettings.Example.json
-!appsettings.Development.json
+appsettings.Development.json
 
 # Published files
 [Pp]ublish/

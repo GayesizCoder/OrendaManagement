@@ -1,0 +1,299 @@
+@model Orenda.Web.Models.Kullanici
+@{
+    ViewData["Title"] = "Çalışma Hayatım";
+    var izinler = (ViewBag.Izinler as IEnumerable<Orenda.Web.Models.Izin>) ?? new List<Orenda.Web.Models.Izin>();
+    var talepler = (ViewBag.Talepler as IEnumerable<Orenda.Web.Models.Talep>) ?? new List<Orenda.Web.Models.Talep>();
+}
+
+<div class="container-fluid pe-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">Çalışma Hayatım</h2>
+            <p class="text-white-50 small mb-0">Özlük haklarınızı, izinlerinizi ve taleplerinizi buradan yönetin.</p>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-purple rounded-circle d-flex align-items-center justify-content-center shadow-lg p-0" 
+                    style="width: 48px; height: 48px; min-width: 48px;" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-plus-lg fs-4"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end glass-panel border-secondary shadow-lg p-2" style="min-width: 200px;">
+                <li><h6 class="dropdown-header text-white-50 small fw-bold">İzin İşlemleri</h6></li>
+                <li><a class="dropdown-item text-white py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#leaveModal" onclick="setLeaveType('Yıllık İzin')"><i class="bi bi-calendar-check me-2 text-success"></i> Yıllık İzin</a></li>
+                <li><a class="dropdown-item text-white py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#leaveModal" onclick="setLeaveType('Mazeretli İzin')"><i class="bi bi-calendar-plus me-2 text-warning"></i> Mazeretli İzin</a></li>
+                <li><hr class="dropdown-divider border-secondary opacity-25"></li>
+                <li><h6 class="dropdown-header text-white-50 small fw-bold">Dilekçe & Öneri</h6></li>
+                <li><a class="dropdown-item text-white py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#requestModal" onclick="setRequestType('Dilekçe')"><i class="bi bi-file-earmark-text me-2 text-info"></i> Dilekçe</a></li>
+                <li><a class="dropdown-item text-white py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#requestModal" onclick="setRequestType('Şikayet')"><i class="bi bi-exclamation-triangle me-2 text-danger"></i> Şikayet</a></li>
+                <li><a class="dropdown-item text-white py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#requestModal" onclick="setRequestType('Öneri')"><i class="bi bi-lightbulb me-2 text-purple"></i> Öneri</a></li>
+            </ul>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success rounded-pill border-0 bg-success bg-opacity-10 text-success px-4 mb-4">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+        </div>
+    }
+
+    <!-- Stats Summary -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="glass-panel p-4 text-center">
+                <div class="bg-success bg-opacity-10 text-success rounded-3 d-inline-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px;">
+                    <i class="bi bi-calendar-check fs-3"></i>
+                </div>
+                <h3 class="fw-bold text-white mb-1">@ViewBag.KalanIzin Gün</h3>
+                <p class="text-white-50 small mb-0">Kalan Yıllık İzin Hakkı</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-panel p-4 text-center">
+                <div class="bg-purple bg-opacity-10 text-purple rounded-3 d-inline-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px;">
+                    <i class="bi bi-arrow-repeat fs-3"></i>
+                </div>
+                <h3 class="fw-bold text-white mb-1">@(((DateTime)ViewBag.YenilenmeTarihi).ToString("dd.MM.yyyy"))</h3>
+                <p class="text-white-50 small mb-0">İzinlerin Yenilenme Tarihi</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-panel p-4 text-center">
+                <div class="bg-info bg-opacity-10 text-info rounded-3 d-inline-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px;">
+                    <i class="bi bi-briefcase fs-3"></i>
+                </div>
+                <h3 class="fw-bold text-white mb-1">
+                    @{
+                        var years = DateTime.Now.Year - Model.IseBaslamaTarihi.Year;
+                        if (Model.IseBaslamaTarihi.Year < 2000) years = 0; // Default date check
+                    }
+                    @years Yıl
+                </h3>
+                <p class="text-white-50 small mb-0">Şirketteki Çalışma Süreniz</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- İzin Geçmişi -->
+        <div class="col-md-6">
+            <div class="glass-panel p-4 h-100">
+                <h5 class="fw-bold mb-4 text-white"><i class="bi bi-clock-history me-2 text-purple"></i> İzin Geçmişi</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover border-secondary border-opacity-10">
+                        <thead>
+                            <tr class="text-white-50 small">
+                                <th>Tarih Aralığı</th>
+                                <th>Tür/Sebep</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var izin in izinler)
+                            {
+                                <tr>
+                                    <td class="small">@izin.BaslangicTarihi.ToString("dd.MM.yy") - @izin.BitisTarihi.ToString("dd.MM.yy")</td>
+                                    <td><small>@izin.Sebep</small></td>
+                                    <td>
+                                        @if (izin.Durum == "Onaylandı")
+                                        {
+                                            <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3" style="font-size: 0.65rem;">Onaylandı</span>
+                                        }
+                                        else if (izin.Durum == "Reddedildi")
+                                        {
+                                            <div class="d-flex flex-column align-items-center gap-1">
+                                                <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3" style="font-size: 0.65rem;">Reddedildi</span>
+                                                <button type="button" class="btn btn-link text-danger p-0 text-decoration-none" style="font-size: 0.6rem;" 
+                                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Gerekçe: @(string.IsNullOrEmpty(izin.YöneticiNotu) ? "Belirtilmedi" : izin.YöneticiNotu)"
+                                                        onclick="showReasonModal('İzin Red Gerekçesi', '@(string.IsNullOrEmpty(izin.YöneticiNotu) ? "Gerekçe belirtilmedi." : izin.YöneticiNotu)')">
+                                                    Gerekçeyi Gör <i class="bi bi-search"></i>
+                                                </button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3" style="font-size: 0.65rem;">Onay Bekliyor</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Taleplerim -->
+        <div class="col-md-6">
+            <div class="glass-panel p-4 h-100">
+                <h5 class="fw-bold mb-4 text-white"><i class="bi bi-chat-square-text me-2 text-info"></i> Taleplerim & Dilekçelerim</h5>
+                <div class="d-flex flex-column gap-3">
+                            @foreach (var talep in talepler)
+                            {
+                                <div class="p-3 rounded bg-dark bg-opacity-25 border border-secondary border-opacity-10">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-info bg-opacity-10 text-info rounded-pill">@talep.Tür</span>
+                                            @if (talep.Durum == "Onay Bekliyor" || talep.Durum == "Beklemede")
+                                            {
+                                                <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill small" style="font-size: 0.6rem;">Onay Bekliyor</span>
+                                            }
+                                            else if (talep.Durum == "Onaylandı" || talep.Durum == "Yanıtlandı")
+                                            {
+                                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill small" style="font-size: 0.6rem;">Onaylandı</span>
+                                            }
+                                            else if (talep.Durum == "Reddedildi")
+                                            {
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill small" style="font-size: 0.6rem;">Reddedildi</span>
+                                                    <button type="button" class="btn btn-link text-danger p-0 text-decoration-none fw-bold" style="font-size: 0.6rem;" 
+                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Gerekçe: @(string.IsNullOrEmpty(talep.Yanit) ? "Belirtilmedi" : talep.Yanit)"
+                                                            onclick="showReasonModal('@talep.Tür Red Gerekçesi', '@(string.IsNullOrEmpty(talep.Yanit) ? "Gerekçe belirtilmedi." : talep.Yanit)')">
+                                                        Gerekçeyi Gör
+                                                    </button>
+                                                </div>
+                                            }
+                                        </div>
+                                        <small class="text-white-50">@talep.OlusturulmaTarihi.ToString("dd.MM.yyyy")</small>
+                                    </div>
+                            <h6 class="text-white fw-bold small mb-1">@talep.Konu</h6>
+                            <p class="text-white-50 small mb-2">@talep.Mesaj</p>
+                            @if (!string.IsNullOrEmpty(talep.Yanit))
+                            {
+                                <div class="mt-2 p-2 rounded bg-success bg-opacity-10 border border-success border-opacity-25">
+                                    <small class="text-success d-block fw-bold"><i class="bi bi-reply-fill"></i> Yönetici Yanıtı:</small>
+                                    <small class="text-white-50">@talep.Yanit</small>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- İzin İste Modal -->
+<div class="modal fade" id="leaveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-white" id="leaveModalTitle">Yeni İzin Talebi</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="RequestLeave" method="post">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label text-white-50 small">İzin Türü</label>
+                            <select name="Sebep" id="leaveTypeSelect" class="form-select bg-dark text-white border-secondary">
+                                <option value="Yıllık İzin">Yıllık İzin</option>
+                                <option value="Mazeretli İzin">Mazeretli İzin</option>
+                                <option value="Hastalık/Rapor">Hastalık / Rapor</option>
+                                <option value="Diğer">Diğer</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-white-50 small">Başlangıç</label>
+                            <input type="date" name="BaslangicTarihi" class="form-control bg-dark text-white border-secondary" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-white-50 small">Bitiş</label>
+                            <input type="date" name="BitisTarihi" class="form-control bg-dark text-white border-secondary" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-white-50 small">Ek Açıklama (Opsiyonel)</label>
+                            <textarea name="YöneticiNotu" class="form-control bg-dark text-white border-secondary" rows="2" placeholder="Varsa eklemek istediğiniz detay..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-modal="modal">Vazgeç</button>
+                    <button type="submit" class="btn btn-purple rounded-pill px-4">Talebi Gönder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Talep Oluştur Modal -->
+<div class="modal fade" id="requestModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-white" id="requestModalTitle">Yeni Talep / Dilekçe</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="SendRequest" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Talep Türü</label>
+                        <select name="Tür" id="requestTypeSelect" class="form-select bg-dark text-white border-secondary">
+                            <option value="Dilekçe">Dilekçe</option>
+                            <option value="Şikayet">Şikayet</option>
+                            <option value="Öneri">Öneri</option>
+                            <option value="Diğer">Diğer</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Konu</label>
+                        <input type="text" name="Konu" class="form-control bg-dark text-white border-secondary" required placeholder="Talebinizin özeti">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Mesajınız</label>
+                        <textarea name="Mesaj" class="form-control bg-dark text-white border-secondary" rows="4" required placeholder="Detaylı açıklama yazın..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Vazgeç</button>
+                    <button type="submit" class="btn btn-info rounded-pill px-4">Gönder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Reason Detail Modal -->
+<div class="modal fade" id="reasonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary shadow-lg">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-white" id="reasonModalTitle">Red Gerekçesi</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <i class="bi bi-info-circle text-danger display-4 mb-3 d-block"></i>
+                <p id="reasonModalBody" class="text-white-50 fs-5 mb-0 italic"></p>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-purple rounded-pill px-4" data-bs-dismiss="modal">Anladım</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function setLeaveType(type) {
+            document.getElementById('leaveTypeSelect').value = type;
+            document.getElementById('leaveModalTitle').innerText = 'Yeni ' + type + ' Talebi';
+        }
+
+        function setRequestType(type) {
+            document.getElementById('requestTypeSelect').value = type;
+            document.getElementById('requestModalTitle').innerText = 'Yeni ' + type + ' Oluştur';
+        }
+
+        function showReasonModal(title, reason) {
+            document.getElementById('reasonModalTitle').innerText = title;
+            document.getElementById('reasonModalBody').innerText = reason;
+            var myModal = new bootstrap.Modal(document.getElementById('reasonModal'));
+            myModal.show();
+        }
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+}

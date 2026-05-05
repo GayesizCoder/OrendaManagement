@@ -50,6 +50,12 @@ body {
     outline: none;
 }
 
+/* Standart select açılır menü seçeneklerinin (options) stilini koyu temaya uydurur */
+select.glass-input option {
+    background-color: var(--primary-dark);
+    color: var(--text-primary);
+}
+
 .btn-glass-primary {
     background: var(--accent-purple);
     color: white;

@@ -56,6 +56,18 @@ namespace Orenda.Web.Models
 
         public double HaftalikVerimlilikSkoru { get; set; } = 0;
 
+        [MaxLength(10)]
+        public string SirketKodu { get; set; } = "OR"; // Varsayılan: Orenda (OR)
+
+        [MaxLength(20)]
+        public string GlobalID { get; set; } = string.Empty; // Örn: OR-101
+
+        [NotMapped]
+        public string Rol => RolID == 1 ? "Admin" : "Çalışan";
+
+        public DateTime IseBaslamaTarihi { get; set; } = DateTime.Now;
+        public int YillikIzinHakki { get; set; } = 15;
+
         // Orenda Life / Sağlık Verileri
         public virtual ICollection<SaglikVerisi>? SaglikVerileri { get; set; }
     }

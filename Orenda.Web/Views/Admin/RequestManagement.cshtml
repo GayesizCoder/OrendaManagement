@@ -1,0 +1,68 @@
+@model IEnumerable<Orenda.Web.Models.Talep>
+@{
+    ViewData["Title"] = "Dilekçe & Şikayet Yönetimi";
+}
+
+<div class="container-fluid pe-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a asp-action="Management" class="text-purple text-decoration-none">Yönetim</a></li>
+                <li class="breadcrumb-item active text-white-50" aria-current="page">Talepler</li>
+              </ol>
+            </nav>
+            <h2 class="fw-bold mb-0">Dilekçe, Şikayet & Öneriler</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            @if (!Model.Any())
+            {
+                <div class="glass-panel p-5 text-center">
+                    <i class="bi bi-chat-square-text display-1 text-white-25 mb-3"></i>
+                    <h4 class="text-white-50">Henüz bir talep bulunmuyor.</h4>
+                </div>
+            }
+            @foreach (var talep in Model)
+            {
+                <div class="glass-panel p-4 mb-3 border-start border-4 @(talep.Tür == "Şikayet" ? "border-danger" : "border-info")">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex align-items-center">
+                            <img src="https://ui-avatars.com/api/?name=@(talep.Calisan?.Ad)+@(talep.Calisan?.Soyad)&background=random&color=fff&size=45" class="rounded-circle me-3" style="width: 45px; height: 45px;">
+                            <div>
+                                <h6 class="fw-bold mb-0 text-white">@talep.Konu</h6>
+                                <small class="text-white-50">@talep.Calisan?.Ad @talep.Calisan?.Soyad - @talep.OlusturulmaTarihi.ToString("dd.MM.yyyy HH:mm")</small>
+                            </div>
+                        </div>
+                        <span class="badge @(talep.Durum == "Yanıtlandı" ? "bg-success" : (talep.Durum == "Reddedildi" ? "bg-danger" : "bg-warning text-dark")) rounded-pill">@talep.Durum</span>
+                    </div>
+                    
+                    <div class="bg-black bg-opacity-25 rounded p-3 mb-3 text-white-50 small italic">
+                        "@talep.Mesaj"
+                    </div>
+
+                    @if (talep.Durum != "Yanıtlandı" && talep.Durum != "Reddedildi")
+                    {
+                        <form asp-action="RespondToRequest" method="post" class="mt-3">
+                            <input type="hidden" name="id" value="@talep.TalepID" />
+                            <div class="input-group">
+                                <input type="text" name="yanit" class="form-control bg-dark text-white border-secondary" placeholder="Yanıtınızı/Gerekçenizi yazın..." required>
+                                <button type="submit" name="karar" value="Yanitla" class="btn btn-purple px-4">Yanıtla</button>
+                                <button type="submit" name="karar" value="Reddet" class="btn btn-outline-danger px-4">Reddet</button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="mt-2 @(talep.Durum == "Reddedildi" ? "text-danger" : "text-success") small">
+                            <i class="bi @(talep.Durum == "Reddedildi" ? "bi-x-circle" : "bi-reply-fill") me-1"></i> 
+                            <strong>@(talep.Durum == "Reddedildi" ? "Red Gerekçesi" : "Yönetici Yanıtı"):</strong> @talep.Yanit
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

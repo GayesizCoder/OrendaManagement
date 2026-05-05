@@ -1,0 +1,195 @@
+<style>
+    /* Köşeleri yuvarlatılmış modern kare kartlar */
+    .management-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 28px; /* Köşeleri yuvarlatılmış kare formu */
+        padding: 1.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .management-card:hover {
+        transform: translateY(-8px);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--accent-purple);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+
+    .icon-circle-box {
+        width: 60px;
+        height: 60px;
+        border-radius: 20px; /* İkon kutusu da kartla uyumlu yuvarlak kare */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.25rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.25rem;
+        color: #fff;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-outline-purple {
+        color: var(--accent-purple);
+        border-color: var(--accent-purple);
+    }
+    .btn-outline-purple:hover {
+        background: var(--accent-purple);
+        color: white;
+    }
+</style>
+
+<div class="container-fluid pe-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
+        <div>
+            <h2 class="fw-bold mb-0">Çalışan Yönetim Ekranı</h2>
+            <p class="text-white-50 small mb-0">Tüm yönetsel süreçleri tek bir noktadan takip edin.</p>
+        </div>
+        <div class="text-white-50 small rounded-pill bg-dark bg-opacity-50 px-3 py-1 border border-secondary border-opacity-25">
+            <i class="bi bi-shield-check me-2 text-purple"></i> Yönetici Modu
+        </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="management-card h-100">
+                <div class="icon-circle-box bg-warning bg-opacity-10 text-warning">
+                    <i class="bi bi-clock-history fs-3"></i>
+                </div>
+                <div class="stat-value">@ViewBag.PendingTasksCount</div>
+                <div class="stat-label">Onay Bekleyen Görev</div>
+                <a asp-action="TaskApprovals" class="btn btn-sm btn-outline-warning w-100 rounded-pill py-2">İncele</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="management-card h-100">
+                <div class="icon-circle-box bg-purple bg-opacity-20 text-white" style="background-color: rgba(108, 92, 231, 0.3) !important;">
+                    <i class="bi bi-calendar-check fs-3"></i>
+                </div>
+                <div class="stat-value">@ViewBag.PendingLeavesCount</div>
+                <div class="stat-label">Bekleyen İzinler</div>
+                <a asp-action="LeaveApprovals" class="btn btn-sm btn-outline-purple w-100 rounded-pill py-2">İncele</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="management-card h-100">
+                <div class="icon-circle-box bg-info bg-opacity-10 text-info">
+                    <i class="bi bi-chat-left-text fs-3"></i>
+                </div>
+                <div class="stat-value">@ViewBag.PendingRequestsCount</div>
+                <div class="stat-label">Yeni Talepler</div>
+                <a asp-action="RequestManagement" class="btn btn-sm btn-outline-info w-100 rounded-pill py-2">İncele</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="management-card h-100">
+                <div class="icon-circle-box bg-success bg-opacity-10 text-success">
+                    <i class="bi bi-laptop fs-3"></i>
+                </div>
+                <div class="stat-value">@ViewBag.TotalDevices</div>
+                <div class="stat-label">Toplam Cihaz</div>
+                <a asp-action="DeviceManagement" class="btn btn-sm btn-outline-success w-100 rounded-pill py-2">Yönet</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Modules Grid -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="glass-panel p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-people-fill me-2 text-purple"></i> Ekip Yönetimi</h5>
+                    <a asp-controller="Team" asp-action="Index" class="btn btn-sm btn-link text-white-50 text-decoration-none">Tümünü Gör <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="bg-dark bg-opacity-50 rounded-3 p-4 text-center border border-secondary border-opacity-10">
+                    <i class="bi bi-person-plus fs-1 text-white-25 mb-3 d-block"></i>
+                    <p class="text-white-50 small mb-3">Yeni ekip üyesi ekleyin veya departmanları düzenleyin.</p>
+                    <a asp-controller="Team" asp-action="Index" class="btn btn-purple rounded-pill px-4">Ekibi Yönet</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-panel p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-kanban-fill me-2 text-warning"></i> Görev Yönetimi</h5>
+                    <a asp-controller="ToDo" asp-action="Index" class="btn btn-sm btn-link text-white-50 text-decoration-none">Tümünü Gör <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="bg-dark bg-opacity-50 rounded-3 p-4 text-center border border-secondary border-opacity-10">
+                    <i class="bi bi-plus-circle fs-1 text-white-25 mb-3 d-block"></i>
+                    <p class="text-white-50 small mb-3">Yeni bir görev oluşturun veya mevcut görevleri takip edin.</p>
+                    <a asp-controller="ToDo" asp-action="Index" asp-route-create="true" class="btn btn-warning text-dark rounded-pill px-4 fw-bold">Yeni Görev Ata</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-panel p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-file-earmark-text-fill me-2 text-info"></i> Dilekçe & Şikayetler</h5>
+                    <span class="badge bg-info text-white rounded-pill">@ViewBag.PendingRequestsCount Yeni</span>
+                </div>
+                <p class="text-white-50 small">Çalışanlardan gelen son talepler burada listelenir. Hızlı yanıt vererek süreçleri iyileştirin.</p>
+                <div class="list-group list-group-flush bg-transparent">
+                    @if (ViewBag.RecentRequests != null && ((IEnumerable<Orenda.Web.Models.Talep>)ViewBag.RecentRequests).Any())
+                    {
+                        foreach (var talep in (IEnumerable<Orenda.Web.Models.Talep>)ViewBag.RecentRequests)
+                        {
+                            <div class="list-group-item bg-transparent border-secondary border-opacity-25 px-0 py-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong class="text-white d-block">@talep.Konu</strong>
+                                        <small class="text-white-50">@talep.Calisan?.Ad @talep.Calisan?.Soyad - @talep.OlusturulmaTarihi.ToString("dd MMM HH:mm")</small>
+                                    </div>
+                                    <span class="badge bg-warning text-dark">Beklemede</span>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-chat-left-dots text-white-25 fs-2 mb-2 d-block"></i>
+                            <p class="text-white-50 small mb-0">Şu an bekleyen yeni talep bulunmuyor.</p>
+                        </div>
+                    }
+                </div>
+                <a asp-action="RequestManagement" class="btn btn-outline-light btn-sm w-100 mt-3 rounded-pill">Tüm Talepleri Yönet</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .transition-hover {
+        transition: all 0.3s ease;
+    }
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+    .btn-outline-purple {
+        color: var(--accent-purple);
+        border-color: var(--accent-purple);
+    }
+    .btn-outline-purple:hover {
+        background: var(--accent-purple);
+        color: white;
+    }
+</style>
